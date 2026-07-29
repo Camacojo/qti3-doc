@@ -22,7 +22,10 @@ cache:
 pages:
   stage: deploy
   script:
-    - npm ci
+    # `npm install` (not the stricter `npm ci`) reconciles cross-platform
+    # optional-dependency drift in the lock file between the authoring machine
+    # and the linux CI runner.
+    - npm install --no-audit --no-fund
     - npm run build
     # GitLab Pages publishes the `public/` directory. Astro builds into `dist/`;
     # the source `public/` assets are already copied into `dist/` by the build,
