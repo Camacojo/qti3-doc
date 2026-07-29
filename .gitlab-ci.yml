@@ -1,0 +1,36 @@
+# Build the Astro Starlight site and publish it to GitLab Pages.
+#
+# The site is configured with `base: '/qti3-doc/'` in astro.config.mjs, matching
+# the project-Pages URL (https://<namespace>.<pages-domain>/qti3-doc/). Pagefind
+# search and all assets/links resolve under that base.
+#
+# If this instance serves Pages from a root ("unique domain") instead, set
+# `base: '/'` in astro.config.mjs and drop the base from the hero links in
+# src/content/docs/index.mdx.
+
+image: node:22
+
+# Reuse installed dependencies and Astro's cache between runs.
+cache:
+  key:
+    files:
+      - package-lock.json
+  paths:
+    - node_modules/
+    - .astro/
+
+pages:
+  stage: deploy
+  script:
+    - npm ci
+    - npm run build
+    # GitLab Pages publishes the `public/` directory. Astro builds into `dist/`;
+    # the source `public/` assets are already copied into `dist/` by the build,
+    # so we can replace it with the built output.
+    - rm -rf public && mv dist public
+  artifacts:
+    paths:
+      - public
+  rules:
+    # Deploy only from the default branch.
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

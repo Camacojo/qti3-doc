@@ -9,6 +9,8 @@
  *     { href: '/reference/processing/response-declaration/', label: 'qti-response-declaration' },
  *   ]} />
  */
+import { withBase } from '../lib/withBase.ts';
+
 interface Link {
 	href: string;
 	label: string;
@@ -27,7 +29,7 @@ const { links, title = 'Related' } = Astro.props;
 		{
 			links.map((l) => (
 				<li>
-					<a href={l.href}>{l.label}</a>
+					<a href={withBase(l.href)}>{l.label}</a>
 					{l.description && <span class="related-desc"> — {l.description}</span>}
 				</li>
 			))

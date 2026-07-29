@@ -5,16 +5,19 @@ template: splash
 hero:
   tagline: Understand and build with the 1EdTech QTI 3.0 assessment standard — concepts, a full element reference, and open-source tooling in one place.
   actions:
+    # Hero action links are used verbatim by Starlight, so they include the base
+    # path (`/qti3-doc`) explicitly. Keep in sync with `base` in astro.config.mjs.
     - text: Start with the basics
-      link: /onboarding/what-is-qti-3/
+      link: /qti3-doc/onboarding/what-is-qti-3/
       icon: right-arrow
     - text: Browse the reference
-      link: /reference/
+      link: /qti3-doc/reference/
       icon: open-book
       variant: minimal
 ---
 
 import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
+import { withBase } from '../../lib/withBase.ts';
 
 ## Two ways in
 
@@ -22,22 +25,22 @@ import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
 	<Card title="For product managers" icon="approve-check">
 		Learn what QTI 3.0 is, why interoperability matters, and how the pieces fit
 		together — without the XML.
-		<p><a href="/onboarding/why-qti/">Why QTI 3.0? →</a></p>
+		<p><a href={withBase('/onboarding/why-qti/')}>Why QTI 3.0? →</a></p>
 	</Card>
 	<Card title="For developers" icon="seti:html">
 		Jump into the hierarchical element reference, with attributes, examples, and
 		cross-references for every concept.
-		<p><a href="/reference/">Reference →</a></p>
+		<p><a href={withBase('/reference/')}>Reference →</a></p>
 	</Card>
 </CardGrid>
 
 ## Find your way
 
 <CardGrid>
-	<LinkCard title="Core concepts" description="Items, tests, interactions, response processing and scoring — explained." href="/concepts/assessment-item/" />
-	<LinkCard title="Interactions reference" description="Every interaction type as its own shareable page." href="/reference/interactions/choice-interaction/" />
-	<LinkCard title="Open-source tooling" description="Render with @citolab/qti-components, parse & score with wikiwijs/php-qti3." href="/onboarding/open-source-packages/" />
-	<LinkCard title="Author your first item" description="A step-by-step guide from empty file to scored response." href="/guides/authoring-your-first-item/" />
+	<LinkCard title="Core concepts" description="Items, tests, interactions, response processing and scoring — explained." href={withBase('/concepts/assessment-item/')} />
+	<LinkCard title="Interactions reference" description="Every interaction type as its own shareable page." href={withBase('/reference/interactions/choice-interaction/')} />
+	<LinkCard title="Open-source tooling" description="Render with @citolab/qti-components, parse & score with wikiwijs/php-qti3." href={withBase('/onboarding/open-source-packages/')} />
+	<LinkCard title="Author your first item" description="A step-by-step guide from empty file to scored response." href={withBase('/guides/authoring-your-first-item/')} />
 </CardGrid>
 
 :::note
