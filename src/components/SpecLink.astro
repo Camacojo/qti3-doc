@@ -1,0 +1,44 @@
+---
+/**
+ * A consistent link to the authoritative 1EdTech QTI 3.0 specification.
+ *
+ * Usage:
+ *   <SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl#choice-interaction">
+ *     qti-choice-interaction
+ *   </SpecLink>
+ */
+interface Props {
+	href: string;
+}
+const { href } = Astro.props;
+---
+
+<a class="spec-link not-content" href={href} target="_blank" rel="noopener noreferrer">
+	<span class="spec-icon" aria-hidden="true">§</span>
+	<span><slot>Read the normative specification</slot></span>
+	<span class="spec-ext" aria-hidden="true">↗</span>
+</a>
+
+<style>
+	.spec-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		padding: 0.35rem 0.7rem;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 0.4rem;
+		text-decoration: none;
+		font-size: var(--sl-text-sm);
+	}
+	.spec-link:hover {
+		border-color: var(--sl-color-accent);
+	}
+	.spec-icon {
+		font-weight: 700;
+		color: var(--sl-color-accent);
+	}
+	.spec-ext {
+		color: var(--sl-color-gray-3);
+		font-size: 0.85em;
+	}
+</style>

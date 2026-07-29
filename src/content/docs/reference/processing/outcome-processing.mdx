@@ -1,0 +1,62 @@
+---
+title: qti-outcome-processing
+description: Test-level rules that aggregate item outcomes into test outcomes such as the total score.
+sidebar:
+  order: 10
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+
+<SupportBadge phpQti3="no" note="php-qti3 does not preserve outcome processing (dropped on regeneration, reported as a warning)." />
+
+`qti-outcome-processing` is the **test-level** counterpart of
+[response processing](/concepts/response-processing/). It runs after items are
+scored and combines their [outcomes](/concepts/outcomes-and-scoring/) into
+test-level outcomes — most commonly summing every item `SCORE` into a test total.
+
+## Place in the hierarchy
+
+A child of [`qti-assessment-test`](/reference/test/assessment-test/), after the
+test parts. It reads item outcomes and writes the test's
+[outcome variables](/reference/processing/outcome-declaration/).
+
+## The rules
+
+Outcome processing uses the same shape as response processing:
+
+- `qti-outcome-condition` (with `qti-outcome-if` / `qti-outcome-else`) — branch on
+  an [expression](/reference/processing/expressions/).
+- `qti-set-outcome-value` — assign a test outcome.
+- `qti-exit-test` — stop processing.
+
+The key expression is `qti-test-variables`, which gathers a named variable across
+all items (optionally applying a [weight](/reference/test/weight/)); wrap it in
+[`qti-sum`](/reference/processing/operators/) to total it.
+
+## Example
+
+<Example title="Sum every item SCORE into the test SCORE">
+```xml
+<qti-outcome-processing>
+  <qti-set-outcome-value identifier="SCORE">
+    <qti-sum>
+      <qti-test-variables variable-identifier="SCORE"/>
+    </qti-sum>
+  </qti-set-outcome-value>
+</qti-outcome-processing>
+```
+</Example>
+
+## Cross-references
+
+<Related links={[
+  { href: '/reference/test/assessment-test/', label: 'qti-assessment-test', description: 'The parent element' },
+  { href: '/reference/test/weight/', label: 'qti-weight', description: 'Weighting items in the total' },
+  { href: '/concepts/outcomes-and-scoring/', label: 'Outcomes & scoring', description: 'How scores roll up' },
+  { href: '/concepts/response-processing/', label: 'Response processing', description: 'The item-level counterpart' },
+]} />
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about qti-outcome-processing in the QTI 3.0 specification</SpecLink>

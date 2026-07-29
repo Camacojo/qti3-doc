@@ -1,0 +1,97 @@
+---
+title: qti-slider-interaction
+description: Select a numeric value along a continuous range.
+sidebar:
+  order: 15
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+import QtiDemo from '@components/QtiDemo.astro';
+
+<SupportBadge phpQti3="no" qtiComponents="yes" note="php-qti3 does not parse this interaction type." />
+
+The `qti-slider-interaction` presents a slider control that lets the candidate pick a single numeric value along a continuous range bounded by a lower and an upper value.
+
+## Purpose
+
+Use a slider interaction when the candidate should choose a numeric value within a known range by dragging a handle rather than typing a number.
+
+- Good for estimation tasks, ratings, and questions where a value on a scale is more intuitive than free text.
+- The candidate always selects exactly one value (single cardinality) somewhere between the `lower-bound` and `upper-bound`.
+- Use the `step` attribute to constrain selection to discrete increments (for example whole numbers or steps of 0.5).
+
+If you need the candidate to type a precise number, prefer a [text entry interaction](/reference/interactions/text-entry-interaction/) instead.
+
+## Place in the hierarchy
+
+- **Parent:** the `qti-item-body` (or a nested content element) of an [assessment item](/concepts/assessment-item/).
+- **Children:** an optional `qti-prompt` element that supplies the question text shown with the slider.
+- **Binds to:** the response variable named by `response-identifier`. The matching [response declaration](/reference/processing/response-declaration/) must have `cardinality="single"` and `base-type="float"` or `base-type="integer"`.
+
+Use `base-type="integer"` together with an integer `step` when only whole-number values are meaningful; otherwise use `base-type="float"`.
+
+## Attributes
+
+<AttributesTable
+  attributes={[
+    { name: 'response-identifier', type: 'identifier', required: true, description: 'Identifier of the response variable this interaction binds to. Must match a <code>qti-response-declaration</code> with single cardinality and base-type <code>float</code> or <code>integer</code>.' },
+    { name: 'lower-bound', type: 'float', required: true, description: 'The lowest value the candidate can select (the start of the range).' },
+    { name: 'upper-bound', type: 'float', required: true, description: 'The highest value the candidate can select (the end of the range).' },
+    { name: 'step', type: 'integer', required: false, description: 'The size of the increment between selectable values. When omitted, a continuous (or platform-default) step is used.' },
+    { name: 'step-label', type: 'boolean', required: false, default: 'false', description: 'When <code>true</code>, the delivery engine displays labels at each step position.' },
+    { name: 'orientation', type: 'orientation', required: false, default: 'horizontal', description: 'Whether the slider is laid out <code>horizontal</code> or <code>vertical</code>.' },
+    { name: 'reverse', type: 'boolean', required: false, default: 'false', description: 'When <code>true</code>, reverses the direction of the slider so the upper bound appears at the start.' },
+  ]}
+  caption="Attributes of qti-slider-interaction"
+/>
+
+## Example
+
+<Example title="Estimate a temperature on a 0–100 scale">
+
+```xml
+<qti-response-declaration identifier="RESPONSE" cardinality="single" base-type="integer">
+  <qti-correct-response>
+    <qti-value>37</qti-value>
+  </qti-correct-response>
+</qti-response-declaration>
+
+<qti-item-body>
+  <qti-slider-interaction
+      response-identifier="RESPONSE"
+      lower-bound="0"
+      upper-bound="100"
+      step="1"
+      step-label="true"
+      orientation="horizontal">
+    <qti-prompt>What is the normal body temperature in degrees Celsius? Drag the slider to your estimate.</qti-prompt>
+  </qti-slider-interaction>
+</qti-item-body>
+```
+
+</Example>
+
+## Try it
+
+<QtiDemo markup={`
+  <qti-slider-interaction response-identifier="RESPONSE" lower-bound="0" upper-bound="100" step="1">
+    <qti-prompt>Estimate: what percentage of the Earth's surface is covered by water?</qti-prompt>
+  </qti-slider-interaction>
+`} />
+
+## Cross-references
+
+<Related
+  links={[
+    { href: '/concepts/interactions-overview/', label: 'Interactions overview', description: 'How interactions collect candidate responses in QTI 3.0.' },
+    { href: '/reference/processing/response-declaration/', label: 'qti-response-declaration', description: 'Declares the single float or integer response variable the slider binds to.' },
+    { href: '/reference/interactions/text-entry-interaction/', label: 'qti-text-entry-interaction', description: 'Alternative when the candidate should type a precise number.' },
+    { href: '/concepts/variables-and-declarations/', label: 'Variables and declarations', description: 'Understanding cardinality and base-type for response variables.' },
+  ]}
+/>
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about the slider interaction in the QTI 3.0 specification</SpecLink>

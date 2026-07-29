@@ -1,0 +1,88 @@
+---
+/**
+ * Shows implementation support for a QTI feature across the two open-source
+ * packages this site documents. Use at the top of reference pages.
+ *
+ * Usage:
+ *   <SupportBadge phpQti3="yes" qtiComponents="yes" />
+ *   <SupportBadge phpQti3="no" qtiComponents="partial" note="Rendering only" />
+ */
+type Level = 'yes' | 'partial' | 'no';
+
+interface Props {
+	phpQti3?: Level;
+	qtiComponents?: Level;
+	note?: string;
+}
+
+const { phpQti3, qtiComponents, note } = Astro.props;
+
+const labels: Record<Level, { text: string; className: string }> = {
+	yes: { text: 'Supported', className: 'lvl-yes' },
+	partial: { text: 'Partial', className: 'lvl-partial' },
+	no: { text: 'Not yet', className: 'lvl-no' },
+};
+
+const items = [
+	phpQti3 ? { pkg: 'php-qti3', ...labels[phpQti3] } : null,
+	qtiComponents ? { pkg: 'qti-components', ...labels[qtiComponents] } : null,
+].filter(Boolean) as { pkg: string; text: string; className: string }[];
+---
+
+{
+	items.length > 0 && (
+		<div class="support-badges not-content">
+			<span class="support-label">Tooling support:</span>
+			{items.map((i) => (
+				<span class={`support-badge ${i.className}`}>
+					<code>{i.pkg}</code> · {i.text}
+				</span>
+			))}
+			{note && <span class="support-note">{note}</span>}
+		</div>
+	)
+}
+
+<style>
+	.support-badges {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.4rem;
+		margin: 0 0 1.25rem;
+		font-size: var(--sl-text-sm);
+	}
+	.support-label {
+		color: var(--sl-color-gray-3);
+	}
+	.support-badge {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.3rem;
+		padding: 0.15rem 0.55rem;
+		border-radius: 999px;
+		border: 1px solid var(--sl-color-gray-5);
+		white-space: nowrap;
+	}
+	.support-badge code {
+		background: none;
+		padding: 0;
+		font-size: 0.85em;
+	}
+	.lvl-yes {
+		border-color: var(--sl-color-green);
+		color: var(--sl-color-green-high);
+	}
+	.lvl-partial {
+		border-color: var(--sl-color-orange);
+		color: var(--sl-color-orange-high);
+	}
+	.lvl-no {
+		border-color: var(--sl-color-gray-4);
+		color: var(--sl-color-gray-3);
+	}
+	.support-note {
+		color: var(--sl-color-gray-3);
+		font-style: italic;
+	}
+</style>

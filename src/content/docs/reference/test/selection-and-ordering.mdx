@@ -1,0 +1,61 @@
+---
+title: qti-selection & qti-ordering
+description: Pick a subset of a section's children and shuffle their order — the basis of randomised test forms.
+sidebar:
+  order: 5
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+
+<SupportBadge qtiComponents="yes" />
+
+`qti-selection` and `qti-ordering` sit inside a
+[section](/reference/test/assessment-section/) and shape what the candidate
+actually sees: which children are chosen, and in what order. Together they turn a
+fixed item bank into randomised forms.
+
+## qti-selection — pick a subset
+
+Chooses a number of the section's children at delivery.
+
+<AttributesTable attributes={[
+  { name: 'select', type: 'integer', required: true, description: 'How many child items/sections to select.' },
+  { name: 'with-replacement', type: 'boolean', default: 'false', description: 'Whether the same child may be selected more than once.' },
+]} caption="qti-selection attributes" />
+
+Mark a child `required="true"` (on the [item ref](/reference/test/assessment-item-ref/))
+to force its inclusion in every selection.
+
+## qti-ordering — shuffle
+
+Randomises the order of the (selected) children.
+
+<AttributesTable attributes={[
+  { name: 'shuffle', type: 'boolean', default: 'false', description: 'When true, the order of children is randomised for each candidate. Children marked fixed keep their position.' },
+]} caption="qti-ordering attributes" />
+
+## Example
+
+<Example title="Draw 5 of 20 items, shuffled">
+```xml
+<qti-assessment-section identifier="pool" title="Question pool" visible="false">
+  <qti-selection select="5"/>
+  <qti-ordering shuffle="true"/>
+  <!-- 20 qti-assessment-item-ref children -->
+</qti-assessment-section>
+```
+</Example>
+
+## Cross-references
+
+<Related links={[
+  { href: '/reference/test/assessment-section/', label: 'qti-assessment-section', description: 'Where selection & ordering live' },
+  { href: '/reference/test/assessment-item-ref/', label: 'qti-assessment-item-ref', description: 'fixed / required control selection' },
+  { href: '/concepts/assessment-test-and-sections/', label: 'Assessment test & sections', description: 'Building randomised forms' },
+]} />
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about selection & ordering in the QTI 3.0 specification</SpecLink>

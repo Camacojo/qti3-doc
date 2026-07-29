@@ -1,0 +1,62 @@
+---
+/**
+ * A compact "Related" cross-reference list. Keeps pages focused by linking out
+ * instead of repeating content.
+ *
+ * Usage:
+ *   <Related links={[
+ *     { href: '/concepts/response-processing/', label: 'Response processing' },
+ *     { href: '/reference/processing/response-declaration/', label: 'qti-response-declaration' },
+ *   ]} />
+ */
+interface Link {
+	href: string;
+	label: string;
+	description?: string;
+}
+interface Props {
+	links: Link[];
+	title?: string;
+}
+const { links, title = 'Related' } = Astro.props;
+---
+
+<aside class="related not-content" aria-label={title}>
+	<p class="related-title">{title}</p>
+	<ul>
+		{
+			links.map((l) => (
+				<li>
+					<a href={l.href}>{l.label}</a>
+					{l.description && <span class="related-desc"> — {l.description}</span>}
+				</li>
+			))
+		}
+	</ul>
+</aside>
+
+<style>
+	.related {
+		margin: 1.5rem 0;
+		padding: 0.85rem 1.1rem;
+		border-left: 3px solid var(--sl-color-accent);
+		background: var(--sl-color-gray-7, var(--sl-color-gray-6));
+		border-radius: 0 0.4rem 0.4rem 0;
+	}
+	.related-title {
+		margin: 0 0 0.4rem;
+		font-weight: 600;
+		font-size: var(--sl-text-sm);
+	}
+	.related ul {
+		margin: 0;
+		padding-left: 1.1rem;
+	}
+	.related li {
+		margin: 0.2rem 0;
+	}
+	.related-desc {
+		color: var(--sl-color-gray-3);
+		font-size: var(--sl-text-sm);
+	}
+</style>

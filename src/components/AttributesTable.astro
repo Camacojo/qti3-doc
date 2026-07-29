@@ -1,0 +1,72 @@
+---
+/**
+ * Renders a consistent attribute reference table.
+ *
+ * Usage:
+ *   <AttributesTable attributes={[
+ *     { name: 'response-identifier', type: 'identifier', required: true,
+ *       description: 'Links the interaction to its response variable.' },
+ *     { name: 'max-choices', type: 'integer', default: '1',
+ *       description: 'Maximum number of choices the candidate may select.' },
+ *   ]} />
+ */
+interface Attribute {
+	name: string;
+	type?: string;
+	required?: boolean;
+	default?: string;
+	description: string;
+}
+
+interface Props {
+	attributes: Attribute[];
+	caption?: string;
+}
+
+const { attributes, caption } = Astro.props;
+---
+
+<table class="attrs">
+	{caption && <caption>{caption}</caption>}
+	<thead>
+		<tr>
+			<th>Attribute</th>
+			<th>Type</th>
+			<th>Required</th>
+			<th>Default</th>
+			<th>Description</th>
+		</tr>
+	</thead>
+	<tbody>
+		{
+			attributes.map((a) => (
+				<tr>
+					<td>
+						<code>{a.name}</code>
+					</td>
+					<td>{a.type ? <code>{a.type}</code> : '—'}</td>
+					<td>{a.required ? 'Yes' : 'No'}</td>
+					<td>{a.default ? <code>{a.default}</code> : '—'}</td>
+					<td set:html={a.description} />
+				</tr>
+			))
+		}
+	</tbody>
+</table>
+
+<style>
+	.attrs {
+		display: table;
+		width: 100%;
+	}
+	.attrs caption {
+		caption-side: top;
+		text-align: left;
+		font-weight: 600;
+		margin-bottom: 0.4rem;
+	}
+	.attrs td code,
+	.attrs th code {
+		font-size: 0.85em;
+	}
+</style>

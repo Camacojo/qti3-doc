@@ -1,0 +1,61 @@
+---
+title: qti-feedback-block / -inline
+description: Feedback embedded in the item body — block-level or inline — shown based on an outcome variable.
+sidebar:
+  order: 4
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+
+<SupportBadge qtiComponents="yes" />
+
+`qti-feedback-block` and `qti-feedback-inline` embed feedback **inside the
+[item body](/concepts/item-body/)** rather than in a separate dialog. They use
+the same outcome-driven mechanism as [`qti-modal-feedback`](/reference/content/modal-feedback/),
+differing only in placement:
+
+- **`qti-feedback-block`** — block-level feedback (its own paragraph or region).
+- **`qti-feedback-inline`** — inline feedback within a line of running text.
+
+## When to use which
+
+- Reveal a worked step next to the interaction → **feedback block**.
+- Insert a short correction inside a sentence → **feedback inline**.
+- Show an after-the-fact summary in a dialog → [modal feedback](/reference/content/modal-feedback/).
+
+## Attributes
+
+Both elements share the same attributes:
+
+<AttributesTable attributes={[
+  { name: 'outcome-identifier', type: 'identifier', required: true, description: 'The outcome variable whose value selects this feedback.' },
+  { name: 'identifier', type: 'identifier', required: true, description: 'The value the outcome must hold for this feedback to show.' },
+  { name: 'show-hide', type: 'show | hide', default: 'show', description: 'Whether a match shows or hides the content.' },
+]} caption="qti-feedback-block / qti-feedback-inline attributes" />
+
+## Example
+
+<Example title="Block feedback revealed inside the body">
+```xml
+<qti-item-body>
+  <!-- interaction here -->
+  <qti-feedback-block outcome-identifier="FEEDBACK" identifier="EXPLAIN" show-hide="show">
+    <p>The Amazon carries more water than the next seven largest rivers combined.</p>
+  </qti-feedback-block>
+</qti-item-body>
+```
+</Example>
+
+## Cross-references
+
+<Related links={[
+  { href: '/concepts/feedback/', label: 'Feedback', description: 'The feedback model, conceptually' },
+  { href: '/reference/content/modal-feedback/', label: 'qti-modal-feedback', description: 'After-attempt feedback outside the body' },
+  { href: '/reference/interactions/end-attempt-interaction/', label: 'qti-end-attempt-interaction', description: 'Reveal feedback mid-attempt in adaptive items' },
+]} />
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about feedback elements in the QTI 3.0 specification</SpecLink>

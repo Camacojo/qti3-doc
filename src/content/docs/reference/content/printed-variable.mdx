@@ -1,0 +1,61 @@
+---
+title: qti-printed-variable
+description: Display the value of a template or outcome variable inside item or test content.
+sidebar:
+  order: 5
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+
+<SupportBadge qtiComponents="yes" />
+
+`qti-printed-variable` prints the current value of a variable into content. It is
+how a question shows numbers that vary between candidates, or how feedback echoes
+back a score.
+
+## Purpose
+
+- Show a **template variable** in a cloned item — e.g. "What is `A` + `B`?" where
+  `A` and `B` differ per candidate. See
+  [template declarations](/reference/processing/template-declaration/).
+- Show an **outcome variable** in feedback — e.g. "You scored `SCORE` out of
+  `MAXSCORE`." See [outcomes & scoring](/concepts/outcomes-and-scoring/).
+
+## Place in the hierarchy
+
+Appears as inline content anywhere flow content is allowed — inside the
+[item body](/concepts/item-body/), a [rubric block](/reference/content/rubric-block/),
+or a feedback block.
+
+## Attributes
+
+<AttributesTable attributes={[
+  { name: 'identifier', type: 'identifier', required: true, description: 'The template or outcome variable to print.' },
+  { name: 'format', type: 'string', description: 'A printf-style / format string controlling how numeric values are rendered.' },
+  { name: 'base', type: 'integer', description: 'Numeric base for integer values (default 10).' },
+]} caption="qti-printed-variable attributes" />
+
+## Example
+
+<Example title="Echo the score back in feedback">
+```xml
+<qti-feedback-block outcome-identifier="FEEDBACK" identifier="DONE" show-hide="show">
+  <p>You scored <qti-printed-variable identifier="SCORE"/> out of
+     <qti-printed-variable identifier="MAXSCORE"/>.</p>
+</qti-feedback-block>
+```
+</Example>
+
+## Cross-references
+
+<Related links={[
+  { href: '/reference/processing/template-declaration/', label: 'qti-template-declaration', description: 'Variables that vary the item' },
+  { href: '/concepts/outcomes-and-scoring/', label: 'Outcomes & scoring', description: 'Outcome variables you can print' },
+  { href: '/reference/content/feedback-block-and-inline/', label: 'qti-feedback-block / -inline', description: 'A common place to print variables' },
+]} />
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about qti-printed-variable in the QTI 3.0 specification</SpecLink>

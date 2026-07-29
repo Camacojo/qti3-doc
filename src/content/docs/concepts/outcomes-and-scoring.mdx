@@ -1,0 +1,65 @@
+---
+title: Outcomes & scoring
+description: Outcome variables, scoring models such as partial credit, and how item scores roll up to the test level in QTI.
+sidebar:
+  order: 7
+---
+
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+
+**Outcomes** are the results an item or test produces. The most familiar is
+`SCORE`, but outcomes can also drive [feedback](/concepts/feedback/), record a
+maximum score, or flag whether an item was answered.
+
+## Outcome variables
+
+Outcomes are declared with [`qti-outcome-declaration`](/reference/processing/outcome-declaration/)
+and written by [response processing](/concepts/response-processing/). Conventions
+you will see everywhere:
+
+- `SCORE` — the marks awarded (`float`).
+- `MAXSCORE` — the maximum possible (`float`), useful for normalisation.
+- `FEEDBACK` — an identifier selecting which feedback to show.
+
+Give outcomes a sensible `qti-default-value` (usually `0` for `SCORE`) so an
+unscored item has a defined value.
+
+## Scoring models
+
+- **Right/wrong (dichotomous).** Full marks or none — the
+  [`match_correct`](/reference/processing/built-in-templates/) template.
+- **Partial credit.** A [mapping](/reference/processing/response-declaration/)
+  awards marks per correct element — the `map_response` template. Good for
+  multiple-response and match items.
+- **Custom.** Any logic you can express with
+  [rules and operators](/reference/processing/rules/).
+
+<Example title="Declaring SCORE and MAXSCORE">
+```xml
+<qti-outcome-declaration identifier="SCORE" cardinality="single" base-type="float">
+  <qti-default-value><qti-value>0</qti-value></qti-default-value>
+</qti-outcome-declaration>
+<qti-outcome-declaration identifier="MAXSCORE" cardinality="single" base-type="float">
+  <qti-default-value><qti-value>1</qti-value></qti-default-value>
+</qti-outcome-declaration>
+```
+</Example>
+
+## From item to test
+
+Item outcomes do not automatically become a test score. At the test level,
+**outcome processing** (`qti-outcome-processing`) aggregates them — most commonly
+summing each item's `SCORE` into a test total using the
+[`qti-sum`](/reference/processing/operators/) operator over all items.
+
+This separation means an item's scoring is self-contained and reusable, while the
+test decides how to combine results. See
+[Assessment test & sections](/concepts/assessment-test-and-sections/).
+
+<Related links={[
+  { href: '/concepts/response-processing/', label: 'Response processing', description: 'How outcomes get their values' },
+  { href: '/reference/processing/outcome-declaration/', label: 'qti-outcome-declaration', description: 'Full reference' },
+  { href: '/concepts/feedback/', label: 'Feedback', description: 'Outcomes that drive feedback' },
+  { href: '/concepts/assessment-test-and-sections/', label: 'Assessment test & sections', description: 'Where scores aggregate' },
+]} />

@@ -1,0 +1,116 @@
+---
+title: Author your first item
+description: Build a scored multiple-choice QTI 3.0 item from an empty file, step by step — declarations, item body, and response processing.
+sidebar:
+  order: 1
+---
+
+import { Steps } from '@astrojs/starlight/components';
+import Example from '@components/Example.astro';
+import QtiDemo from '@components/QtiDemo.astro';
+import Related from '@components/Related.astro';
+
+This guide builds one complete, scored [assessment item](/concepts/assessment-item/)
+from scratch: a single-choice question worth one mark. By the end you will
+recognise every part of an item and how they connect.
+
+<Steps>
+
+1. **Start the item element.**
+
+   Every item is a `qti-assessment-item` with an identifier, a title, and the QTI
+   namespace.
+
+   <Example title="The item shell">
+   ```xml
+   <qti-assessment-item
+     xmlns="http://www.imsglobal.org/xsd/imsqtiasi_v3p0"
+     identifier="capital-nl" title="Capital of the Netherlands"
+     adaptive="false" time-dependent="false">
+     <!-- declarations, item body and response processing go here -->
+   </qti-assessment-item>
+   ```
+   </Example>
+
+2. **Declare the variables.**
+
+   Declare a [response variable](/concepts/variables-and-declarations/) to hold the
+   candidate's choice (with the correct answer) and an outcome variable for the
+   score.
+
+   <Example title="Response and outcome declarations">
+   ```xml
+   <qti-response-declaration identifier="RESPONSE" cardinality="single" base-type="identifier">
+     <qti-correct-response>
+       <qti-value>ChoiceC</qti-value>
+     </qti-correct-response>
+   </qti-response-declaration>
+
+   <qti-outcome-declaration identifier="SCORE" cardinality="single" base-type="float">
+     <qti-default-value><qti-value>0</qti-value></qti-default-value>
+   </qti-outcome-declaration>
+   ```
+   </Example>
+
+3. **Write the item body.**
+
+   The [item body](/concepts/item-body/) holds the question. Add a
+   [choice interaction](/reference/interactions/choice-interaction/) bound to
+   `RESPONSE`.
+
+   <Example title="The item body with a choice interaction">
+   ```xml
+   <qti-item-body>
+     <qti-choice-interaction response-identifier="RESPONSE" max-choices="1">
+       <qti-prompt>What is the capital of the Netherlands?</qti-prompt>
+       <qti-simple-choice identifier="ChoiceA">Rotterdam</qti-simple-choice>
+       <qti-simple-choice identifier="ChoiceB">The Hague</qti-simple-choice>
+       <qti-simple-choice identifier="ChoiceC">Amsterdam</qti-simple-choice>
+     </qti-choice-interaction>
+   </qti-item-body>
+   ```
+   </Example>
+
+4. **Add scoring.**
+
+   Reference the built-in [`match_correct`](/reference/processing/built-in-templates/)
+   template — no rules to write. It awards `SCORE = 1` when `RESPONSE` equals the
+   correct response.
+
+   <Example title="Response processing">
+   ```xml
+   <qti-response-processing
+     template="https://www.imsglobal.org/question/qti_v3p0/rptemplates/match_correct"/>
+   ```
+   </Example>
+
+5. **See it render.**
+
+   Put together, the item's body renders like this — try selecting an answer:
+
+   <Example title="The finished item, rendered">
+     <QtiDemo slot="demo" markup={`
+       <qti-choice-interaction response-identifier="RESPONSE" max-choices="1">
+         <qti-prompt>What is the capital of the Netherlands?</qti-prompt>
+         <qti-simple-choice identifier="ChoiceA">Rotterdam</qti-simple-choice>
+         <qti-simple-choice identifier="ChoiceB">The Hague</qti-simple-choice>
+         <qti-simple-choice identifier="ChoiceC">Amsterdam</qti-simple-choice>
+       </qti-choice-interaction>
+     `} />
+   </Example>
+
+</Steps>
+
+## Where to go next
+
+- Swap the choice interaction for another type — browse the
+  [interactions overview](/concepts/interactions-overview/).
+- Award partial credit with a [mapping](/reference/processing/response-declaration/)
+  and the `map_response` template.
+- Group items into a test — see [assessment test & sections](/concepts/assessment-test-and-sections/).
+
+<Related links={[
+  { href: '/concepts/assessment-item/', label: 'Assessment item', description: 'The anatomy of an item' },
+  { href: '/guides/rendering-with-qti-components/', label: 'Render with qti-components', description: 'Show items in the browser' },
+  { href: '/guides/parsing-with-php-qti3/', label: 'Parse & score with php-qti3', description: 'Score responses server-side' },
+]} />

@@ -1,0 +1,63 @@
+---
+title: qti-test-part
+description: A phase of a test that sets navigation and submission modes for the sections it contains.
+sidebar:
+  order: 2
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+
+<SupportBadge qtiComponents="yes" />
+
+A **test part** (`qti-test-part`) is a phase of a [test](/reference/test/assessment-test/).
+Its main job is to fix how the candidate moves through, and when responses are
+submitted, for all the [sections](/reference/test/assessment-section/) it contains.
+
+## The two modes
+
+- **Navigation mode** — `linear` forces items in order (no going back);
+  `nonlinear` lets the candidate move around freely.
+- **Submission mode** — `individual` submits and scores each item as it is
+  answered; `simultaneous` collects everything and submits at the end of the part.
+
+## Place in the hierarchy
+
+- **Parent:** [`qti-assessment-test`](/reference/test/assessment-test/).
+- **Children:** optional [preconditions & branch rules](/reference/test/branch-rule-and-preconditions/),
+  an optional [`qti-item-session-control`](/reference/test/item-session-control/)
+  and [`qti-time-limits`](/reference/test/time-limits/), then one or more
+  [sections](/reference/test/assessment-section/).
+
+## Attributes
+
+<AttributesTable attributes={[
+  { name: 'identifier', type: 'identifier', required: true, description: 'A unique identifier for the test part.' },
+  { name: 'navigation-mode', type: 'linear | nonlinear', required: true, description: 'Whether items must be taken in order or can be navigated freely.' },
+  { name: 'submission-mode', type: 'individual | simultaneous', required: true, description: 'Whether responses are submitted per item or all together at the end.' },
+]} caption="qti-test-part attributes" />
+
+## Example
+
+<Example title="A linear, per-item part">
+```xml
+<qti-test-part identifier="part1" navigation-mode="linear" submission-mode="individual">
+  <qti-assessment-section identifier="sec1" title="Section 1" visible="true">
+    <!-- item refs -->
+  </qti-assessment-section>
+</qti-test-part>
+```
+</Example>
+
+## Cross-references
+
+<Related links={[
+  { href: '/reference/test/assessment-test/', label: 'qti-assessment-test', description: 'The parent test' },
+  { href: '/reference/test/assessment-section/', label: 'qti-assessment-section', description: 'Grouping items within a part' },
+  { href: '/reference/test/item-session-control/', label: 'qti-item-session-control', description: 'Attempts, feedback and review' },
+]} />
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about qti-test-part in the QTI 3.0 specification</SpecLink>

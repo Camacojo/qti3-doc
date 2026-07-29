@@ -1,0 +1,56 @@
+---
+title: qti-assessment-item-ref
+description: References an item by URL from within a test section, so items can be reused across tests.
+sidebar:
+  order: 4
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+
+<SupportBadge qtiComponents="yes" />
+
+`qti-assessment-item-ref` places an [item](/concepts/assessment-item/) into a
+[section](/reference/test/assessment-section/) by pointing at its file. Items are
+referenced, never inlined, so the same item can appear in many tests.
+
+## Place in the hierarchy
+
+- **Parent:** a [section](/reference/test/assessment-section/).
+- **Children:** optional per-item [preconditions & branch rules](/reference/test/branch-rule-and-preconditions/),
+  [`qti-item-session-control`](/reference/test/item-session-control/),
+  [`qti-time-limits`](/reference/test/time-limits/) and one or more
+  [`qti-weight`](/reference/test/weight/) elements.
+
+## Attributes
+
+<AttributesTable attributes={[
+  { name: 'identifier', type: 'identifier', required: true, description: 'A test-unique identifier for this reference (distinct from the item’s own identifier).' },
+  { name: 'href', type: 'URI', required: true, description: 'Relative path to the item XML within the package.' },
+  { name: 'category', type: 'token list', description: 'Categories used to select or group items (e.g. by objective).' },
+  { name: 'fixed', type: 'boolean', default: 'false', description: 'When true, the item keeps its position if the section is shuffled.' },
+  { name: 'required', type: 'boolean', default: 'false', description: 'When true, the item must be included when the section makes a selection.' },
+]} caption="qti-assessment-item-ref attributes" />
+
+## Example
+
+<Example title="A weighted item reference">
+```xml
+<qti-assessment-item-ref identifier="I1" href="items/essay.xml" category="writing">
+  <qti-weight identifier="W1" value="2.0"/>
+</qti-assessment-item-ref>
+```
+</Example>
+
+## Cross-references
+
+<Related links={[
+  { href: '/reference/test/assessment-section/', label: 'qti-assessment-section', description: 'The section that contains the reference' },
+  { href: '/reference/test/weight/', label: 'qti-weight', description: 'Weighting the item in aggregation' },
+  { href: '/reference/packaging/imsmanifest/', label: 'imsmanifest.xml', description: 'How the item file is declared' },
+]} />
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about qti-assessment-item-ref in the QTI 3.0 specification</SpecLink>

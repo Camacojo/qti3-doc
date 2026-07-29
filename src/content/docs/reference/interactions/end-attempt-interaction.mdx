@@ -1,0 +1,110 @@
+---
+title: qti-end-attempt-interaction
+description: A button that ends the attempt, often to reveal feedback.
+sidebar:
+  order: 19
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+import QtiDemo from '@components/QtiDemo.astro';
+
+<SupportBadge phpQti3="no" qtiComponents="yes" note="php-qti3 does not parse this interaction type." />
+
+The `qti-end-attempt-interaction` renders a submit-like button that lets the candidate end the current attempt on demand. Pressing it triggers response processing, which is most commonly used in adaptive items to reveal feedback or hints without ending the whole item session.
+
+## Purpose
+
+Use this interaction when the candidate should be able to deliberately end an attempt and have the item respond immediately. It is designed mainly for **adaptive items**, where each attempt can produce updated feedback, a hint, or a revised prompt.
+
+- Give the candidate an explicit "check my answer", "show hint", or "next step" control.
+- Trigger [response processing](/concepts/response-processing/) so that [feedback](/concepts/feedback/) can be shown between attempts.
+- Support multi-step adaptive flows where the outcome of one attempt shapes the next.
+
+The bound response variable records simply whether the button was pressed during the attempt. Response processing can then branch on that value to decide what to reveal.
+
+## Place in the hierarchy
+
+- **Parent:** appears in the [item body](/concepts/item-body/), typically alongside the interaction whose answer is being checked.
+- **Children:** none. The button label is provided through the `title` attribute rather than child content.
+- **Binds to:** a [response declaration](/reference/processing/response-declaration/) with **base-type `boolean`** and **cardinality `single`**. The variable is set to `true` when the button is pressed during the attempt and `false` otherwise.
+
+## Attributes
+
+<AttributesTable
+  attributes={[
+    {
+      name: 'response-identifier',
+      type: 'identifier',
+      required: true,
+      description: 'The identifier of the bound response variable. It must reference a <code>qti-response-declaration</code> with base-type <code>boolean</code> and cardinality <code>single</code>.',
+    },
+    {
+      name: 'title',
+      type: 'string',
+      required: false,
+      description: 'The label shown on the button (for example <code>Show hint</code> or <code>End attempt</code>). If omitted, the delivery engine uses a default label.',
+    },
+  ]}
+  caption="Attributes of qti-end-attempt-interaction"
+/>
+
+## Example
+
+<Example title="An end-attempt button that reveals a hint in an adaptive item">
+
+```xml
+<qti-response-declaration identifier="HINTREQUEST" base-type="boolean" cardinality="single"/>
+
+<qti-item-body>
+  <qti-text-entry-interaction response-identifier="RESPONSE" expected-length="10"/>
+
+  <qti-end-attempt-interaction
+    response-identifier="HINTREQUEST"
+    title="Show hint"/>
+
+  <qti-feedback-inline outcome-identifier="FEEDBACK" identifier="HINT" show-hide="show">
+    Remember to convert to metres before adding.
+  </qti-feedback-inline>
+</qti-item-body>
+```
+
+</Example>
+
+## Try it
+
+<QtiDemo markup={`
+  <qti-end-attempt-interaction response-identifier="RESPONSE" title="Show hint"></qti-end-attempt-interaction>
+`} />
+
+## Cross-references
+
+<Related
+  links={[
+    {
+      href: '/concepts/feedback/',
+      label: 'Feedback',
+      description: 'How ending an attempt lets an item reveal hints and feedback between attempts.',
+    },
+    {
+      href: '/concepts/response-processing/',
+      label: 'Response processing',
+      description: 'The step triggered when the attempt ends, deciding what to reveal.',
+    },
+    {
+      href: '/reference/processing/response-declaration/',
+      label: 'qti-response-declaration',
+      description: 'Declares the boolean, single-cardinality variable this interaction binds to.',
+    },
+    {
+      href: '/concepts/interactions-overview/',
+      label: 'Interactions overview',
+      description: 'How this interaction fits among the other QTI 3.0 interaction types.',
+    },
+  ]}
+/>
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about the end-attempt interaction in the QTI 3.0 specification</SpecLink>

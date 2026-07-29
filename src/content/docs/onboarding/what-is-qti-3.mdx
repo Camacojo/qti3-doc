@@ -1,0 +1,49 @@
+---
+title: What is QTI 3.0?
+description: A plain-language introduction to the QTI 3.0 assessment interoperability standard — what it is, what it describes, and why it exists.
+sidebar:
+  order: 1
+---
+
+import Related from '@components/Related.astro';
+
+**QTI** stands for **Question and Test Interoperability**. It is an open standard
+maintained by [1EdTech](https://www.1edtech.org/) (formerly IMS Global) that
+defines a common format for representing digital assessment content — questions,
+tests, and the rules for scoring them — so that content can move between
+authoring tools, item banks, and delivery systems without being rewritten.
+
+**QTI 3.0** is the current major version (released 2022). Its headline change is
+that it is built on **HTML5**: item content is ordinary HTML enriched with a set
+of `qti-` prefixed elements. This makes items far easier to render in a browser
+and to style with CSS than in earlier versions.
+
+## What QTI 3.0 actually describes
+
+A QTI package is XML. The standard defines the vocabulary for:
+
+- **Items** — a single question: its content, the ways a candidate can respond,
+  and how the response is scored. See [Assessment item](/concepts/assessment-item/).
+- **Tests** — how items are grouped into sections and sequenced, and how scores
+  aggregate. See [Assessment test & sections](/concepts/assessment-test-and-sections/).
+- **Interactions** — the ~20 standardised ways a candidate can answer (choose,
+  type, drag, order, plot a point, …). See [Interactions overview](/concepts/interactions-overview/).
+- **Response processing** — the rules that turn a candidate's response into
+  outcome values such as a score. See [Response processing](/concepts/response-processing/).
+- **Packaging & metadata** — how items, tests, and media are bundled for
+  exchange. See [Content packaging](/concepts/content-packaging/).
+- **Accessibility** — how to describe alternative content and candidate needs.
+  See [Accessibility](/concepts/accessibility/).
+
+## What QTI is *not*
+
+QTI describes the *content and scoring rules* of assessments. It does **not**
+define the user experience of a test player, session management, proctoring, or
+how results are stored in your database. Those are decisions for the delivery
+system built on top of QTI.
+
+<Related links={[
+  { href: '/onboarding/why-qti/', label: 'Why QTI 3.0?', description: 'The business case for interoperability' },
+  { href: '/onboarding/ecosystem-and-tools/', label: 'The QTI ecosystem', description: 'How the pieces fit together' },
+  { href: '/onboarding/glossary/', label: 'Glossary', description: 'Key terms defined' },
+]} />

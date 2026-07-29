@@ -1,0 +1,156 @@
+---
+title: qti-text-entry-interaction
+description: A short inline free-text response, typically for fill-in-the-blank.
+sidebar:
+  order: 2
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+import QtiDemo from '@components/QtiDemo.astro';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+<SupportBadge phpQti3="yes" qtiComponents="yes" />
+
+The `qti-text-entry-interaction` presents a single-line text box that the candidate fills in with a short free-text response. It is rendered inline, flowing within surrounding text, which makes it the natural choice for fill-in-the-blank questions.
+
+## Purpose
+
+Use `qti-text-entry-interaction` when you need a short, constrained typed answer embedded in a sentence or expression.
+
+- Fill-in-the-blank items where a missing word or value is typed into the sentence.
+- Short numeric or single-word answers, such as a computed result or a term.
+- Cases where a single line of input is sufficient. For longer, multi-line responses use the [qti-extended-text-interaction](/reference/interactions/extended-text-interaction/) instead.
+
+Because it is an inline interaction, several text-entry boxes can appear within the same block of running text.
+
+## Place in the hierarchy
+
+The interaction lives inside the item body, typically nested within block or inline content such as an HTML `<p>` paragraph (QTI 3.0 item bodies use standard HTML elements directly). It has no child choice elements; the candidate simply types into the box.
+
+It binds to a [qti-response-declaration](/reference/processing/response-declaration/) whose `identifier` matches the interaction's `response-identifier`. The bound response declaration has cardinality `single` and a base type of `string` (or `integer` / `float` when a numeric answer is expected).
+
+## Attributes
+
+<AttributesTable
+  attributes={[
+    {
+      name: 'response-identifier',
+      type: 'identifier',
+      required: true,
+      description: 'The <code>identifier</code> of the bound <code>qti-response-declaration</code> that captures the candidate\'s input.',
+    },
+    {
+      name: 'expected-length',
+      type: 'integer',
+      required: false,
+      description: 'A hint to the delivery engine about the expected number of characters, used to size the text box. Does not enforce a limit.',
+    },
+    {
+      name: 'pattern-mask',
+      type: 'string',
+      required: false,
+      description: 'A regular expression that the candidate\'s input must match. Used to constrain the allowed input.',
+    },
+    {
+      name: 'placeholder-text',
+      type: 'string',
+      required: false,
+      description: 'Placeholder text shown in the empty text box to guide the candidate. It is not part of the response.',
+    },
+    {
+      name: 'format',
+      type: 'string',
+      required: false,
+      description: 'Indicates the expected format of the response, for example plain text.',
+    },
+  ]}
+  caption="Attributes of qti-text-entry-interaction"
+/>
+
+## Example
+
+<Tabs>
+  <TabItem label="Text answer">
+```xml
+<qti-response-declaration identifier="RESPONSE" cardinality="single" base-type="string">
+  <qti-correct-response>
+    <qti-value>Paris</qti-value>
+  </qti-correct-response>
+  <qti-mapping default-value="0">
+    <qti-map-entry map-key="Paris" mapped-value="1"/>
+    <qti-map-entry map-key="paris" mapped-value="1"/>
+  </qti-mapping>
+</qti-response-declaration>
+
+<qti-item-body>
+  <p>
+    The capital of France is
+    <qti-text-entry-interaction response-identifier="RESPONSE"
+      expected-length="15" placeholder-text="type a city"/>.
+  </p>
+</qti-item-body>
+```
+The `qti-mapping` lets `map_response` accept several spellings. For one exact answer, use the `match_correct` template instead.
+    <QtiDemo markup={`
+      <p>The capital of France is <qti-text-entry-interaction response-identifier="RESPONSE" expected-length="15" placeholder-text="type a city"></qti-text-entry-interaction>.</p>
+    `} />
+  </TabItem>
+  <TabItem label="Numeric answer">
+```xml
+<qti-response-declaration identifier="RESPONSE" cardinality="single" base-type="integer">
+  <qti-correct-response>
+    <qti-value>96</qti-value>
+  </qti-correct-response>
+</qti-response-declaration>
+
+<qti-item-body>
+  <p>
+    What is 12 × 8?
+    <qti-text-entry-interaction response-identifier="RESPONSE" expected-length="4"/>
+  </p>
+</qti-item-body>
+```
+With a numeric base type, score it with the `match_correct` template — no mapping needed.
+    <QtiDemo markup={`
+      <p>What is 12 × 8? <qti-text-entry-interaction response-identifier="RESPONSE" expected-length="4"></qti-text-entry-interaction></p>
+    `} />
+  </TabItem>
+</Tabs>
+
+## Cross-references
+
+<Related
+  links={[
+    {
+      href: '/concepts/interactions-overview/',
+      label: 'Interactions overview',
+      description: 'How interactions capture candidate responses in QTI 3.0.',
+    },
+    {
+      href: '/reference/interactions/extended-text-interaction/',
+      label: 'qti-extended-text-interaction',
+      description: 'Multi-line text input for longer written responses.',
+    },
+    {
+      href: '/reference/interactions/inline-choice-interaction/',
+      label: 'qti-inline-choice-interaction',
+      description: 'Inline drop-down selection when the answer must come from a fixed list.',
+    },
+    {
+      href: '/reference/processing/response-declaration/',
+      label: 'qti-response-declaration',
+      description: 'Declares the variable this interaction binds to.',
+    },
+    {
+      href: '/reference/processing/response-processing/',
+      label: 'Response processing',
+      description: 'Scoring with map-response or match-correct templates.',
+    },
+  ]}
+/>
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about the text entry interaction in the QTI 3.0 specification</SpecLink>

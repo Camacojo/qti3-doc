@@ -1,0 +1,103 @@
+---
+title: Parse & score with php-qti3
+description: Read, validate and score QTI 3.0 packages server-side in PHP with the open-source kennisnet/php-qti3 library.
+sidebar:
+  order: 3
+---
+
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+
+[`kennisnet/php-qti3`](/onboarding/open-source-packages/) is a PHP library for
+working with QTI 3.0 on the server: importing and exporting
+[packages](/concepts/content-packaging/), validating them, editing tests, and
+running [response processing](/concepts/response-processing/) to calculate
+outcomes.
+
+## Install
+
+<Example title="Install (Composer)">
+```bash
+composer require wikiwijs/php-qti3
+```
+</Example>
+
+## Set up the QtiClient
+
+The library exposes a `QtiClient` service container. It expects three
+PSR-based implementations — a filesystem package factory, a resource validator,
+and a resource downloader — for which the library ships default implementations
+(these pull in a few extra Composer packages such as Flysystem and a PSR-18 HTTP
+client).
+
+<Example title="Initialise the client">
+```php
+use League\Flysystem\Local\LocalFilesystemAdapter;
+use League\Flysystem\Filesystem;
+use Qti3\QtiClient;
+use Qti3\Package\Filesystem\FlysystemPackageFactory;
+use Qti3\Package\Validator\Resource\PsrHttpClientResourceValidator;
+use Qti3\Package\Downloader\Resource\PsrHttpClientResourceDownloader;
+use Qti3\Package\Filesystem\FileSystemUtils;
+
+$filesystem = new Filesystem(new LocalFilesystemAdapter('/tmp/qti-data'));
+$httpClient = new \Symfony\Component\HttpClient\Psr18Client();
+$requestFactory = new \Nyholm\Psr7\Factory\Psr17Factory();
+
+$qtiClient = new QtiClient(
+    new FlysystemPackageFactory($filesystem),
+    new PsrHttpClientResourceValidator($httpClient, $requestFactory),
+    new PsrHttpClientResourceDownloader(new FileSystemUtils(), $httpClient, $requestFactory, '/tmp/qti-data'),
+);
+```
+</Example>
+
+## Import a package
+
+<Example title="Read a package from a ZIP or a folder">
+```php
+$reader = $qtiClient->getQtiPackageReader();
+
+$package = $reader->fromZip('/tmp/qti3.zip');
+// or
+$package = $reader->fromFilesystem('/tmp/folder');
+// $package is a Qti3\Package\Model\QtiPackage
+```
+</Example>
+
+You can also validate a package (`getQtiPackageValidator()`), edit its items in
+place (`getPackageEditor()`), and write it back out to a ZIP or folder.
+
+## Score a response
+
+Response processing takes the item XML and a map of candidate responses, and
+returns the resulting outcome values.
+
+<Example title="Run response processing (UC-I3)">
+```php
+// $responses maps response-identifier => value, e.g. ['RESPONSE' => 'ChoiceC']
+$processor  = $qtiClient->getResponseProcessor();
+$itemState  = $processor->initItemState($itemXml);
+$processor->processResponses($itemState, $responses);
+
+$outcomes = $itemState->outcomeSet->outcomes;
+// associative array: outcome-identifier => value, e.g. ['SCORE' => 1.0]
+```
+</Example>
+
+## Supported interactions
+
+The parser supports exactly these interaction types; others (associate, slider,
+media, the graphic interactions, …) throw a `ParseError`:
+
+`choice` · `text-entry` · `extended-text` · `gap-match` · `hotspot` · `hottext` ·
+`inline-choice` · `match` · `order` · `select-point`.
+
+Each interaction reference page shows this support with a badge at the top.
+
+<Related links={[
+  { href: '/onboarding/open-source-packages/', label: 'Open-source packages', description: 'Overview of the tooling' },
+  { href: '/concepts/response-processing/', label: 'Response processing', description: 'What scoring does, conceptually' },
+  { href: '/concepts/content-packaging/', label: 'Content packaging', description: 'The packages you import' },
+  { href: '/guides/rendering-with-qti-components/', label: 'Render with qti-components', description: 'The browser-side counterpart' },
+]} />

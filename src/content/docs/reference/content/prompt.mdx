@@ -1,0 +1,46 @@
+---
+title: qti-prompt
+description: The question text or instruction shown at the start of an interaction.
+sidebar:
+  order: 8
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+
+<SupportBadge phpQti3="yes" qtiComponents="yes" />
+
+`qti-prompt` holds the wording of a question — the instruction shown at the start
+of an [interaction](/concepts/interactions-overview/). It is a small but
+near-universal element: most interactions begin with one.
+
+## Place in the hierarchy
+
+An optional first child of an interaction (for example
+[`qti-choice-interaction`](/reference/interactions/choice-interaction/)). It
+contains inline content: text, and simple HTML such as `strong` or `em`.
+
+A prompt is presentation only — it is not a choice and takes no identifier.
+
+## Example
+
+<Example title="A prompt inside a choice interaction">
+```xml
+<qti-choice-interaction response-identifier="RESPONSE" max-choices="1">
+  <qti-prompt>Which planet is closest to the Sun?</qti-prompt>
+  <qti-simple-choice identifier="A">Mercury</qti-simple-choice>
+  <qti-simple-choice identifier="B">Venus</qti-simple-choice>
+</qti-choice-interaction>
+```
+</Example>
+
+## Cross-references
+
+<Related links={[
+  { href: '/concepts/interactions-overview/', label: 'Interactions overview', description: 'Interactions that carry a prompt' },
+  { href: '/concepts/item-body/', label: 'Item body', description: 'Where interactions and prompts live' },
+]} />
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about qti-prompt in the QTI 3.0 specification</SpecLink>

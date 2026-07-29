@@ -1,0 +1,68 @@
+---
+title: Assessment test & sections
+description: How QTI groups items into sections and tests, controls selection and ordering, and aggregates scores across a whole test.
+sidebar:
+  order: 2
+---
+
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+
+An **assessment test** (`qti-assessment-test`) is an ordered collection of
+[items](/concepts/assessment-item/) delivered as one sitting. Its job is
+structure and sequencing: which items, in what order, grouped how, and how their
+scores combine.
+
+## The test hierarchy
+
+```
+qti-assessment-test
+└── qti-test-part           (one or more; sets navigation & submission mode)
+    └── qti-assessment-section   (groups items; can nest)
+        └── qti-assessment-item-ref   (points to an item by href)
+```
+
+- **Test part** — a phase of the test. It sets the **navigation mode**
+  (`linear` = forced order, or `nonlinear` = free navigation) and the
+  **submission mode** (`individual` per item, or `simultaneous` at the end).
+- **Section** — groups items for organisation, and controls **selection** (pick
+  N of M) and **ordering** (shuffle or fixed). Sections can nest.
+- **Item reference** — items are not inlined; a section references them by
+  `href`, so the same item can be reused across tests.
+
+## Selection and ordering
+
+Two child elements on a section shape what the candidate sees:
+
+- `qti-selection` — e.g. select 5 items at random from a pool of 20.
+- `qti-ordering` — e.g. shuffle the selected items.
+
+This is how you build randomised forms from an item bank.
+
+<Example title="A test with one part and one shuffled section">
+```xml
+<qti-assessment-test identifier="quiz-geo" title="Geography quiz">
+  <qti-test-part identifier="part1" navigation-mode="linear" submission-mode="individual">
+    <qti-assessment-section identifier="sec1" title="Capitals" visible="true">
+      <qti-ordering shuffle="true"/>
+      <qti-assessment-item-ref identifier="I1" href="items/capital-nl.xml"/>
+      <qti-assessment-item-ref identifier="I2" href="items/capital-be.xml"/>
+      <qti-assessment-item-ref identifier="I3" href="items/capital-de.xml"/>
+    </qti-assessment-section>
+  </qti-test-part>
+</qti-assessment-test>
+```
+</Example>
+
+## Aggregating scores
+
+Each item produces its own [outcomes](/concepts/outcomes-and-scoring/). At the
+test level, **outcome processing** (`qti-outcome-processing`) aggregates them —
+for example summing every item `SCORE` into a test-level total. This is the
+test-level counterpart of item [response processing](/concepts/response-processing/).
+
+<Related links={[
+  { href: '/concepts/assessment-item/', label: 'Assessment item', description: 'The unit a test is built from' },
+  { href: '/concepts/outcomes-and-scoring/', label: 'Outcomes & scoring', description: 'How scores roll up' },
+  { href: '/concepts/content-packaging/', label: 'Content packaging', description: 'How tests and items are bundled' },
+]} />

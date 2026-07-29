@@ -1,0 +1,140 @@
+---
+title: Expressions
+description: Value-producing elements used inside response processing.
+sidebar:
+  order: 7
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+
+<SupportBadge phpQti3="yes" />
+
+Expressions are the value-producing building blocks of QTI processing. Every expression evaluates to a single value (or a container of values) that carries a base-type and a cardinality. Expressions never stand alone: they are nested inside operators (which combine or transform values) and inside processing rules (which act on the result). Together, expressions, operators and rules form the tree that a response-processing engine walks to turn a candidate's answer into scores and feedback.
+
+## Purpose
+
+Use an expression whenever a rule or operator needs a value to work with. Typical needs include:
+
+- Reading the current value of a declared variable (a response, outcome or template variable).
+- Retrieving the *correct* answer or *default* value that was declared for a variable.
+- Producing a literal constant to compare against or assign.
+- Turning a response into a numeric score through a declared mapping.
+- Testing whether a value is present at all, or generating a random value.
+
+Because every expression is typed, the engine can validate that an operator receives operands of a compatible base-type and cardinality (for example, `qti-sum` expects numeric operands, `qti-match` expects two operands of the same type).
+
+## Place in the hierarchy
+
+Expressions appear wherever a value is required:
+
+- **Inside operators** — for example the two operands of `qti-match`, or the many operands of `qti-and` / `qti-sum`. Operators are themselves expressions, so they nest arbitrarily deep.
+- **Inside rules** — such as the boolean condition of `qti-response-if`, or the value assigned by `qti-set-outcome-value`.
+
+The most common expressions are described below.
+
+### qti-variable
+
+Reads the current value of a declared variable, identified by its `identifier`. Works for response, outcome and template variables. This is the primary way processing rules see what the candidate did and what has been computed so far.
+
+### qti-correct
+
+Returns the *correct* value declared for a response variable (from its `qti-correct-response`). Commonly compared against `qti-variable` with `qti-match` to decide whether an answer is right.
+
+### qti-default
+
+Returns the *default* value declared for a variable (from its `qti-default-value`). If no default was declared, it evaluates to NULL.
+
+### qti-base-value
+
+A literal constant. Its `base-type` attribute states the type of the value, and the element's text content is the value itself — for example a `float` of `1.0` or an `identifier` of `ChoiceA`.
+
+### qti-map-response
+
+Applies the response variable's declared `qti-mapping` to its current value and returns the resulting numeric score. Used for partial-credit scoring where each response key maps to a point value.
+
+### qti-map-response-point
+
+Applies the response variable's declared `qti-area-mapping` (point/area mapping) to its current point value and returns the resulting numeric score. Used with graphic and point-based interactions.
+
+### qti-null
+
+An empty value: it evaluates to NULL with no particular base-type. Useful for explicit comparisons that test for the absence of a value.
+
+### qti-random
+
+Selects a single value at random from a container-valued sub-expression, returning one member of that container.
+
+### qti-outcome-... expressions
+
+QTI also defines expressions that read across the outcomes of many items in a test — for example `qti-outcome-maximum`, `qti-outcome-minimum` and `qti-number-correct`. These belong to test-level outcome processing rather than item-level response processing, but they follow the same rule: they produce a typed value that operators and rules can consume.
+
+## Attributes
+
+Different expressions carry different attributes; the ones below are the attributes most often needed.
+
+<AttributesTable
+  attributes={[
+    { name: 'identifier', type: 'identifier', required: true, description: 'On <code>qti-variable</code>, <code>qti-correct</code>, <code>qti-default</code>, <code>qti-map-response</code> and <code>qti-map-response-point</code>: the declared variable this expression refers to.' },
+    { name: 'base-type', type: 'enumerated', required: true, description: 'On <code>qti-base-value</code>: the base-type of the literal, e.g. <code>identifier</code>, <code>float</code>, <code>integer</code>, <code>string</code>, <code>boolean</code>, <code>point</code>.' },
+  ]}
+  caption="Common attributes across expression elements"
+/>
+
+## Example
+
+<Example title="Expressions feeding operators inside a rule">
+
+```xml
+<qti-response-processing>
+  <qti-response-condition>
+    <qti-response-if>
+      <!-- qti-match compares two expression operands -->
+      <qti-match>
+        <qti-variable identifier="RESPONSE"/>
+        <qti-correct identifier="RESPONSE"/>
+      </qti-match>
+      <!-- qti-base-value is a literal fed into the assignment rule -->
+      <qti-set-outcome-value identifier="SCORE">
+        <qti-base-value base-type="float">1.0</qti-base-value>
+      </qti-set-outcome-value>
+    </qti-response-if>
+    <qti-response-else>
+      <qti-set-outcome-value identifier="SCORE">
+        <qti-base-value base-type="float">0.0</qti-base-value>
+      </qti-set-outcome-value>
+    </qti-response-else>
+  </qti-response-condition>
+</qti-response-processing>
+```
+
+</Example>
+
+<Example title="Mapped (partial-credit) scoring with qti-map-response">
+
+```xml
+<qti-set-outcome-value identifier="SCORE">
+  <qti-map-response identifier="RESPONSE"/>
+</qti-set-outcome-value>
+```
+
+</Example>
+
+## Cross-references
+
+<Related
+  links={[
+    { href: '/concepts/response-processing/', label: 'Response processing', description: 'How rules, operators and expressions fit together.' },
+    { href: '/reference/processing/operators/', label: 'Operators', description: 'Elements that combine or transform expression values.' },
+    { href: '/reference/processing/rules/', label: 'Processing rules', description: 'Rules that consume expression values, e.g. conditions and assignments.' },
+    { href: '/reference/processing/response-declaration/', label: 'Response declaration', description: 'Declares the variables that qti-variable and qti-correct read.' },
+    { href: '/reference/processing/outcome-declaration/', label: 'Outcome declaration', description: 'Declares outcome variables and their defaults.' },
+    { href: '/concepts/variables-and-declarations/', label: 'Variables and declarations', description: 'Base-type and cardinality, the type system behind every expression.' },
+    { href: '/concepts/outcomes-and-scoring/', label: 'Outcomes and scoring', description: 'How scores produced by expressions become results.' },
+  ]}
+/>
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about expressions in the QTI 3.0 specification</SpecLink>

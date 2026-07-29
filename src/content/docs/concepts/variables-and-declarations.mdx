@@ -1,0 +1,72 @@
+---
+title: Variables & declarations
+description: Response, outcome and template variables — the data model behind every QTI item — plus cardinality and base types.
+sidebar:
+  order: 4
+---
+
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+
+Every QTI item is, underneath, a small program that operates on **variables**.
+Understanding the three kinds — and how a variable's shape is described — unlocks
+everything about scoring.
+
+## The three kinds of variable
+
+| Kind | Declared with | Holds | Typical example |
+| --- | --- | --- | --- |
+| **Response** | [`qti-response-declaration`](/reference/processing/response-declaration/) | What the candidate did | `RESPONSE` |
+| **Outcome** | [`qti-outcome-declaration`](/reference/processing/outcome-declaration/) | A result of scoring | `SCORE`, `FEEDBACK` |
+| **Template** | [`qti-template-declaration`](/reference/processing/template-declaration/) | A value used to vary the item | `A`, `B` in a maths clone |
+
+Response variables are filled in by the candidate's [interaction](/concepts/interactions-overview/).
+Outcome variables are filled in by [response processing](/concepts/response-processing/).
+Template variables are set once, when the item is instantiated, to create
+variations of the same item.
+
+## Cardinality — how many values
+
+Every variable declares a **cardinality**:
+
+- `single` — exactly one value (a single choice, one number).
+- `multiple` — an unordered set (a multiple-response question).
+- `ordered` — a sequence where order matters (an [order interaction](/reference/interactions/order-interaction/)).
+- `record` — a set of named fields.
+
+## Base type — what kind of value
+
+And a **base type** — the datatype of each value. Common ones:
+
+`identifier`, `string`, `integer`, `float`, `boolean`, `point`, `pair`,
+`directedPair`, `duration`, `file`, `uri`.
+
+The interaction you choose dictates the sensible cardinality and base type: a
+single [choice](/reference/interactions/choice-interaction/) is
+`single`/`identifier`; a [match](/reference/interactions/match-interaction/) is
+`multiple`/`directedPair`.
+
+<Example title="Declaring a multiple-response variable with a correct set">
+```xml
+<qti-response-declaration identifier="RESPONSE" cardinality="multiple" base-type="identifier">
+  <qti-correct-response>
+    <qti-value>ChoiceA</qti-value>
+    <qti-value>ChoiceC</qti-value>
+  </qti-correct-response>
+</qti-response-declaration>
+```
+</Example>
+
+## Correct responses and mappings
+
+A response declaration can carry two extra pieces used by scoring:
+
+- `qti-correct-response` — the value(s) that count as correct.
+- `qti-mapping` — a table mapping response values to scores, enabling **partial
+  credit**. See [Built-in RP templates](/reference/processing/built-in-templates/).
+
+<Related links={[
+  { href: '/reference/processing/response-declaration/', label: 'qti-response-declaration', description: 'Full reference' },
+  { href: '/reference/processing/outcome-declaration/', label: 'qti-outcome-declaration', description: 'Full reference' },
+  { href: '/concepts/response-processing/', label: 'Response processing', description: 'How variables get their values' },
+]} />

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300" role="img" aria-label="A simple diagram with three labelled regions">
+  <rect width="400" height="300" fill="#eef4fb"/>
+  <circle cx="100" cy="90" r="45" fill="#8fb8f6"/>
+  <text x="100" y="96" text-anchor="middle" font-family="sans-serif" font-size="20" fill="#0b2a5b">A</text>
+  <rect x="250" y="45" width="110" height="90" rx="6" fill="#a9dcb0"/>
+  <text x="305" y="96" text-anchor="middle" font-family="sans-serif" font-size="20" fill="#123a1c">B</text>
+  <polygon points="150,255 110,195 190,195" fill="#f4c17a"/>
+  <text x="150" y="238" text-anchor="middle" font-family="sans-serif" font-size="20" fill="#5a3a08">C</text>
+</svg>

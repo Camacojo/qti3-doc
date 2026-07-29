@@ -1,0 +1,62 @@
+---
+title: qti-template-processing
+description: Rules that assign values to template variables when an item is instantiated, enabling item variants (cloning).
+sidebar:
+  order: 9
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+
+<SupportBadge phpQti3="no" note="php-qti3 does not preserve template processing (dropped on regeneration, reported as a warning)." />
+
+`qti-template-processing` runs **once, when an item is instantiated**, to assign
+values to its [template variables](/reference/processing/template-declaration/).
+This is how one authored item produces many **variants** (clones): pick random
+numbers, choose a scenario, then present and score that specific instance.
+
+## When it runs
+
+Unlike [response processing](/concepts/response-processing/) (which runs after the
+candidate answers), template processing runs *before* the item is shown. The
+values it sets can be printed in content with
+[`qti-printed-variable`](/reference/content/printed-variable/) and used by
+response processing to score the variant.
+
+## The rules
+
+- `qti-set-template-value` — assign a value to a template variable.
+- `qti-template-condition` (with `qti-template-if` / `qti-template-else-if` /
+  `qti-template-else`) — branch based on an [expression](/reference/processing/expressions/).
+- `qti-template-constraint` — reject a generated combination and regenerate (e.g.
+  avoid a divide-by-zero).
+- `qti-set-default-value` / `qti-set-correct-response` — adjust an item's default
+  value or correct response for this variant.
+- `qti-exit-template` — stop processing.
+
+## Example
+
+<Example title="Pick two random operands for a sum">
+```xml
+<qti-template-processing>
+  <qti-set-template-value identifier="A">
+    <qti-random-integer min="2" max="9"/>
+  </qti-set-template-value>
+  <qti-set-template-value identifier="B">
+    <qti-random-integer min="2" max="9"/>
+  </qti-set-template-value>
+</qti-template-processing>
+```
+</Example>
+
+## Cross-references
+
+<Related links={[
+  { href: '/reference/processing/template-declaration/', label: 'qti-template-declaration', description: 'Declares the variables this sets' },
+  { href: '/reference/content/printed-variable/', label: 'qti-printed-variable', description: 'Show template values in content' },
+  { href: '/reference/processing/expressions/', label: 'Expressions', description: 'random-integer and friends' },
+]} />
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about qti-template-processing in the QTI 3.0 specification</SpecLink>

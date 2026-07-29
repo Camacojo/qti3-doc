@@ -1,0 +1,103 @@
+---
+title: Reference overview
+description: A hierarchical reference of QTI 3.0 elements — interactions, variables & processing, and packaging & metadata — with examples and cross-references.
+sidebar:
+  order: 0
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+This is the element-level reference for QTI 3.0. Every element or topic has its
+own focused, shareable page following one template: *purpose → place in the
+hierarchy → attributes → example → cross-references → spec link*.
+
+New to QTI? Start with the [core concepts](/concepts/assessment-item/) instead —
+they explain the ideas these elements implement.
+
+<CardGrid>
+	<Card title="Interactions" icon="seti:html">
+		The ~20 ways a candidate can respond. Start with
+		[qti-choice-interaction](/reference/interactions/choice-interaction/) or browse
+		by kind in the [interactions overview](/concepts/interactions-overview/).
+	</Card>
+	<Card title="Variables & processing" icon="setting">
+		Declarations, expressions, operators and the rules that turn responses into
+		scores. See [response processing](/reference/processing/response-processing/).
+	</Card>
+	<Card title="Packaging & metadata" icon="document">
+		How content is bundled and described for exchange — the
+		[content package](/reference/packaging/content-package/) and its
+		[manifest](/reference/packaging/imsmanifest/).
+	</Card>
+</CardGrid>
+
+## Interactions
+
+**Selection:** [choice](/reference/interactions/choice-interaction/) ·
+[inline-choice](/reference/interactions/inline-choice-interaction/) ·
+[hottext](/reference/interactions/hottext-interaction/)
+
+**Text entry:** [text-entry](/reference/interactions/text-entry-interaction/) ·
+[extended-text](/reference/interactions/extended-text-interaction/)
+
+**Ordering & association:** [order](/reference/interactions/order-interaction/) ·
+[match](/reference/interactions/match-interaction/) ·
+[associate](/reference/interactions/associate-interaction/) ·
+[gap-match](/reference/interactions/gap-match-interaction/)
+
+**Graphic:** [hotspot](/reference/interactions/hotspot-interaction/) ·
+[select-point](/reference/interactions/select-point-interaction/) ·
+[graphic-gap-match](/reference/interactions/graphic-gap-match-interaction/) ·
+[graphic-order](/reference/interactions/graphic-order-interaction/) ·
+[graphic-associate](/reference/interactions/graphic-associate-interaction/) ·
+[drawing](/reference/interactions/drawing-interaction/)
+
+**Other:** [slider](/reference/interactions/slider-interaction/) ·
+[media](/reference/interactions/media-interaction/) ·
+[upload](/reference/interactions/upload-interaction/) ·
+[end-attempt](/reference/interactions/end-attempt-interaction/) ·
+[custom (PCI)](/reference/interactions/custom-interaction/)
+
+## Content & structure
+
+Elements that shape an item's content beyond its interactions:
+[rubric-block](/reference/content/rubric-block/) ·
+[assessment-stimulus](/reference/content/assessment-stimulus/) ·
+[modal-feedback](/reference/content/modal-feedback/) ·
+[feedback-block / -inline](/reference/content/feedback-block-and-inline/) ·
+[printed-variable](/reference/content/printed-variable/) ·
+[stylesheet](/reference/content/stylesheet/) ·
+[catalog-info](/reference/content/catalog-info/) ·
+[prompt](/reference/content/prompt/)
+
+## Test structure
+
+The test-level elements that group items and control delivery:
+[assessment-test](/reference/test/assessment-test/) ·
+[test-part](/reference/test/test-part/) ·
+[assessment-section](/reference/test/assessment-section/) ·
+[assessment-item-ref](/reference/test/assessment-item-ref/) ·
+[selection & ordering](/reference/test/selection-and-ordering/) ·
+[item-session-control](/reference/test/item-session-control/) ·
+[time-limits](/reference/test/time-limits/) ·
+[branch-rule & preconditions](/reference/test/branch-rule-and-preconditions/) ·
+[weight](/reference/test/weight/)
+
+## Variables & processing
+
+[response-declaration](/reference/processing/response-declaration/) ·
+[outcome-declaration](/reference/processing/outcome-declaration/) ·
+[template-declaration](/reference/processing/template-declaration/) ·
+[response-processing](/reference/processing/response-processing/) ·
+[built-in templates](/reference/processing/built-in-templates/) ·
+[rules](/reference/processing/rules/) ·
+[expressions](/reference/processing/expressions/) ·
+[operators](/reference/processing/operators/) ·
+[template-processing](/reference/processing/template-processing/) ·
+[outcome-processing](/reference/processing/outcome-processing/)
+
+## Packaging & metadata
+
+[content package](/reference/packaging/content-package/) ·
+[imsmanifest.xml](/reference/packaging/imsmanifest/) ·
+[metadata](/reference/packaging/metadata/)

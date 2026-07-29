@@ -1,0 +1,148 @@
+---
+title: qti-graphic-order-interaction
+description: Order hotspots on an image.
+sidebar:
+  order: 13
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+
+<SupportBadge phpQti3="no" qtiComponents="yes" note="php-qti3 does not parse this interaction type." />
+
+The `qti-graphic-order-interaction` presents an image with a set of predefined hotspots that the candidate must place into a specific order. It is the graphic counterpart of the `qti-order-interaction`: instead of ordering text choices, the candidate sequences regions of an image.
+
+## Purpose
+
+Use this interaction when the ordering task is inherently visual and the things being ordered are areas of a picture rather than words or phrases. Typical uses include:
+
+- Sequencing stages of a process shown in a diagram (for example, ordering the steps of a life cycle).
+- Ranking labelled regions of a map, chart, or illustration.
+- Arranging parts of an image chronologically or by size.
+
+The candidate assigns a rank to each hotspot, and the resulting ordered list of hotspot identifiers is captured in the bound response variable.
+
+## Place in the hierarchy
+
+- **Parent:** appears within the `qti-item-body` (directly or nested inside block-level content).
+- **Children:**
+  - Exactly one `qti-object` element that references the background image and defines its dimensions.
+  - One `qti-hotspot-choice` element for each selectable region. Each hotspot declares an `identifier`, a `shape`, and the matching `coords`.
+- **Binds to:** a `qti-response-declaration` with cardinality `ordered` and base-type `identifier`. The declared correct response is the ordered sequence of hotspot identifiers.
+
+## Attributes
+
+<AttributesTable
+  attributes={[
+    {
+      name: 'response-identifier',
+      type: 'identifier',
+      required: true,
+      description: 'The identifier of the <code>qti-response-declaration</code> bound to this interaction. Must have cardinality <code>ordered</code> and base-type <code>identifier</code>.',
+    },
+    {
+      name: 'min-choices',
+      type: 'integer',
+      required: false,
+      description: 'The minimum number of hotspots the candidate must place into the order. When present, must be <code>0</code> or greater.',
+    },
+    {
+      name: 'max-choices',
+      type: 'integer',
+      required: false,
+      description: 'The maximum number of hotspots the candidate may place into the order. A value of <code>0</code> means there is no limit.',
+    },
+    {
+      name: 'id',
+      type: 'identifier',
+      required: false,
+      description: 'A unique identifier for the element within the document.',
+    },
+    {
+      name: 'class',
+      type: 'string',
+      required: false,
+      description: 'One or more style class names, used for presentation.',
+    },
+  ]}
+  caption="Attributes of qti-graphic-order-interaction"
+/>
+
+The child `qti-hotspot-choice` elements each carry their own attributes, most importantly `identifier`, `shape` (for example `rect`, `circle`, `poly`, or `ellipse`), and `coords` (the coordinate values matching the chosen shape).
+
+## Example
+
+<Example title="Order the stages of the water cycle shown on the diagram">
+
+```xml
+<qti-response-declaration identifier="RESPONSE" cardinality="ordered" base-type="identifier">
+  <qti-correct-response>
+    <qti-value>evaporation</qti-value>
+    <qti-value>condensation</qti-value>
+    <qti-value>precipitation</qti-value>
+    <qti-value>collection</qti-value>
+  </qti-correct-response>
+</qti-response-declaration>
+
+<qti-item-body>
+  <qti-graphic-order-interaction response-identifier="RESPONSE">
+    <qti-prompt>Place the stages of the water cycle in the correct order.</qti-prompt>
+    <qti-object type="image/png" data="images/water-cycle.png" width="600" height="400"/>
+    <qti-hotspot-choice identifier="evaporation" shape="circle" coords="120,300,40"/>
+    <qti-hotspot-choice identifier="condensation" shape="circle" coords="300,80,40"/>
+    <qti-hotspot-choice identifier="precipitation" shape="circle" coords="470,180,40"/>
+    <qti-hotspot-choice identifier="collection" shape="rect" coords="380,330,520,390"/>
+  </qti-graphic-order-interaction>
+</qti-item-body>
+```
+
+</Example>
+
+:::note
+A live demo is omitted here: outside a full item/player context the
+`@citolab/qti-components` renderer positions the numbered hotspot overlays
+against a collapsed host, so ordering does not display correctly. See a working
+example in the [qti-components Storybook](https://qti-components.citolab.nl).
+:::
+
+## Cross-references
+
+<Related
+  links={[
+    {
+      href: '/reference/interactions/order-interaction/',
+      label: 'qti-order-interaction',
+      description: 'The text-based equivalent for ordering choices without an image.',
+    },
+    {
+      href: '/reference/interactions/hotspot-interaction/',
+      label: 'qti-hotspot-interaction',
+      description: 'Select one or more hotspots on an image (without ordering them).',
+    },
+    {
+      href: '/reference/interactions/graphic-gap-match-interaction/',
+      label: 'qti-graphic-gap-match-interaction',
+      description: 'Drag gap images onto hotspots defined on a background image.',
+    },
+    {
+      href: '/reference/interactions/graphic-associate-interaction/',
+      label: 'qti-graphic-associate-interaction',
+      description: 'Connect hotspots on an image with association lines.',
+    },
+    {
+      href: '/concepts/interactions-overview/',
+      label: 'Interactions overview',
+      description: 'How interactions relate to response variables and the item body.',
+    },
+    {
+      href: '/reference/processing/response-declaration/',
+      label: 'qti-response-declaration',
+      description: 'Declares the ordered, identifier-typed variable this interaction binds to.',
+    },
+  ]}
+/>
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about graphic order interactions in the QTI 3.0 specification</SpecLink>

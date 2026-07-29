@@ -1,0 +1,89 @@
+---
+title: qti-outcome-declaration
+description: Declares an outcome variable such as SCORE.
+sidebar:
+  order: 2
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+
+<SupportBadge phpQti3="yes" />
+
+The `qti-outcome-declaration` element declares an outcome variable: a value that is set during response processing (or test-level outcome processing) rather than supplied directly by the candidate. Outcome variables hold results such as a numeric score or a feedback identifier.
+
+## Purpose
+
+Use `qti-outcome-declaration` to declare each result value your item or test produces:
+
+- **Scores.** By convention, the numeric result of an item is stored in an outcome called `SCORE`, with `MAXSCORE` holding its maximum possible value. Both are typically single floats.
+- **Feedback control.** An outcome named `FEEDBACK` (a single or multiple identifier) is conventionally used to drive `qti-feedback-block` / `qti-feedback-inline` visibility.
+- **Any custom result.** You can declare additional outcomes for partial scores, categories, or other computed values.
+
+Response processing rules read and write these variables; the platform starts each with its default value (or the base-type's null value) before processing.
+
+## Place in the hierarchy
+
+`qti-outcome-declaration` is a direct child of `qti-assessment-item` (for item-level outcomes) or `qti-assessment-test` (for test-level outcomes). It sits alongside other variable declarations such as `qti-response-declaration`.
+
+An outcome declaration may contain a single optional child:
+
+- `qti-default-value` — wrapping one or more `qti-value` elements that define the outcome's initial value.
+
+Unlike a response declaration, an outcome has no candidate-supplied value: it is populated only by processing rules such as those in `qti-response-processing`.
+
+## Attributes
+
+<AttributesTable
+  attributes={[
+    { name: 'identifier', type: 'identifier', required: true, description: 'The name of the outcome variable, unique within the item or test. Conventional names include <code>SCORE</code>, <code>MAXSCORE</code>, and <code>FEEDBACK</code>.' },
+    { name: 'cardinality', type: 'enumerated', required: true, description: 'The variable\'s cardinality: <code>single</code>, <code>multiple</code>, <code>ordered</code>, or <code>record</code>.' },
+    { name: 'base-type', type: 'enumerated', required: true, description: 'The value\'s base type, e.g. <code>float</code>, <code>integer</code>, <code>string</code>, <code>identifier</code>, <code>boolean</code>. Required unless <code>cardinality</code> is <code>record</code>.' },
+    { name: 'view', type: 'enumerated (list)', description: 'Restricts which roles may see the value, e.g. <code>author</code>, <code>candidate</code>, <code>scorer</code>. When omitted, the outcome is available to all views.' },
+    { name: 'interpretation', type: 'string', description: 'A human-readable description of how the value should be interpreted.' },
+    { name: 'normal-maximum', type: 'float', description: 'The maximum value the outcome is expected to take when interpreted as a normalized score. Applies to single floats/integers.' },
+    { name: 'normal-minimum', type: 'float', description: 'The minimum value the outcome is expected to take when interpreted as a normalized score.' },
+    { name: 'mastery-value', type: 'float', description: 'A value at or above which the outcome is considered to indicate mastery.' },
+  ]}
+  caption="Attributes of qti-outcome-declaration"
+/>
+
+## Example
+
+<Example title="Declaring SCORE, MAXSCORE, and FEEDBACK">
+
+```xml
+<qti-outcome-declaration identifier="SCORE" cardinality="single" base-type="float">
+  <qti-default-value>
+    <qti-value>0</qti-value>
+  </qti-default-value>
+</qti-outcome-declaration>
+
+<qti-outcome-declaration identifier="MAXSCORE" cardinality="single" base-type="float"
+                         normal-maximum="1">
+  <qti-default-value>
+    <qti-value>1</qti-value>
+  </qti-default-value>
+</qti-outcome-declaration>
+
+<qti-outcome-declaration identifier="FEEDBACK" cardinality="single" base-type="identifier"/>
+```
+
+</Example>
+
+## Cross-references
+
+<Related
+  links={[
+    { href: '/reference/processing/response-declaration/', label: 'qti-response-declaration', description: 'Declares candidate-supplied response variables, the counterpart to outcomes.' },
+    { href: '/reference/processing/response-processing/', label: 'qti-response-processing', description: 'The rules that read responses and set outcome values such as SCORE.' },
+    { href: '/concepts/outcomes-and-scoring/', label: 'Outcomes and scoring', description: 'How SCORE, MAXSCORE, and other outcomes model results.' },
+    { href: '/concepts/variables-and-declarations/', label: 'Variables and declarations', description: 'The variable model behind responses, outcomes, and templates.' },
+    { href: '/concepts/feedback/', label: 'Feedback', description: 'Using the FEEDBACK outcome to control conditional feedback.' },
+  ]}
+/>
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about qti-outcome-declaration in the QTI 3.0 specification</SpecLink>

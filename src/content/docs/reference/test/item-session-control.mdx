@@ -1,0 +1,52 @@
+---
+title: qti-item-session-control
+description: Controls attempts, feedback, review and solutions for the items within its scope.
+sidebar:
+  order: 6
+---
+
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+
+`qti-item-session-control` sets the rules of engagement for item sessions: how
+many attempts are allowed, whether feedback and solutions may be shown, and
+whether the candidate can review or skip. It can appear on a
+[test part](/reference/test/test-part/),
+[section](/reference/test/assessment-section/), or
+[item reference](/reference/test/assessment-item-ref/); the most specific scope
+wins.
+
+## Attributes
+
+<AttributesTable attributes={[
+  { name: 'max-attempts', type: 'integer', default: '1', description: 'How many attempts are allowed. <code>0</code> means unlimited. Only meaningful with individual submission.' },
+  { name: 'show-feedback', type: 'boolean', default: 'false', description: 'Whether feedback may be shown after the attempt.' },
+  { name: 'allow-review', type: 'boolean', default: 'true', description: 'Whether the candidate may return to review the item.' },
+  { name: 'show-solution', type: 'boolean', default: 'false', description: 'Whether a model solution may be shown.' },
+  { name: 'allow-comment', type: 'boolean', default: 'false', description: 'Whether the candidate may leave a comment.' },
+  { name: 'allow-skipping', type: 'boolean', default: 'true', description: 'Whether the candidate may skip the item without responding.' },
+  { name: 'validate-responses', type: 'boolean', default: 'false', description: 'Whether responses must be valid (e.g. min-choices met) before moving on.' },
+]} caption="qti-item-session-control attributes" />
+
+## Example
+
+<Example title="Two attempts, feedback shown, no skipping">
+```xml
+<qti-test-part identifier="part1" navigation-mode="nonlinear" submission-mode="individual">
+  <qti-item-session-control max-attempts="2" show-feedback="true" allow-skipping="false"/>
+  <!-- sections -->
+</qti-test-part>
+```
+</Example>
+
+## Cross-references
+
+<Related links={[
+  { href: '/reference/test/test-part/', label: 'qti-test-part', description: 'A common scope for session control' },
+  { href: '/concepts/feedback/', label: 'Feedback', description: 'What show-feedback governs' },
+  { href: '/reference/test/time-limits/', label: 'qti-time-limits', description: 'Time constraints for a session' },
+]} />
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about qti-item-session-control in the QTI 3.0 specification</SpecLink>

@@ -1,0 +1,121 @@
+---
+title: qti-inline-choice-interaction
+description: A dropdown selection embedded inline in running text.
+sidebar:
+  order: 4
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+import QtiDemo from '@components/QtiDemo.astro';
+
+<SupportBadge phpQti3="yes" qtiComponents="yes" />
+
+The `qti-inline-choice-interaction` presents a set of choices as a dropdown (combo box) embedded directly within a sentence or other running text. The candidate selects exactly one option from the list.
+
+## Purpose
+
+Use this interaction when you want the candidate to complete a sentence or statement by picking a single answer from a compact list, without breaking the flow of the surrounding text.
+
+- Fill-in-the-blank style questions where the answer comes from a fixed set of options.
+- Cloze passages where one word or phrase in a sentence must be chosen from alternatives.
+- Situations where a block-level `qti-choice-interaction` would be too visually disruptive.
+
+Because it renders inline, it is well suited to text-heavy items. For selecting one option from a prominent, block-level list, use the [choice interaction](/reference/interactions/choice-interaction/) instead.
+
+## Place in the hierarchy
+
+- **Parent:** appears inline within the flow content of `qti-item-body` (for example inside a `p` or other text element).
+- **Children:** one or more `qti-inline-choice` elements, each carrying an `identifier` that names the option.
+- **Binds to:** the response variable named by `response-identifier`. That variable is declared with a `qti-response-declaration` of cardinality `single` and base-type `identifier`.
+
+## Attributes
+
+<AttributesTable
+  attributes={[
+    {
+      name: 'response-identifier',
+      type: 'identifier',
+      required: true,
+      description: 'The identifier of the <code>qti-response-declaration</code> this interaction binds to. The declaration must have cardinality <code>single</code> and base-type <code>identifier</code>.'
+    },
+    {
+      name: 'shuffle',
+      type: 'boolean',
+      required: false,
+      default: 'false',
+      description: 'When <code>true</code>, the order in which the <code>qti-inline-choice</code> options are presented is randomized for each candidate.'
+    },
+    {
+      name: 'required',
+      type: 'boolean',
+      required: false,
+      default: 'false',
+      description: 'When <code>true</code>, the candidate must select an option before the response is considered valid for submission.'
+    }
+  ]}
+  caption="Attributes of qti-inline-choice-interaction"
+/>
+
+Each child `qti-inline-choice` carries a required `identifier` attribute (the value stored in the response variable when that option is chosen).
+
+## Example
+
+<Example title="Choose the correct word inside a sentence">
+
+```xml
+<qti-response-declaration identifier="RESPONSE" cardinality="single" base-type="identifier">
+  <qti-correct-response>
+    <qti-value>river</qti-value>
+  </qti-correct-response>
+</qti-response-declaration>
+
+<qti-item-body>
+  <p>
+    The Amazon is the largest
+    <qti-inline-choice-interaction response-identifier="RESPONSE" shuffle="true" required="true">
+      <qti-inline-choice identifier="lake">lake</qti-inline-choice>
+      <qti-inline-choice identifier="river">river</qti-inline-choice>
+      <qti-inline-choice identifier="desert">desert</qti-inline-choice>
+    </qti-inline-choice-interaction>
+    in the world by discharge volume.
+  </p>
+</qti-item-body>
+```
+
+  <QtiDemo slot="demo" markup={`
+    <p style="line-height:2.2">The Amazon is the largest <qti-inline-choice-interaction response-identifier="RESPONSE" required="true"><qti-inline-choice identifier="lake">lake</qti-inline-choice><qti-inline-choice identifier="river">river</qti-inline-choice><qti-inline-choice identifier="desert">desert</qti-inline-choice></qti-inline-choice-interaction> in the world by discharge volume.</p>
+  `} />
+</Example>
+
+## Cross-references
+
+<Related
+  links={[
+    {
+      href: '/reference/interactions/choice-interaction/',
+      label: 'qti-choice-interaction',
+      description: 'Block-level single- or multiple-choice selection from a list.'
+    },
+    {
+      href: '/reference/interactions/text-entry-interaction/',
+      label: 'qti-text-entry-interaction',
+      description: 'Inline free-text entry when the answer is not a fixed set of options.'
+    },
+    {
+      href: '/reference/processing/response-declaration/',
+      label: 'qti-response-declaration',
+      description: 'Declares the single/identifier response variable this interaction binds to.'
+    },
+    {
+      href: '/concepts/interactions-overview/',
+      label: 'Interactions overview',
+      description: 'How interactions fit within an assessment item.'
+    }
+  ]}
+/>
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about the inline choice interaction in the QTI 3.0 specification</SpecLink>

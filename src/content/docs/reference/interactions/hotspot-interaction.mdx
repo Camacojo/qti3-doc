@@ -1,0 +1,166 @@
+---
+title: qti-hotspot-interaction
+description: Select one or more regions on an image.
+sidebar:
+  order: 10
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+<SupportBadge phpQti3="yes" qtiComponents="yes" />
+
+The `qti-hotspot-interaction` presents a background image on which one or more predefined regions (hotspots) are defined. The candidate responds by selecting one or more of these regions. It is the graphic counterpart of the `qti-choice-interaction`: the candidate picks from a fixed set of choices, but here each choice is a clickable area of an image.
+
+## Purpose
+
+Use `qti-hotspot-interaction` when the answer is best expressed as a location on a picture, diagram, map, or figure, and the acceptable locations are known in advance.
+
+- Identifying a part of a diagram (for example, selecting an organ on an anatomical illustration).
+- Choosing a country or region on a map.
+- Picking the correct area of a photograph or chart.
+
+Each selectable region is declared as a `qti-hotspot-choice` with a `shape` and `coords`. Because the regions are predefined, this interaction is appropriate when you can enumerate the valid choices. When the candidate must click an arbitrary point rather than choose from fixed regions, use the [qti-select-point-interaction](/reference/interactions/select-point-interaction/) instead.
+
+## Place in the hierarchy
+
+- **Parent:** appears in the item body ([qti-item-body](/concepts/item-body/)), like other interactions.
+- **Children:** a background image expressed as an `img` element or a `qti-object`, followed by one or more `qti-hotspot-choice` elements. Each `qti-hotspot-choice` carries an `identifier`, a `shape`, and `coords`.
+- **Binds to:** the response variable named by its `response-identifier`. The bound [qti-response-declaration](/reference/processing/response-declaration/) has base-type `identifier`. Use cardinality `single` when at most one hotspot may be selected, and cardinality `multiple` when several may be selected. The response value(s) are the `identifier`(s) of the chosen `qti-hotspot-choice` element(s).
+
+The `shape` attribute of each `qti-hotspot-choice` accepts the following values, each with its own `coords` format (a comma-separated list of pixel values):
+
+- `circle` — `centerX, centerY, radius`
+- `rect` — `left-x, top-y, right-x, bottom-y`
+- `ellipse` — `centerX, centerY, hRadius, vRadius`
+- `poly` — a sequence of `x, y` point pairs describing the polygon vertices
+
+## Attributes
+
+<AttributesTable
+  attributes={[
+    {
+      name: 'response-identifier',
+      type: 'identifier',
+      required: true,
+      description: 'The <code>identifier</code> of the response variable that this interaction binds to. It must match a <code>qti-response-declaration</code> with base-type <code>identifier</code> and cardinality <code>single</code> or <code>multiple</code>.',
+    },
+    {
+      name: 'max-choices',
+      type: 'integer',
+      required: false,
+      default: '1',
+      description: 'The maximum number of hotspots the candidate may select. A value of <code>0</code> means no limit. When greater than <code>1</code>, the bound response variable must have cardinality <code>multiple</code>.',
+    },
+    {
+      name: 'min-choices',
+      type: 'integer',
+      required: false,
+      default: '0',
+      description: 'The minimum number of hotspots the candidate must select in order to form a valid response. A value of <code>0</code> means selection is optional.',
+    },
+  ]}
+  caption="Attributes of qti-hotspot-interaction"
+/>
+
+Each `qti-hotspot-choice` child carries its own attributes: `identifier` (the value reported to the response variable), `shape`, and `coords`.
+
+## Example
+
+Note the different `shape` values (`circle`, `rect`, `poly`, `ellipse`) and their
+`coords`, and that either an `img` or a `qti-object` can supply the background image.
+
+<Tabs>
+  <TabItem label="Single region">
+```xml
+<qti-response-declaration identifier="RESPONSE" cardinality="single" base-type="identifier">
+  <qti-correct-response>
+    <qti-value>HS_CAPITAL</qti-value>
+  </qti-correct-response>
+</qti-response-declaration>
+
+<qti-item-body>
+  <p>Click on the location of the capital city.</p>
+  <qti-hotspot-interaction response-identifier="RESPONSE" max-choices="1">
+    <img src="images/map.png" alt="Map of the region" width="480" height="360"/>
+    <qti-hotspot-choice identifier="HS_CAPITAL" shape="circle" coords="120,90,15"/>
+    <qti-hotspot-choice identifier="HS_PORT" shape="circle" coords="300,210,15"/>
+    <qti-hotspot-choice identifier="HS_MOUNTAIN" shape="rect" coords="360,20,440,80"/>
+  </qti-hotspot-interaction>
+</qti-item-body>
+```
+  </TabItem>
+  <TabItem label="Multiple regions">
+```xml
+<qti-response-declaration identifier="RESPONSE" cardinality="multiple" base-type="identifier">
+  <qti-correct-response>
+    <qti-value>HS_A</qti-value>
+    <qti-value>HS_C</qti-value>
+  </qti-correct-response>
+</qti-response-declaration>
+
+<qti-item-body>
+  <p>Select all the regions shaded in the diagram.</p>
+  <qti-hotspot-interaction response-identifier="RESPONSE" max-choices="0" min-choices="1">
+    <qti-object type="image/png" data="images/diagram.png" width="500" height="400"/>
+    <qti-hotspot-choice identifier="HS_A" shape="poly" coords="10,10,90,10,50,90"/>
+    <qti-hotspot-choice identifier="HS_B" shape="ellipse" coords="200,150,60,40"/>
+    <qti-hotspot-choice identifier="HS_C" shape="rect" coords="320,60,420,160"/>
+  </qti-hotspot-interaction>
+</qti-item-body>
+```
+  </TabItem>
+</Tabs>
+
+:::note
+A live demo is omitted here: outside a full item/player context the
+`@citolab/qti-components` renderer draws the clickable regions in a shadow layer
+whose host height collapses, so the hotspots overlap the surrounding content. For
+clicking a free coordinate on an image that renders cleanly here, see
+[qti-select-point-interaction](/reference/interactions/select-point-interaction/);
+for a working hotspot example see the
+[qti-components Storybook](https://qti-components.citolab.nl).
+:::
+
+## Cross-references
+
+<Related
+  links={[
+    {
+      href: '/reference/interactions/select-point-interaction/',
+      label: 'qti-select-point-interaction',
+      description: 'Use when the candidate must click an arbitrary point rather than choose from predefined regions.',
+    },
+    {
+      href: '/reference/interactions/hottext-interaction/',
+      label: 'qti-hottext-interaction',
+      description: 'The text equivalent: select one or more predefined runs of text instead of image regions.',
+    },
+    {
+      href: '/reference/interactions/graphic-order-interaction/',
+      label: 'qti-graphic-order-interaction',
+      description: 'Order predefined hotspots on an image rather than simply selecting them.',
+    },
+    {
+      href: '/reference/interactions/choice-interaction/',
+      label: 'qti-choice-interaction',
+      description: 'The non-graphic equivalent for choosing from a fixed set of options.',
+    },
+    {
+      href: '/reference/processing/response-declaration/',
+      label: 'qti-response-declaration',
+      description: 'Declares the identifier-typed response variable this interaction binds to.',
+    },
+    {
+      href: '/concepts/interactions-overview/',
+      label: 'Interactions overview',
+      description: 'How interactions fit into an assessment item and its response variables.',
+    },
+  ]}
+/>
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about the hotspot interaction in the QTI 3.0 specification</SpecLink>

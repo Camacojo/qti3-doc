@@ -1,0 +1,128 @@
+---
+title: qti-select-point-interaction
+description: Select point(s) on an image by coordinate.
+sidebar:
+  order: 11
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+import QtiDemo from '@components/QtiDemo.astro';
+
+<SupportBadge phpQti3="yes" qtiComponents="yes" />
+
+The `qti-select-point-interaction` presents a background image and asks the candidate to click one or more points on it. Each selected point is captured as an `x y` coordinate pair rather than a predefined region, which makes it suited to questions where the exact location matters.
+
+## Purpose
+
+Use this interaction when the candidate must indicate a precise position on an image, for example:
+
+- Marking a point on a map, diagram, or chart.
+- Placing a location where no pre-authored hotspot region exists.
+- Any task where the answer is a coordinate rather than a choice from a fixed set of shapes.
+
+Because the response is a raw coordinate, scoring is done by comparing selected points against target areas rather than against a list of choices. If you instead want the candidate to choose from predefined regions, use the `qti-hotspot-interaction`.
+
+## Place in the hierarchy
+
+- **Parent:** appears in the item body (`qti-item-body`), like other interactions.
+- **Children:** contains a background image declared with `qti-object`, and may include an optional prompt (`qti-prompt`).
+- **Binds to:** a response variable declared by a `qti-response-declaration` whose `identifier` matches the `response-identifier` attribute. The response uses base-type `point` with cardinality `single` (one point) or `multiple` (several points).
+
+## Attributes
+
+<AttributesTable
+  attributes={[
+    {
+      name: 'response-identifier',
+      type: 'identifier',
+      required: true,
+      description: 'The <code>identifier</code> of the bound <code>qti-response-declaration</code>. Its base-type must be <code>point</code>.'
+    },
+    {
+      name: 'max-choices',
+      type: 'integer',
+      required: false,
+      description: 'The maximum number of points the candidate may select. A value of <code>0</code> means there is no limit.'
+    },
+    {
+      name: 'min-choices',
+      type: 'integer',
+      required: false,
+      description: 'The minimum number of points the candidate must select for the response to be considered complete.'
+    }
+  ]}
+  caption="Attributes of qti-select-point-interaction"
+/>
+
+## Example
+
+<Example title="Select one point on a map">
+
+```xml
+<qti-response-declaration identifier="RESPONSE" cardinality="single" base-type="point">
+  <qti-correct-response>
+    <qti-value>102 113</qti-value>
+  </qti-correct-response>
+  <qti-area-mapping default-value="0">
+    <qti-area-map-entry shape="circle" coords="102,113,15" mapped-value="1"/>
+  </qti-area-mapping>
+</qti-response-declaration>
+
+<qti-item-body>
+  <qti-select-point-interaction response-identifier="RESPONSE" max-choices="1">
+    <qti-prompt>Click on the capital city of the highlighted country.</qti-prompt>
+    <qti-object type="image/png" data="images/map.png" width="400" height="300"/>
+  </qti-select-point-interaction>
+</qti-item-body>
+```
+
+</Example>
+
+The response holds the selected coordinate as an `x y` pair. Response processing typically uses the `map_response_point` built-in template, which scores the point against the `qti-area-mapping` defined in the response declaration.
+
+## Try it
+
+<QtiDemo markup={`
+  <qti-select-point-interaction response-identifier="RESPONSE" max-choices="1">
+    <qti-prompt>Click anywhere inside region B.</qti-prompt>
+    <img src="/demo-assets/regions.svg" alt="Diagram with regions A, B and C" width="400" height="300" />
+  </qti-select-point-interaction>
+`} />
+
+## Cross-references
+
+<Related
+  links={[
+    {
+      href: '/reference/interactions/hotspot-interaction/',
+      label: 'qti-hotspot-interaction',
+      description: 'Choose from predefined regions instead of a raw coordinate.'
+    },
+    {
+      href: '/reference/interactions/graphic-order-interaction/',
+      label: 'qti-graphic-order-interaction',
+      description: 'Another image-based interaction, for ordering hotspots.'
+    },
+    {
+      href: '/reference/processing/response-declaration/',
+      label: 'qti-response-declaration',
+      description: 'Declares the point response variable bound by this interaction.'
+    },
+    {
+      href: '/reference/processing/built-in-templates/',
+      label: 'Built-in response processing templates',
+      description: 'Includes map_response_point used to score coordinate responses.'
+    },
+    {
+      href: '/concepts/interactions-overview/',
+      label: 'Interactions overview',
+      description: 'How interactions fit into an assessment item.'
+    }
+  ]}
+/>
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about the select point interaction in the QTI 3.0 specification</SpecLink>

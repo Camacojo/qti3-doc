@@ -1,0 +1,52 @@
+---
+title: qti-branch-rule & qti-pre-condition
+description: Conditional navigation in a linear test — jump to a target or skip an element based on an expression.
+sidebar:
+  order: 8
+---
+
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+
+`qti-branch-rule` and `qti-pre-condition` add conditional flow to a **linear**
+test (they have no effect when navigation is `nonlinear`). Both evaluate an
+[expression](/reference/processing/expressions/) — typically against an
+[outcome variable](/concepts/outcomes-and-scoring/) — to decide what happens next.
+
+## qti-pre-condition — skip if false
+
+A precondition guards an element. If its expression evaluates to `false`, the
+[section](/reference/test/assessment-section/) or
+[item](/reference/test/assessment-item-ref/) it belongs to is skipped.
+
+## qti-branch-rule — jump if true
+
+A branch rule names a `target`. If its expression is `true`, delivery jumps to
+that target instead of continuing in sequence. Targets can be a section, an item
+reference, or the special values `EXIT_SECTION`, `EXIT_TESTPART`, `EXIT_TEST`.
+
+## Example
+
+<Example title="Branch to a remedial section on a low score">
+```xml
+<qti-assessment-item-ref identifier="diagnostic" href="items/diagnostic.xml">
+  <qti-branch-rule target="remedial">
+    <qti-lt>
+      <qti-variable identifier="SCORE"/>
+      <qti-base-value base-type="float">0.5</qti-base-value>
+    </qti-lt>
+  </qti-branch-rule>
+</qti-assessment-item-ref>
+```
+</Example>
+
+## Cross-references
+
+<Related links={[
+  { href: '/reference/processing/expressions/', label: 'Expressions', description: 'What the condition is built from' },
+  { href: '/reference/processing/operators/', label: 'Operators', description: 'Comparisons used in the condition' },
+  { href: '/reference/test/test-part/', label: 'qti-test-part', description: 'Navigation mode must be linear' },
+]} />
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about branch rules & preconditions in the QTI 3.0 specification</SpecLink>

@@ -1,0 +1,110 @@
+---
+title: Content package
+description: The IMS Content Packaging ZIP structure used to exchange QTI content.
+sidebar:
+  order: 1
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+
+<SupportBadge phpQti3="yes" />
+
+A QTI **content package** is an [IMS Content Packaging](/concepts/content-packaging/) ZIP archive that bundles one or more assessment items and/or tests together with an `imsmanifest.xml` file and any supporting media. It is the standard container for moving QTI content between authoring tools, item banks, and delivery systems.
+
+## Purpose
+
+Use a content package whenever QTI content has to be exchanged as a single, self-describing unit rather than as loose XML files.
+
+- Export items and tests from one system and import them into another.
+- Deliver a complete test, its sections, and every referenced item as one file.
+- Ship media assets (images, audio, video, stylesheets) alongside the XML that references them, keeping relative paths intact.
+
+The package is an ordinary ZIP file. Its defining feature is that the ZIP root always contains a manifest named exactly `imsmanifest.xml`, which lists every file in the package and classifies each unit of content by resource type.
+
+## Place in the hierarchy
+
+- **The archive:** a ZIP file. A package with the manifest at the root is a *Package Interchange File* (PIF); the `.zip` extension is conventional.
+- **The manifest:** [`imsmanifest.xml`](/reference/packaging/imsmanifest/) sits at the root and is the entry point. Everything else in the package is discovered through it.
+- **Resources:** the manifest declares a `<resource>` for each item, test, or supporting file, giving its `type`, a unique `identifier`, and the `href` of its primary file. Common QTI 3.0 resource types are:
+  - `imsqti_item_xmlv3p0` &mdash; a single [assessment item](/concepts/assessment-item/).
+  - `imsqti_test_xmlv3p0` &mdash; an [assessment test](/concepts/assessment-test-and-sections/) (which in turn references its item resources).
+  - Non-QTI files such as images or stylesheets are declared with generic web-content types (for example `webcontent`) and referenced by the items or tests that use them.
+- **Metadata:** each resource may carry [metadata](/reference/packaging/metadata/) (LOM plus QTI-specific metadata) describing the content for discovery and cataloguing.
+
+A typical package that contains one test and two items looks like this:
+
+```
+my-package.zip
+├── imsmanifest.xml
+├── test/
+│   └── my-test.xml            (imsqti_test_xmlv3p0)
+├── items/
+│   ├── question-01.xml        (imsqti_item_xmlv3p0)
+│   └── question-02.xml        (imsqti_item_xmlv3p0)
+└── media/
+    ├── diagram.png
+    └── audio-clip.mp3
+```
+
+The `imsmanifest.xml` at the root is mandatory. The `test/`, `items/`, and `media/` folders are a convention, not a requirement &mdash; files may sit anywhere in the archive as long as the manifest's `href` values point to their actual locations (using forward slashes, relative to the manifest).
+
+## Attributes
+
+The package itself has no attributes; its structure is expressed through the manifest. The most important attributes on a resource declaration are summarised below (see the [imsmanifest reference](/reference/packaging/imsmanifest/) for the full element).
+
+<AttributesTable
+  attributes={[
+    { name: 'identifier', type: 'string', required: true, description: 'A unique identifier for the resource within the manifest. Used to reference the resource, for example from a test that includes an item.' },
+    { name: 'type', type: 'string', required: true, description: 'The resource type. Use <code>imsqti_item_xmlv3p0</code> for an assessment item and <code>imsqti_test_xmlv3p0</code> for an assessment test. Non-QTI files use a generic type such as <code>webcontent</code>.' },
+    { name: 'href', type: 'anyURI', required: false, description: 'Path to the primary file for the resource, relative to the manifest and using forward slashes. Required for QTI item and test resources.' },
+  ]}
+  caption="Key attributes of a resource declaration in imsmanifest.xml"
+/>
+
+## Example
+
+<Example title="A minimal imsmanifest.xml for a package with one item">
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest xmlns="http://www.imsglobal.org/xsd/imscp_v1p1"
+          xmlns:imsqti="http://www.imsglobal.org/xsd/imsqtiasi_v3p0"
+          identifier="MANIFEST-QTI-1">
+  <metadata>
+    <schema>QTIv3.0 Package</schema>
+    <schemaversion>1.0.0</schemaversion>
+  </metadata>
+  <organizations/>
+  <resources>
+    <resource identifier="question-01"
+              type="imsqti_item_xmlv3p0"
+              href="items/question-01.xml">
+      <file href="items/question-01.xml"/>
+      <file href="media/diagram.png"/>
+    </resource>
+  </resources>
+</manifest>
+```
+
+</Example>
+
+A package containing a test adds a second resource of type `imsqti_test_xmlv3p0` whose XML references the item resources it includes, plus a `<file>` entry per referenced media asset.
+
+## Cross-references
+
+<Related
+  links={[
+    { href: '/concepts/content-packaging/', label: 'Content packaging (concept)', description: 'How QTI content is bundled and exchanged, and why packages matter.' },
+    { href: '/reference/packaging/imsmanifest/', label: 'imsmanifest.xml', description: 'The manifest element, its metadata, organizations, and resource declarations.' },
+    { href: '/reference/packaging/metadata/', label: 'Metadata', description: 'LOM and QTI-specific metadata attached to resources in the package.' },
+    { href: '/concepts/assessment-item/', label: 'Assessment item', description: 'The item content packaged as an imsqti_item_xmlv3p0 resource.' },
+    { href: '/concepts/assessment-test-and-sections/', label: 'Assessment test and sections', description: 'The test content packaged as an imsqti_test_xmlv3p0 resource.' },
+    { href: '/guides/parsing-with-php-qti3/', label: 'Parsing with php-qti3', description: 'Read items and tests out of a content package in PHP.' },
+  ]}
+/>
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about content packaging in the QTI 3.0 specification</SpecLink>

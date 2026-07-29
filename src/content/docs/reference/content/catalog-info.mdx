@@ -1,0 +1,63 @@
+---
+title: qti-catalog-info
+description: Provides alternative content — glossary, spoken audio, translations — selected by the candidate's accessibility needs.
+sidebar:
+  order: 7
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+
+<SupportBadge qtiComponents="partial" note="Catalog rendering depends on the delivery engine and the candidate's PNP." />
+
+`qti-catalog-info` holds **alternative content** for parts of an item — a spoken
+version, a glossary definition, a translation, sign-language video. At delivery,
+the engine matches these alternatives against the candidate's
+[Personal Needs & Preferences](/concepts/accessibility/) and substitutes or adds
+content accordingly. This is the reference companion to the
+[accessibility](/concepts/accessibility/) concept page.
+
+## Structure
+
+- `qti-catalog-info` contains one or more `qti-catalog`, each with an `id`.
+- Content in the [item body](/concepts/item-body/) links to a catalog via
+  `data-catalog-idref`.
+- Each `qti-catalog` contains `qti-card` elements, one per alternative, tagged
+  with a `support` type such as `glossary-on-screen`, `spoken`, or `keyword-translation`.
+
+## Attributes
+
+<AttributesTable attributes={[
+  { name: 'id (on qti-catalog)', type: 'identifier', required: true, description: 'The id referenced by <code>data-catalog-idref</code> in the content.' },
+  { name: 'support (on qti-card)', type: 'token', required: true, description: 'The kind of alternative, e.g. <code>glossary-on-screen</code>, <code>spoken</code>, <code>keyword-translation</code>.' },
+]} caption="Key catalog attributes" />
+
+## Example
+
+<Example title="A glossary alternative for a term">
+```xml
+<p>The <span data-catalog-idref="cat-photosynthesis">photosynthesis</span> process…</p>
+
+<qti-catalog-info>
+  <qti-catalog id="cat-photosynthesis">
+    <qti-card support="glossary-on-screen">
+      <qti-html-content>
+        <div>The process by which plants convert light into chemical energy.</div>
+      </qti-html-content>
+    </qti-card>
+  </qti-catalog>
+</qti-catalog-info>
+```
+</Example>
+
+## Cross-references
+
+<Related links={[
+  { href: '/concepts/accessibility/', label: 'Accessibility (PNP & catalog)', description: 'How catalogs and PNP work together' },
+  { href: '/concepts/item-body/', label: 'Item body', description: 'Where data-catalog-idref is used' },
+]} />
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about qti-catalog-info in the QTI 3.0 specification</SpecLink>

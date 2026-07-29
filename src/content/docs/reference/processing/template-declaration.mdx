@@ -1,0 +1,97 @@
+---
+title: qti-template-declaration
+description: Declares a template variable used to create variations (clones) of an assessment item.
+sidebar:
+  order: 3
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+
+<SupportBadge  />
+
+The `qti-template-declaration` element declares a *template variable*: a variable whose value is set at item instantiation to produce a variation (clone) of the item. Template variables let a single item definition generate many parameterised versions, for example a maths question where the numbers change on each attempt.
+
+## Purpose
+
+Use `qti-template-declaration` when you want one item to yield multiple variations rather than authoring each variant by hand. Typical uses:
+
+- Randomising the operands of a maths problem (for example the variables `A` and `B` in `A + B`).
+- Selecting from a set of contexts, names, or wordings so the item reads differently each time.
+- Driving conditional content or correct-response values that depend on the chosen variation.
+
+The values of template variables are computed by [qti-template-processing](/reference/processing/response-processing/) when the item is instantiated. Once set, they can be referenced from response processing, from correct responses, and from the item body.
+
+## Place in the hierarchy
+
+`qti-template-declaration` appears directly inside `qti-assessment-item`, alongside `qti-response-declaration` and `qti-outcome-declaration`. It is populated by `qti-template-processing` at instantiation time. Like other variable declarations it may optionally contain a default value, and it binds a named template variable that the rest of the item can reference.
+
+## Attributes
+
+<AttributesTable
+  attributes={[
+    { name: 'identifier', type: 'identifier', required: true, description: 'The name that identifies this template variable. Used to reference the variable elsewhere in the item, for example <code>A</code> or <code>B</code>.' },
+    { name: 'cardinality', type: 'enumeration', required: true, description: 'The cardinality of the variable: <code>single</code>, <code>multiple</code>, <code>ordered</code> or <code>record</code>.' },
+    { name: 'base-type', type: 'enumeration', required: true, description: 'The base type of the variable, for example <code>integer</code>, <code>float</code>, <code>string</code> or <code>identifier</code>. Not required when the cardinality is <code>record</code>.' },
+    { name: 'param-variable', type: 'boolean', required: false, description: 'When <code>true</code>, the value of this variable may be substituted into an object parameter (for example a value passed to embedded media or a custom interaction).' },
+    { name: 'math-variable', type: 'boolean', required: false, description: 'When <code>true</code>, the value of this variable may be substituted into MathML content, allowing rendered mathematics to vary per instantiation.' },
+  ]}
+  caption="Attributes of qti-template-declaration"
+/>
+
+## Example
+
+<Example title="Template variables A and B for a maths item">
+
+```xml
+<qti-assessment-item
+  xmlns="http://www.imsglobal.org/xsd/imsqtiasi_v3p0"
+  identifier="add-two-numbers"
+  title="Add two numbers"
+  adaptive="false"
+  time-dependent="false">
+
+  <qti-template-declaration
+    identifier="A"
+    cardinality="single"
+    base-type="integer"
+    math-variable="true"/>
+
+  <qti-template-declaration
+    identifier="B"
+    cardinality="single"
+    base-type="integer"
+    math-variable="true"/>
+
+  <qti-response-declaration identifier="RESPONSE" cardinality="single" base-type="integer"/>
+
+  <qti-outcome-declaration identifier="SCORE" cardinality="single" base-type="float"/>
+
+  <!-- qti-template-processing assigns random values to A and B here -->
+
+  <qti-item-body>
+    <p>What is <qti-printed-variable identifier="A"/> + <qti-printed-variable identifier="B"/>?</p>
+    <qti-text-entry-interaction response-identifier="RESPONSE" expected-length="3"/>
+  </qti-item-body>
+
+</qti-assessment-item>
+```
+
+</Example>
+
+## Cross-references
+
+<Related
+  links={[
+    { href: '/concepts/variables-and-declarations/', label: 'Variables and declarations', description: 'How QTI variables are declared, typed, and referenced.' },
+    { href: '/reference/processing/response-processing/', label: 'Response and template processing', description: 'Where template variable values are computed at instantiation.' },
+    { href: '/reference/processing/response-declaration/', label: 'qti-response-declaration', description: 'Declares the variable that captures a candidate response.' },
+    { href: '/reference/processing/outcome-declaration/', label: 'qti-outcome-declaration', description: 'Declares outcome variables such as scores and feedback.' },
+    { href: '/concepts/assessment-item/', label: 'Assessment item', description: 'The container element that holds all variable declarations.' },
+  ]}
+/>
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about template declarations in the QTI 3.0 specification</SpecLink>

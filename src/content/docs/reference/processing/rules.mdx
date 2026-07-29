@@ -1,0 +1,98 @@
+---
+title: Response rules
+description: "The control-flow statements of response processing: conditions and outcome assignments."
+sidebar:
+  order: 6
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+
+<SupportBadge phpQti3="yes" />
+
+Response rules are the imperative statements that make up the body of [response processing](/reference/processing/response-processing/). Where [expressions and operators](/reference/processing/expressions/) compute values, rules decide **what happens**: they branch on conditions, assign values to outcome variables, and can stop processing early. A rule sub-tree combines rules (the control flow) with expressions (the values those rules act on).
+
+## Purpose
+
+Use response rules to turn a candidate's captured responses into outcome values such as `SCORE` and `FEEDBACK`. The main rules are:
+
+- **`qti-response-condition`** — the `if / else-if / else` branching construct. It contains one `qti-response-if`, zero or more `qti-response-else-if`, and an optional `qti-response-else`.
+- **`qti-set-outcome-value`** — assigns the result of a contained expression to a named outcome variable (for example, setting `SCORE`).
+- **`qti-lookup-outcome-value`** — sets an outcome variable by looking a value up in the interpolation or match table declared on that outcome.
+- **`qti-exit-response`** — stops response processing immediately; any rules after it are not evaluated.
+- **`qti-response-processing-fragment`** — an inline container that groups a reusable sequence of rules, typically expanded from a shared [response-processing template](/reference/processing/built-in-templates/).
+
+## Place in the hierarchy
+
+Response rules appear directly inside [`qti-response-processing`](/reference/processing/response-processing/), and inside the branch containers of a `qti-response-condition`:
+
+- `qti-response-condition` holds `qti-response-if` → (optional) `qti-response-else-if`(s) → (optional) `qti-response-else`.
+- `qti-response-if` and `qti-response-else-if` begin with a single boolean [expression](/reference/processing/expressions/) (its condition), followed by the rules to run when that condition is `true`.
+- `qti-response-else` holds only rules (no condition).
+- `qti-set-outcome-value`, `qti-lookup-outcome-value`, `qti-exit-response`, and `qti-response-processing-fragment` are leaf/sequence rules that may appear at the top level of response processing or nested inside any branch.
+
+Rules that assign values (`qti-set-outcome-value`, `qti-lookup-outcome-value`) reference an [outcome variable](/reference/processing/outcome-declaration/) by its `identifier`; the values they read typically come from [response variables](/reference/processing/response-declaration/) via expressions and operators.
+
+## Attributes
+
+<AttributesTable
+  attributes={[
+    { name: 'qti-response-condition', type: 'element', description: 'Branching construct. Contains one <code>qti-response-if</code>, zero or more <code>qti-response-else-if</code>, and an optional <code>qti-response-else</code>. The first branch whose condition is <code>true</code> runs; if none match, the <code>qti-response-else</code> runs.' },
+    { name: 'qti-response-if', type: 'element', description: 'First branch of a condition. Starts with one boolean expression; if it evaluates to <code>true</code>, the rules that follow are executed.' },
+    { name: 'qti-response-else-if', type: 'element', description: 'Additional branch, evaluated only if all preceding branches were <code>false</code>. Also starts with a single boolean expression followed by rules.' },
+    { name: 'qti-response-else', type: 'element', description: 'Fallback branch containing only rules (no condition). Runs when no <code>if</code>/<code>else-if</code> condition matched.' },
+    { name: 'qti-set-outcome-value', type: 'element', description: 'Assigns the value of its contained expression to the outcome variable named by its <code>identifier</code> attribute.' },
+    { name: 'qti-lookup-outcome-value', type: 'element', description: 'Sets the outcome variable named by <code>identifier</code> using the interpolation or match table declared on that outcome, indexed by the contained expression.' },
+    { name: 'qti-exit-response', type: 'element', description: 'Terminates response processing immediately. No attributes; any rules after it are skipped.' },
+    { name: 'qti-response-processing-fragment', type: 'element', description: 'Groups a reusable sequence of response rules, commonly used when expanding a shared response-processing template.' },
+  ]}
+  caption="Main response-rule (statement) elements and their purpose"
+/>
+
+Note that `qti-set-outcome-value` and `qti-lookup-outcome-value` carry a required `identifier` attribute naming the target outcome variable.
+
+## Example
+
+<Example title="A response-condition assigning SCORE with a fallback">
+
+```xml
+<qti-response-processing>
+  <qti-response-condition>
+    <qti-response-if>
+      <qti-match>
+        <qti-variable identifier="RESPONSE"/>
+        <qti-correct identifier="RESPONSE"/>
+      </qti-match>
+      <qti-set-outcome-value identifier="SCORE">
+        <qti-base-value base-type="float">1.0</qti-base-value>
+      </qti-set-outcome-value>
+    </qti-response-if>
+    <qti-response-else>
+      <qti-set-outcome-value identifier="SCORE">
+        <qti-base-value base-type="float">0.0</qti-base-value>
+      </qti-set-outcome-value>
+    </qti-response-else>
+  </qti-response-condition>
+</qti-response-processing>
+```
+
+</Example>
+
+## Cross-references
+
+<Related
+  links={[
+    { href: '/reference/processing/response-processing/', label: 'qti-response-processing', description: 'The container that holds these rules and runs when a response is submitted.' },
+    { href: '/reference/processing/expressions/', label: 'Expressions', description: 'The values that conditions test and that qti-set-outcome-value assigns.' },
+    { href: '/reference/processing/operators/', label: 'Operators', description: 'Boolean and numeric operators used to build a branch condition.' },
+    { href: '/reference/processing/outcome-declaration/', label: 'qti-outcome-declaration', description: 'Declares the outcome variables that rules assign, including lookup tables.' },
+    { href: '/reference/processing/response-declaration/', label: 'qti-response-declaration', description: 'Declares the response variables and correct values that conditions read.' },
+    { href: '/reference/processing/built-in-templates/', label: 'Built-in templates', description: 'Standard rule sequences you can reference instead of writing them by hand.' },
+    { href: '/concepts/outcomes-and-scoring/', label: 'Outcomes and scoring', description: 'Conceptual overview of how rules produce SCORE and other outcomes.' },
+  ]}
+/>
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about response rules in the QTI 3.0 specification</SpecLink>

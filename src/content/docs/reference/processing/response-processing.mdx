@@ -1,0 +1,105 @@
+---
+title: qti-response-processing
+description: The container of rules that map candidate responses to outcome values.
+sidebar:
+  order: 4
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+
+<SupportBadge phpQti3="yes" />
+
+`qti-response-processing` is the container element inside an assessment item that holds the scoring logic. It maps the candidate's recorded responses onto outcome variables such as `SCORE`. It either references a standard response processing template through its `template` attribute, or contains an explicit set of response rules.
+
+## Purpose
+
+Use `qti-response-processing` when an item needs to compute outcomes from the responses a candidate has submitted. It is where the raw data captured by interactions is turned into scores and other outcome values.
+
+There are two mutually exclusive ways to define the logic:
+
+- **By template** — set the `template` attribute (or `template-location`) to a URI identifying a standard template such as match-correct or map-response. This is the simplest approach for common scoring patterns and needs no explicit rules.
+- **By explicit rules** — omit the template and place child response rules directly inside the element. This is required whenever the scoring is too specific to be expressed by a built-in template.
+
+An item declares at most one `qti-response-processing` element. For the conceptual background on how responses become outcomes, see the [response processing overview](/concepts/response-processing/).
+
+## Place in the hierarchy
+
+- **Parent:** `qti-assessment-item`. It appears after the `qti-item-body`, alongside the variable declarations.
+- **Children:** when no template is used, a sequence of response rules such as `qti-set-outcome-value`, `qti-response-condition`, and `qti-exit-response`. When a template is used, the element is typically empty.
+- **Variables it uses:** it reads the `qti-response-declaration` variables (for example `RESPONSE`) and writes to `qti-outcome-declaration` variables (for example `SCORE`). It does not itself bind to a single variable — it operates across all declared variables of the item.
+
+## Attributes
+
+<AttributesTable
+  attributes={[
+    {
+      name: 'template',
+      type: 'URI',
+      required: false,
+      description: 'Identifies a standard response processing template to apply, for example <code>https://www.imsglobal.org/question/qti_v3p0/rptemplates/match_correct</code>. When set, the element should not also contain explicit rules.'
+    },
+    {
+      name: 'template-location',
+      type: 'URI',
+      required: false,
+      description: 'A URI to an external file containing the response processing template to use, as an alternative to referencing a well-known template by <code>template</code>.'
+    }
+  ]}
+  caption="Attributes of qti-response-processing"
+/>
+
+## Example
+
+<Example title="Referencing a standard template">
+
+```xml
+<qti-response-processing
+  template="https://www.imsglobal.org/question/qti_v3p0/rptemplates/match_correct"/>
+```
+
+</Example>
+
+<Example title="Explicit rules that set SCORE">
+
+```xml
+<qti-response-processing>
+  <qti-response-condition>
+    <qti-response-if>
+      <qti-match>
+        <qti-variable identifier="RESPONSE"/>
+        <qti-correct identifier="RESPONSE"/>
+      </qti-match>
+      <qti-set-outcome-value identifier="SCORE">
+        <qti-base-value base-type="float">1</qti-base-value>
+      </qti-set-outcome-value>
+    </qti-response-if>
+    <qti-response-else>
+      <qti-set-outcome-value identifier="SCORE">
+        <qti-base-value base-type="float">0</qti-base-value>
+      </qti-set-outcome-value>
+    </qti-response-else>
+  </qti-response-condition>
+</qti-response-processing>
+```
+
+</Example>
+
+## Cross-references
+
+<Related
+  links={[
+    { href: '/concepts/response-processing/', label: 'Response processing (concept)', description: 'How recorded responses are turned into outcome values.' },
+    { href: '/reference/processing/built-in-templates/', label: 'Built-in templates', description: 'The standard templates you can reference with the template attribute.' },
+    { href: '/reference/processing/rules/', label: 'Response rules', description: 'The rule elements you place inside explicit response processing.' },
+    { href: '/reference/processing/expressions/', label: 'Expressions', description: 'Value-producing constructs used within rules.' },
+    { href: '/reference/processing/operators/', label: 'Operators', description: 'Operators such as match and correct used to build expressions.' },
+    { href: '/reference/processing/response-declaration/', label: 'qti-response-declaration', description: 'Declares the response variables that processing reads.' },
+    { href: '/reference/processing/outcome-declaration/', label: 'qti-outcome-declaration', description: 'Declares the outcome variables that processing writes.' }
+  ]}
+/>
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about response processing in the QTI 3.0 specification</SpecLink>

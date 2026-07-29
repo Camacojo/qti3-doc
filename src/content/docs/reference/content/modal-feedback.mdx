@@ -1,0 +1,68 @@
+---
+title: qti-modal-feedback
+description: Item-level feedback shown after the attempt, selected by an outcome variable.
+sidebar:
+  order: 3
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+
+<SupportBadge qtiComponents="yes" />
+
+**Modal feedback** (`qti-modal-feedback`) is feedback shown after the candidate
+submits an [item](/concepts/assessment-item/), typically in a dialog or a
+distinct block. It appears only when a feedback [outcome variable](/concepts/outcomes-and-scoring/)
+matches its identifier.
+
+## Purpose
+
+Use modal feedback to react to the whole attempt — "Correct!", a worked solution,
+or a hint — once [response processing](/concepts/response-processing/) has run.
+For feedback woven into the body of the item, use
+[`qti-feedback-block` / `qti-feedback-inline`](/reference/content/feedback-block-and-inline/).
+
+## Place in the hierarchy
+
+- **Parent:** the `qti-assessment-item` (a direct child, not inside the item body).
+- **Driven by:** an outcome variable (commonly `FEEDBACK`) that response
+  processing sets to this block's `identifier`.
+
+## Attributes
+
+<AttributesTable attributes={[
+  { name: 'outcome-identifier', type: 'identifier', required: true, description: 'The outcome variable whose value selects this feedback.' },
+  { name: 'identifier', type: 'identifier', required: true, description: 'The value the outcome must hold for this feedback to show.' },
+  { name: 'show-hide', type: 'show | hide', default: 'show', description: 'Whether a match shows or hides the content.' },
+  { name: 'title', type: 'string', description: 'Optional title for the feedback (e.g. a dialog heading).' },
+]} caption="qti-modal-feedback attributes" />
+
+## Example
+
+<Example title="Show a message when the answer is correct">
+```xml
+<!-- in response processing -->
+<qti-set-outcome-value identifier="FEEDBACK">
+  <qti-base-value base-type="identifier">CORRECT</qti-base-value>
+</qti-set-outcome-value>
+
+<!-- direct child of qti-assessment-item -->
+<qti-modal-feedback outcome-identifier="FEEDBACK" identifier="CORRECT" show-hide="show" title="Well done">
+  <p>Correct — Amsterdam is the capital of the Netherlands.</p>
+</qti-modal-feedback>
+```
+</Example>
+
+## Cross-references
+
+<Related links={[
+  { href: '/concepts/feedback/', label: 'Feedback', description: 'How feedback works, conceptually' },
+  { href: '/reference/content/feedback-block-and-inline/', label: 'qti-feedback-block / -inline', description: 'Feedback inside the item body' },
+  { href: '/reference/processing/rules/', label: 'Response rules', description: 'Setting the feedback outcome' },
+  { href: '/concepts/outcomes-and-scoring/', label: 'Outcomes & scoring', description: 'The variable feedback reads' },
+]} />
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about qti-modal-feedback in the QTI 3.0 specification</SpecLink>

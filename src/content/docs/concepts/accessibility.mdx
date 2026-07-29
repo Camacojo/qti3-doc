@@ -1,0 +1,67 @@
+---
+title: Accessibility (PNP & catalog)
+description: How QTI 3.0 supports accessible delivery through Personal Needs & Preferences and catalog information providing alternative content.
+sidebar:
+  order: 10
+---
+
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+
+Accessibility is built into QTI 3.0 rather than bolted on. The standard lets an
+item carry **alternative content**, and lets a candidate's **needs and
+preferences** decide which content is delivered — so one item can serve many
+learners.
+
+## Two halves that work together
+
+- **PNP — Personal Needs & Preferences.** A description of what a candidate
+  needs: larger text, spoken audio, a glossary, extra time, simplified language.
+  It travels with the session, not the item.
+- **Catalog.** A block inside an item that provides *alternatives* for its
+  content — a spoken version, a glossary definition, sign-language video,
+  keyword translations. Each alternative is tagged so a player can pick the right
+  one for the candidate's PNP.
+
+At delivery, the player matches the PNP against the catalog and substitutes or
+adds content accordingly.
+
+## How a catalog is wired up
+
+Content that has alternatives references a catalog by `data-catalog-idref`; the
+`qti-catalog-info` block holds the alternatives, each in a `qti-card` for a
+`support` type such as `glossary-on-screen` or `spoken`.
+
+<Example title="A glossary alternative for a term">
+```xml
+<p>The <span data-catalog-idref="cat-photosynthesis">photosynthesis</span> process…</p>
+
+<qti-catalog-info>
+  <qti-catalog id="cat-photosynthesis">
+    <qti-card support="glossary-on-screen">
+      <qti-html-content>
+        <div>The process by which plants convert light into chemical energy.</div>
+      </qti-html-content>
+    </qti-card>
+  </qti-catalog>
+</qti-catalog-info>
+```
+</Example>
+
+## Relationship to APIP
+
+Earlier work on accessible assessment was standardised as **APIP** (Accessible
+Portable Item Protocol). QTI 3.0 absorbs those ideas into the core catalog and
+PNP model, so most accessibility needs are met with standard QTI rather than a
+separate profile.
+
+## Why product teams care
+
+Supporting PNP and catalogs is often the difference between meeting accessibility
+obligations with a single item bank versus maintaining parallel accessible copies.
+See [Why QTI 3.0?](/onboarding/why-qti/).
+
+<Related links={[
+  { href: '/concepts/item-body/', label: 'Item body', description: 'Where catalog references live' },
+  { href: '/onboarding/why-qti/', label: 'Why QTI 3.0?', description: 'The accessibility business case' },
+]} />

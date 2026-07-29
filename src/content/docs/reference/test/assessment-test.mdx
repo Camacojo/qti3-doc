@@ -1,0 +1,68 @@
+---
+title: qti-assessment-test
+description: The root element of a QTI test — declares test outcomes, contains test parts, and aggregates item scores.
+sidebar:
+  order: 1
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+
+<SupportBadge qtiComponents="yes" />
+
+`qti-assessment-test` is the root of a test: an ordered structure of
+[items](/concepts/assessment-item/), delivered as one sitting, with rules for how
+their scores aggregate. For the conceptual overview see
+[Assessment test & sections](/concepts/assessment-test-and-sections/).
+
+## Place in the hierarchy
+
+- **Children (in order):** test-level [`qti-outcome-declaration`](/reference/processing/outcome-declaration/),
+  one or more [`qti-test-part`](/reference/test/test-part/), an optional
+  [`qti-outcome-processing`](/reference/processing/outcome-processing/), and
+  optional test feedback.
+- Items are never inlined; test parts contain
+  [sections](/reference/test/assessment-section/) that reference items by `href`.
+
+## Attributes
+
+<AttributesTable attributes={[
+  { name: 'identifier', type: 'identifier', required: true, description: 'A unique identifier for the test.' },
+  { name: 'title', type: 'string', required: true, description: 'A human-readable title.' },
+]} caption="qti-assessment-test attributes" />
+
+## Example
+
+<Example title="A test with one part, one section and a total score">
+```xml
+<qti-assessment-test identifier="quiz-geo" title="Geography quiz">
+  <qti-outcome-declaration identifier="SCORE" cardinality="single" base-type="float">
+    <qti-default-value><qti-value>0</qti-value></qti-default-value>
+  </qti-outcome-declaration>
+
+  <qti-test-part identifier="part1" navigation-mode="linear" submission-mode="individual">
+    <qti-assessment-section identifier="sec1" title="Capitals" visible="true">
+      <qti-assessment-item-ref identifier="I1" href="items/capital-nl.xml"/>
+      <qti-assessment-item-ref identifier="I2" href="items/capital-be.xml"/>
+    </qti-assessment-section>
+  </qti-test-part>
+
+  <qti-outcome-processing>
+    <!-- sum every item SCORE into the test SCORE -->
+  </qti-outcome-processing>
+</qti-assessment-test>
+```
+</Example>
+
+## Cross-references
+
+<Related links={[
+  { href: '/concepts/assessment-test-and-sections/', label: 'Assessment test & sections', description: 'The conceptual overview' },
+  { href: '/reference/test/test-part/', label: 'qti-test-part', description: 'Navigation & submission modes' },
+  { href: '/reference/processing/outcome-processing/', label: 'qti-outcome-processing', description: 'Aggregating item scores' },
+]} />
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about qti-assessment-test in the QTI 3.0 specification</SpecLink>

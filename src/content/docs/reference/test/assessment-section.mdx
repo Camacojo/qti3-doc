@@ -1,0 +1,63 @@
+---
+title: qti-assessment-section
+description: Groups items (or nested sections) within a test part, controlling selection and ordering.
+sidebar:
+  order: 3
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+
+<SupportBadge qtiComponents="yes" />
+
+An **assessment section** (`qti-assessment-section`) groups
+[item references](/reference/test/assessment-item-ref/) — or other sections —
+inside a [test part](/reference/test/test-part/). It is where you control which
+items appear and in what order.
+
+## Place in the hierarchy
+
+- **Parent:** a [test part](/reference/test/test-part/) or another section (sections
+  can nest).
+- **Children:** optional [preconditions & branch rules](/reference/test/branch-rule-and-preconditions/),
+  [`qti-item-session-control`](/reference/test/item-session-control/) and
+  [`qti-time-limits`](/reference/test/time-limits/); optional
+  [`qti-selection` and `qti-ordering`](/reference/test/selection-and-ordering/);
+  [rubric blocks](/reference/content/rubric-block/); then one or more item
+  references or nested sections.
+
+## Attributes
+
+<AttributesTable attributes={[
+  { name: 'identifier', type: 'identifier', required: true, description: 'A unique identifier for the section.' },
+  { name: 'title', type: 'string', required: true, description: 'A human-readable title.' },
+  { name: 'visible', type: 'boolean', required: true, description: 'Whether the section is a visible structure to the candidate. Invisible sections are flattened into their parent.' },
+  { name: 'keep-together', type: 'boolean', default: 'true', description: 'Whether the children are kept together when a parent section shuffles.' },
+]} caption="qti-assessment-section attributes" />
+
+## Example
+
+<Example title="A shuffled section drawing 2 of 3 items">
+```xml
+<qti-assessment-section identifier="sec1" title="Capitals" visible="true">
+  <qti-selection select="2"/>
+  <qti-ordering shuffle="true"/>
+  <qti-assessment-item-ref identifier="I1" href="items/capital-nl.xml"/>
+  <qti-assessment-item-ref identifier="I2" href="items/capital-be.xml"/>
+  <qti-assessment-item-ref identifier="I3" href="items/capital-de.xml"/>
+</qti-assessment-section>
+```
+</Example>
+
+## Cross-references
+
+<Related links={[
+  { href: '/reference/test/selection-and-ordering/', label: 'qti-selection & qti-ordering', description: 'Pick and shuffle items' },
+  { href: '/reference/test/assessment-item-ref/', label: 'qti-assessment-item-ref', description: 'Referencing items' },
+  { href: '/reference/content/rubric-block/', label: 'qti-rubric-block', description: 'Section-level instructions' },
+]} />
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about qti-assessment-section in the QTI 3.0 specification</SpecLink>

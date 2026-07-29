@@ -1,0 +1,66 @@
+---
+/**
+ * A titled example block. Put a fenced code block (e.g. ```xml) as the default
+ * slot. Optionally provide a `demo` slot for a live rendering (Phase 4:
+ * @citolab/qti-components web components).
+ *
+ * Usage:
+ *   <Example title="Minimal choice interaction">
+ *     ```xml
+ *     <qti-choice-interaction ...>...</qti-choice-interaction>
+ *     ```
+ *   </Example>
+ */
+interface Props {
+	title?: string;
+}
+const { title } = Astro.props;
+const hasDemo = Astro.slots.has('demo');
+---
+
+<figure class="example not-content">
+	{title && <figcaption class="example-title">{title}</figcaption>}
+	<div class="example-code">
+		<slot />
+	</div>
+	{
+		hasDemo && (
+			<div class="example-demo">
+				<span class="example-demo-label">Rendered</span>
+				<slot name="demo" />
+			</div>
+		)
+	}
+</figure>
+
+<style>
+	.example {
+		margin: 1.25rem 0;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 0.5rem;
+		overflow: hidden;
+	}
+	.example-title {
+		padding: 0.5rem 0.85rem;
+		font-weight: 600;
+		font-size: var(--sl-text-sm);
+		background: var(--sl-color-gray-6);
+		border-bottom: 1px solid var(--sl-color-gray-5);
+	}
+	.example-code :global(pre) {
+		margin: 0;
+		border-radius: 0;
+	}
+	.example-demo {
+		padding: 1rem;
+		border-top: 1px solid var(--sl-color-gray-5);
+	}
+	.example-demo-label {
+		display: block;
+		margin-bottom: 0.5rem;
+		font-size: var(--sl-text-xs);
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		color: var(--sl-color-gray-3);
+	}
+</style>

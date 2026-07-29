@@ -1,0 +1,45 @@
+---
+title: qti-time-limits
+description: Sets minimum and maximum time for a test part, section or item.
+sidebar:
+  order: 7
+---
+
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+
+`qti-time-limits` constrains how long a candidate may (or must) spend. Like
+[item session control](/reference/test/item-session-control/), it can appear on a
+[test part](/reference/test/test-part/),
+[section](/reference/test/assessment-section/), or
+[item reference](/reference/test/assessment-item-ref/).
+
+## Attributes
+
+<AttributesTable attributes={[
+  { name: 'min-time', type: 'duration', description: 'Minimum time the candidate must spend before moving on (seconds).' },
+  { name: 'max-time', type: 'duration', description: 'Maximum time allowed before the session is closed (seconds).' },
+  { name: 'allow-late-submission', type: 'boolean', default: 'false', description: 'Whether a response submitted after max-time is still accepted.' },
+]} caption="qti-time-limits attributes" />
+
+## Example
+
+<Example title="A 30-minute test part">
+```xml
+<qti-test-part identifier="part1" navigation-mode="linear" submission-mode="simultaneous">
+  <qti-time-limits max-time="1800"/>
+  <!-- sections -->
+</qti-test-part>
+```
+</Example>
+
+## Cross-references
+
+<Related links={[
+  { href: '/reference/test/test-part/', label: 'qti-test-part', description: 'A common scope for time limits' },
+  { href: '/reference/test/item-session-control/', label: 'qti-item-session-control', description: 'The other session constraint' },
+]} />
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about qti-time-limits in the QTI 3.0 specification</SpecLink>

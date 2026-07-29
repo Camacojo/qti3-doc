@@ -1,0 +1,72 @@
+---
+title: Interactions overview
+description: The full catalogue of QTI 3.0 interactions grouped by how the candidate responds, with guidance on choosing the right one.
+sidebar:
+  order: 5
+---
+
+import Related from '@components/Related.astro';
+
+An **interaction** is a control in the [item body](/concepts/item-body/) through
+which a candidate gives their answer. Each interaction is bound to a
+[response variable](/concepts/variables-and-declarations/). QTI 3.0 defines
+around twenty; this page groups them so you can pick the right one.
+
+## Choosing an interaction
+
+Start from *what the candidate does*, not from the markup:
+
+- **Pick from options** → choice, inline-choice, hottext.
+- **Type an answer** → text-entry (short), extended-text (long).
+- **Arrange or connect** → order, match, associate, gap-match.
+- **Work on an image** → hotspot, select-point, graphic-*, drawing.
+- **Other input** → slider, media, upload, end-attempt, custom (PCI).
+
+## Selection interactions
+
+The candidate chooses from a fixed set.
+
+- [qti-choice-interaction](/reference/interactions/choice-interaction/) — radio/checkbox selection.
+- [qti-inline-choice-interaction](/reference/interactions/inline-choice-interaction/) — dropdown in running text.
+- [qti-hottext-interaction](/reference/interactions/hottext-interaction/) — select words/phrases in text.
+
+## Text-entry interactions
+
+The candidate types.
+
+- [qti-text-entry-interaction](/reference/interactions/text-entry-interaction/) — short inline answer.
+- [qti-extended-text-interaction](/reference/interactions/extended-text-interaction/) — essay-length answer.
+
+## Ordering & association interactions
+
+The candidate arranges or links things.
+
+- [qti-order-interaction](/reference/interactions/order-interaction/) — put choices in order.
+- [qti-match-interaction](/reference/interactions/match-interaction/) — match two sets in a grid.
+- [qti-associate-interaction](/reference/interactions/associate-interaction/) — pair members of one set.
+- [qti-gap-match-interaction](/reference/interactions/gap-match-interaction/) — drag choices into text gaps.
+
+## Graphic interactions
+
+The candidate works on an image.
+
+- [qti-hotspot-interaction](/reference/interactions/hotspot-interaction/) — select region(s).
+- [qti-select-point-interaction](/reference/interactions/select-point-interaction/) — plot point(s).
+- [qti-graphic-gap-match-interaction](/reference/interactions/graphic-gap-match-interaction/) — drag images onto an image.
+- [qti-graphic-order-interaction](/reference/interactions/graphic-order-interaction/) — order hotspots.
+- [qti-graphic-associate-interaction](/reference/interactions/graphic-associate-interaction/) — connect hotspots.
+- [qti-drawing-interaction](/reference/interactions/drawing-interaction/) — draw on an image.
+
+## Other interactions
+
+- [qti-slider-interaction](/reference/interactions/slider-interaction/) — pick a value on a range.
+- [qti-media-interaction](/reference/interactions/media-interaction/) — play audio/video.
+- [qti-upload-interaction](/reference/interactions/upload-interaction/) — upload a file.
+- [qti-end-attempt-interaction](/reference/interactions/end-attempt-interaction/) — end the attempt (often to show feedback).
+- [qti-custom-interaction](/reference/interactions/custom-interaction/) — Portable Custom Interactions for bespoke types.
+
+<Related links={[
+  { href: '/concepts/item-body/', label: 'Item body', description: 'Where interactions live' },
+  { href: '/concepts/variables-and-declarations/', label: 'Variables & declarations', description: 'What an interaction is bound to' },
+  { href: '/reference/', label: 'Reference overview', description: 'Full element reference' },
+]} />

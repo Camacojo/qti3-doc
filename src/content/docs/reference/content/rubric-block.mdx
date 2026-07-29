@@ -1,0 +1,73 @@
+---
+title: qti-rubric-block
+description: A block of content shown to a specific audience (view) — instructions, stimulus material or scoring guidance.
+sidebar:
+  order: 1
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+
+<SupportBadge phpQti3="no" qtiComponents="yes" note="php-qti3 drops rubric blocks on regeneration (reported as a warning)." />
+
+A **rubric block** (`qti-rubric-block`) is a block of content addressed to a
+particular audience — the candidate, the scorer, a tutor, and so on. The delivery
+engine shows or hides it depending on who is viewing the item or test.
+
+## Purpose
+
+Use a rubric block when content is meant for some audiences but not others:
+
+- Instructions or context shown to the **candidate** during the attempt.
+- Passage or stimulus material introducing a group of items.
+- Scoring guidance shown only to the **scorer**, never to the candidate.
+
+Because the `view` controls visibility, the same item can carry both candidate
+instructions and private scoring notes.
+
+## Place in the hierarchy
+
+- **Parent:** the [item body](/concepts/item-body/), or an
+  [assessment section](/concepts/assessment-test-and-sections/) (section-level
+  rubric shown across the items it contains).
+- **Children:** flow content — standard HTML plus QTI elements such as
+  [`qti-printed-variable`](/reference/content/printed-variable/).
+
+## Attributes
+
+<AttributesTable attributes={[
+  { name: 'view', type: 'token list', required: true, description: 'One or more audiences the block is meant for: <code>candidate</code>, <code>scorer</code>, <code>author</code>, <code>proctor</code>, <code>testConstructor</code>, <code>tutor</code>. Space-separated.' },
+  { name: 'use', type: 'string', description: 'An optional purpose label for the block, e.g. describing the kind of rubric.' },
+]} caption="qti-rubric-block attributes" />
+
+## Example
+
+<Example title="Candidate instructions and a private scoring note">
+```xml
+<qti-item-body>
+  <qti-rubric-block view="candidate">
+    <p>Read the passage below, then answer the question.</p>
+  </qti-rubric-block>
+
+  <qti-rubric-block view="scorer">
+    <p>Award the mark only if the response names both causes.</p>
+  </qti-rubric-block>
+
+  <!-- interaction follows -->
+</qti-item-body>
+```
+</Example>
+
+## Cross-references
+
+<Related links={[
+  { href: '/concepts/item-body/', label: 'Item body', description: 'Where rubric blocks live' },
+  { href: '/reference/content/assessment-stimulus/', label: 'qti-assessment-stimulus', description: 'Shared passage material across items' },
+  { href: '/reference/content/printed-variable/', label: 'qti-printed-variable', description: 'Show a variable value inside content' },
+  { href: '/concepts/accessibility/', label: 'Accessibility', description: 'Alternative content via catalogs' },
+]} />
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about qti-rubric-block in the QTI 3.0 specification</SpecLink>

@@ -1,0 +1,56 @@
+---
+title: Why QTI 3.0?
+description: The value of QTI for interoperability, portability and reuse — framed for product and business decisions, without the XML.
+sidebar:
+  order: 2
+---
+
+import Related from '@components/Related.astro';
+
+This page is for product managers and decision-makers weighing whether to adopt
+QTI. The short version: **QTI protects your investment in assessment content by
+making it portable.**
+
+## The problem it solves
+
+Assessment content is expensive to author and quality-assure. Without a standard,
+each item is locked into the tool that created it. Switching vendors, combining
+item banks, or delivering the same content in a new player means re-authoring
+everything — and re-validating it.
+
+## What you gain
+
+- **Vendor independence.** Content authored to QTI can be delivered by any
+  QTI-capable player. You are not locked to one supplier.
+- **Reuse across contexts.** The same item bank can feed formative practice,
+  summative exams, and third-party platforms.
+- **Longevity.** An open, versioned standard outlives individual products, so
+  content stays usable for years.
+- **An ecosystem of tools.** Authoring tools, delivery engines, and open-source
+  libraries already speak QTI — you can assemble a stack rather than build it.
+- **Accessibility built in.** QTI has first-class support for describing
+  alternative content and candidate needs, helping meet accessibility
+  obligations. See [Accessibility](/concepts/accessibility/).
+
+## What to be realistic about
+
+- **"QTI-compliant" is a spectrum.** Tools support different subsets of
+  interactions and features. Interoperability in practice depends on the overlap
+  between the tools you use — always test round-trips with real content.
+- **Delivery is still yours to build.** QTI describes content and scoring, not
+  the test-taking experience, session handling, or reporting.
+- **Migration has a cost.** Moving legacy content into QTI is a project, though a
+  one-time one that pays back through portability.
+
+## Where Kennisnet fits
+
+Kennisnet maintains the open-source [`kennisnet/php-qti3`](/onboarding/open-source-packages/)
+library for working with QTI 3.0 on the server, complementing browser rendering
+via [`@citolab/qti-components`](/onboarding/open-source-packages/). Together they
+let teams adopt QTI without starting from zero.
+
+<Related links={[
+  { href: '/onboarding/what-is-qti-3/', label: 'What is QTI 3.0?', description: 'The technical introduction' },
+  { href: '/onboarding/open-source-packages/', label: 'Open-source packages', description: 'Tooling to get started' },
+  { href: '/onboarding/ecosystem-and-tools/', label: 'The QTI ecosystem', description: 'Authoring, delivery and the spec' },
+]} />

@@ -1,0 +1,62 @@
+---
+title: qti-stylesheet
+description: Attach an external CSS stylesheet to an item or test for presentation.
+sidebar:
+  order: 6
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+
+<SupportBadge qtiComponents="yes" />
+
+`qti-stylesheet` links an external CSS stylesheet to an [item](/concepts/assessment-item/)
+so its content can be styled, much like `<link rel="stylesheet">` in HTML.
+
+## Purpose
+
+Use it to apply consistent presentation to an item's [body](/concepts/item-body/):
+fonts, colours, layout. Prefer QTI's **shared CSS vocabulary** (standard class
+names such as `qti-input-width-*`) for styling that stays portable across
+delivery engines, and use a stylesheet for the rest.
+
+## Place in the hierarchy
+
+A child of `qti-assessment-item`, declared before the item body. The referenced
+CSS file must be included in the [content package](/reference/packaging/content-package/)
+and listed in the [manifest](/reference/packaging/imsmanifest/).
+
+## Attributes
+
+<AttributesTable attributes={[
+  { name: 'href', type: 'URI', required: true, description: 'Relative path to the CSS file within the package.' },
+  { name: 'type', type: 'mime-type', default: 'text/css', description: 'The stylesheet media type.' },
+  { name: 'media', type: 'string', description: 'Optional media query, as in HTML (e.g. <code>screen</code>, <code>print</code>).' },
+  { name: 'title', type: 'string', description: 'Optional title for the stylesheet.' },
+]} caption="qti-stylesheet attributes" />
+
+## Example
+
+<Example title="Attach a stylesheet to an item">
+```xml
+<qti-assessment-item identifier="styled-item" title="Styled item" ...>
+  <qti-stylesheet href="styles/item.css" type="text/css"/>
+  <qti-item-body>
+    <!-- content styled by item.css -->
+  </qti-item-body>
+</qti-assessment-item>
+```
+</Example>
+
+## Cross-references
+
+<Related links={[
+  { href: '/concepts/item-body/', label: 'Item body', description: 'The shared CSS vocabulary and styling' },
+  { href: '/reference/packaging/content-package/', label: 'Content package', description: 'Bundling the CSS file' },
+  { href: '/reference/packaging/imsmanifest/', label: 'imsmanifest.xml', description: 'Listing the stylesheet as a file' },
+]} />
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about qti-stylesheet in the QTI 3.0 specification</SpecLink>

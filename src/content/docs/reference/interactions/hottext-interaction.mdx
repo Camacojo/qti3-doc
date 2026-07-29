@@ -1,0 +1,133 @@
+---
+title: qti-hottext-interaction
+description: Select words or phrases marked as hot within text.
+sidebar:
+  order: 9
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+import QtiDemo from '@components/QtiDemo.astro';
+
+<SupportBadge phpQti3="yes" qtiComponents="yes" />
+
+The `qti-hottext-interaction` presents a passage of running text in which certain words or phrases are marked as selectable "hot" spans. The candidate chooses one or more of these marked spans as the response.
+
+## Purpose
+
+Use this interaction when the answer lives inside a block of text and you want the candidate to identify it in context rather than type it or pick from a separate list.
+
+- Ask learners to click the verb, the adjective, or the misspelled word in a sentence.
+- Have candidates highlight the topic sentence or the claim in a paragraph.
+- Mark several correct spans and require the candidate to find all of them.
+
+Because the selectable regions sit inline within normal block content, the surrounding prose stays intact and readable while only the designated words become interactive.
+
+## Place in the hierarchy
+
+- **Parent:** the interaction appears in the item body (see [item body](/concepts/item-body/)).
+- **Children:** block-level content (paragraphs, lists, and so on) that contains one or more `qti-hottext` elements. Each `qti-hottext` wraps the selectable word or phrase inline and carries its own `identifier`.
+- **Binds to:** the response variable named by `response-identifier`, declared with a matching [response declaration](/reference/processing/response-declaration/).
+
+The response has base type `identifier`. Use cardinality `single` when exactly one span may be chosen, and cardinality `multiple` when the candidate may select several spans. The value(s) recorded are the `identifier` values of the chosen `qti-hottext` elements.
+
+## Attributes
+
+<AttributesTable
+  attributes={[
+    {
+      name: 'response-identifier',
+      type: 'identifier',
+      required: true,
+      description: 'The identifier of the response variable bound to this interaction. Must match a declared <code>qti-response-declaration</code>.',
+    },
+    {
+      name: 'max-choices',
+      type: 'integer',
+      required: false,
+      description: 'The maximum number of hot spans the candidate may select. A value of <code>0</code> means no limit. When set to <code>1</code>, use single cardinality.',
+    },
+    {
+      name: 'min-choices',
+      type: 'integer',
+      required: false,
+      description: 'The minimum number of hot spans the candidate must select for a valid response. When <code>0</code> or omitted, a response is not required.',
+    },
+  ]}
+  caption="Attributes of qti-hottext-interaction"
+/>
+
+Each nested `qti-hottext` element carries an `identifier` attribute whose value is what gets recorded in the response when that span is selected.
+
+## Example
+
+<Example title="Select the two adjectives in the sentence">
+
+```xml
+<qti-response-declaration identifier="RESPONSE" cardinality="multiple" base-type="identifier">
+  <qti-correct-response>
+    <qti-value>HT1</qti-value>
+    <qti-value>HT3</qti-value>
+  </qti-correct-response>
+</qti-response-declaration>
+
+<qti-item-body>
+  <qti-hottext-interaction response-identifier="RESPONSE" max-choices="2" min-choices="1">
+    <qti-prompt>Click the two adjectives in the sentence below.</qti-prompt>
+    <p>
+      The <qti-hottext identifier="HT1">quick</qti-hottext>
+      <qti-hottext identifier="HT2">fox</qti-hottext> jumped over the
+      <qti-hottext identifier="HT3">lazy</qti-hottext>
+      <qti-hottext identifier="HT4">dog</qti-hottext>.
+    </p>
+  </qti-hottext-interaction>
+</qti-item-body>
+```
+
+</Example>
+
+## Try it
+
+<QtiDemo markup={`
+  <qti-hottext-interaction response-identifier="RESPONSE" max-choices="1">
+    <qti-prompt>Select the verb in the sentence.</qti-prompt>
+    <p>The quick brown fox <qti-hottext identifier="H1">jumps</qti-hottext> over the lazy <qti-hottext identifier="H2">dog</qti-hottext>.</p>
+  </qti-hottext-interaction>
+`} />
+
+## Cross-references
+
+<Related
+  links={[
+    {
+      href: '/reference/interactions/gap-match-interaction/',
+      label: 'qti-gap-match-interaction',
+      description: 'Drop choices into gaps positioned within running text.',
+    },
+    {
+      href: '/reference/interactions/inline-choice-interaction/',
+      label: 'qti-inline-choice-interaction',
+      description: 'Pick one option from a dropdown embedded inline in text.',
+    },
+    {
+      href: '/reference/interactions/choice-interaction/',
+      label: 'qti-choice-interaction',
+      description: 'Select from a discrete list of choices presented separately.',
+    },
+    {
+      href: '/reference/processing/response-declaration/',
+      label: 'qti-response-declaration',
+      description: 'Declares the response variable this interaction binds to.',
+    },
+    {
+      href: '/concepts/interactions-overview/',
+      label: 'Interactions overview',
+      description: 'How interactions fit into a QTI 3.0 assessment item.',
+    },
+  ]}
+/>
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about the hottext interaction in the QTI 3.0 specification</SpecLink>

@@ -1,0 +1,61 @@
+---
+title: Content packaging
+description: How QTI items, tests and media are bundled into an IMS Content Package and described by a manifest for exchange between systems.
+sidebar:
+  order: 9
+---
+
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+
+A single item is one XML file, but real content travels as a **package**: a ZIP
+that bundles items, tests, media, and a manifest describing them. QTI reuses the
+**IMS Content Packaging** standard for this.
+
+## What's in a package
+
+```
+package.zip
+├── imsmanifest.xml        ← lists every resource and its files
+├── items/
+│   ├── capital-nl.xml
+│   └── capital-be.xml
+├── tests/
+│   └── quiz-geo.xml
+└── images/
+    └── water-cycle.png
+```
+
+The [`imsmanifest.xml`](/reference/packaging/imsmanifest/) at the root is the
+table of contents. Each `resource` entry has a type, an identifier, an `href` to
+its main file, and `file` entries for every dependency (including media).
+
+<Example title="A minimal manifest resource entry">
+```xml
+<resource identifier="capital-nl" type="imsqti_item_xmlv3p0" href="items/capital-nl.xml">
+  <file href="items/capital-nl.xml"/>
+  <file href="images/water-cycle.png"/>
+</resource>
+```
+</Example>
+
+## Why it matters
+
+- **Self-contained exchange.** One ZIP carries everything a target system needs,
+  with no dangling references.
+- **Discovery & reuse.** [Metadata](/reference/packaging/metadata/) on resources
+  lets item banks index and search content.
+- **Validation.** Because the manifest lists every file, a validator can check
+  that a package is complete and that its XML matches the QTI schemas.
+
+## Tooling
+
+[`kennisnet/php-qti3`](/onboarding/open-source-packages/) imports and exports
+these packages as ZIPs or folders and validates them against the XSD schemas —
+see the [parsing guide](/guides/parsing-with-php-qti3/).
+
+<Related links={[
+  { href: '/reference/packaging/content-package/', label: 'Content package', description: 'The ZIP structure in detail' },
+  { href: '/reference/packaging/imsmanifest/', label: 'imsmanifest.xml', description: 'The manifest reference' },
+  { href: '/reference/packaging/metadata/', label: 'Metadata', description: 'Describing resources for reuse' },
+]} />

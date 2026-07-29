@@ -1,0 +1,67 @@
+---
+title: qti-assessment-stimulus
+description: Shared passage or source material that multiple items can reference, authored as its own resource.
+sidebar:
+  order: 2
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+
+An **assessment stimulus** (`qti-assessment-stimulus`) is a standalone piece of
+content — a reading passage, a diagram, a data table — authored once and shared
+by several [items](/concepts/assessment-item/). It keeps a shared passage in a
+single place instead of duplicating it into every item that uses it.
+
+:::note
+Renderer support for standalone stimulus resources varies; `@citolab/qti-components`
+does not register a dedicated stimulus element at the time of writing. The
+concept and packaging below are standard QTI 3.0.
+:::
+
+## Purpose
+
+Use a stimulus when a group of items share the same source material:
+
+- A reading comprehension passage answered by several questions.
+- A shared chart, map or dataset interpreted by multiple items.
+
+Editing the stimulus once updates it for every item that references it.
+
+## Place in the hierarchy
+
+- A stimulus is a **top-level resource**, structurally similar to an item but with
+  no interaction. Its content lives in a `qti-stimulus-body`.
+- It is packaged as its own resource in the
+  [content package](/reference/packaging/content-package/) and referenced by the
+  items (or the test) that use it, so delivery presents the passage alongside
+  those items.
+
+## Example
+
+<Example title="A shared reading passage">
+```xml
+<qti-assessment-stimulus
+  xmlns="http://www.imsglobal.org/xsd/imsqtiasi_v3p0"
+  identifier="passage-amazon" title="The Amazon river">
+  <qti-stimulus-body>
+    <p>The Amazon is the largest river in the world by discharge volume…</p>
+  </qti-stimulus-body>
+</qti-assessment-stimulus>
+```
+</Example>
+
+In the package manifest the stimulus is its own resource; items that use it list
+it as a dependency.
+
+## Cross-references
+
+<Related links={[
+  { href: '/reference/content/rubric-block/', label: 'qti-rubric-block', description: 'Inline passage/instructions within a single item' },
+  { href: '/reference/packaging/content-package/', label: 'Content package', description: 'How the stimulus resource is bundled' },
+  { href: '/reference/packaging/imsmanifest/', label: 'imsmanifest.xml', description: 'Declaring the stimulus resource and dependencies' },
+]} />
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about qti-assessment-stimulus in the QTI 3.0 specification</SpecLink>

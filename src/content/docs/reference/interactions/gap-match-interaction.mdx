@@ -1,0 +1,153 @@
+---
+title: qti-gap-match-interaction
+description: Drag choices into gaps within a passage of text.
+sidebar:
+  order: 8
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+import QtiDemo from '@components/QtiDemo.astro';
+
+<SupportBadge phpQti3="yes" qtiComponents="yes" />
+
+The `qti-gap-match-interaction` presents a passage of content containing one or more gaps, together with a set of draggable text choices. The candidate answers by dragging each choice into the gap where it belongs.
+
+## Purpose
+
+Use this interaction when you want the candidate to complete a passage by filling inline gaps with the correct words or phrases.
+
+- Fill-in-the-blank exercises where the answers come from a fixed, shared pool of choices.
+- Cloze-style reading comprehension tasks.
+- Vocabulary or grammar drills where distractor choices are provided alongside the correct ones.
+
+Each gap is a drop target embedded directly in the flow of the content, so the surrounding text gives context for what belongs in each position. A single choice can be reused across multiple gaps by setting its `match-max` appropriately.
+
+## Place in the hierarchy
+
+- **Parent:** the interaction lives in the item body (`qti-item-body`), typically within block-level content such as a paragraph or blockquote.
+- **Children:**
+  - `qti-gap-text` elements are the draggable choices. Each has an `identifier` and a `match-max` controlling how many gaps it may be dropped into. These are usually declared before the passage content.
+  - `qti-gap` elements are the inline drop targets, placed within the content of the passage. Each has an `identifier`.
+- **Variable binding:** it binds to a response variable (named by `response-identifier`) declared with a `qti-response-declaration`. The response has cardinality `multiple` and base-type `directedPair`, where each pair associates a `qti-gap-text` identifier with a `qti-gap` identifier (in that order: gapText then gap).
+
+## Attributes
+
+<AttributesTable
+  attributes={[
+    {
+      name: 'response-identifier',
+      type: 'identifier',
+      required: true,
+      description: 'The identifier of the bound response variable. Must match a <code>qti-response-declaration</code> with cardinality <code>multiple</code> and base-type <code>directedPair</code>.',
+    },
+    {
+      name: 'shuffle',
+      type: 'boolean',
+      required: false,
+      default: 'false',
+      description: 'When <code>true</code>, the order in which the <code>qti-gap-text</code> choices are presented is randomized for each candidate.',
+    },
+  ]}
+  caption="Attributes of qti-gap-match-interaction"
+/>
+
+Key attributes on the child elements:
+
+<AttributesTable
+  attributes={[
+    {
+      name: 'identifier',
+      type: 'identifier',
+      required: true,
+      description: 'On <code>qti-gap-text</code>: identifies the choice. On <code>qti-gap</code>: identifies the drop target. Both appear in the <code>directedPair</code> values of the response.',
+    },
+    {
+      name: 'match-max',
+      type: 'integer',
+      required: false,
+      description: 'On <code>qti-gap-text</code>: the maximum number of gaps this choice may be associated with. A value of <code>0</code> means no limit.',
+    },
+  ]}
+  caption="Common attributes on qti-gap-text and qti-gap children"
+/>
+
+## Example
+
+<Example title="Complete the sentence by dragging words into the gaps">
+
+```xml
+<qti-response-declaration identifier="RESPONSE" cardinality="multiple" base-type="directedPair">
+  <qti-correct-response>
+    <qti-value>W1 G1</qti-value>
+    <qti-value>W2 G2</qti-value>
+  </qti-correct-response>
+</qti-response-declaration>
+
+<qti-item-body>
+  <qti-gap-match-interaction response-identifier="RESPONSE" shuffle="true" max-associations="0">
+    <qti-prompt>Drag the correct word into each gap.</qti-prompt>
+    <qti-gap-text identifier="W1" match-max="1">photosynthesis</qti-gap-text>
+    <qti-gap-text identifier="W2" match-max="1">respiration</qti-gap-text>
+    <qti-gap-text identifier="W3" match-max="1">evaporation</qti-gap-text>
+    <blockquote>
+      <p>
+        Plants convert light energy into chemical energy through
+        <qti-gap identifier="G1"/>, while cells release energy from
+        glucose through <qti-gap identifier="G2"/>.
+      </p>
+    </blockquote>
+  </qti-gap-match-interaction>
+</qti-item-body>
+```
+
+</Example>
+
+## Try it
+
+<QtiDemo markup={`
+  <qti-gap-match-interaction response-identifier="RESPONSE" max-associations="0">
+    <qti-prompt>Drag the correct words into the gaps.</qti-prompt>
+    <qti-gap-text identifier="W_RIVER" match-max="1">river</qti-gap-text>
+    <qti-gap-text identifier="W_LAKE" match-max="1">lake</qti-gap-text>
+    <qti-gap-text identifier="W_SEA" match-max="1">sea</qti-gap-text>
+    <p>The Amazon is the largest <qti-gap identifier="G1"></qti-gap> in the world, far larger than any <qti-gap identifier="G2"></qti-gap>.</p>
+  </qti-gap-match-interaction>
+`} />
+
+## Cross-references
+
+<Related
+  links={[
+    {
+      href: '/reference/interactions/graphic-gap-match-interaction/',
+      label: 'qti-graphic-gap-match-interaction',
+      description: 'The graphical variant, where gaps are hotspots on an image.',
+    },
+    {
+      href: '/reference/interactions/match-interaction/',
+      label: 'qti-match-interaction',
+      description: 'Associate members of two sets using a directedPair response.',
+    },
+    {
+      href: '/reference/interactions/inline-choice-interaction/',
+      label: 'qti-inline-choice-interaction',
+      description: 'Choose from a dropdown embedded inline in a passage.',
+    },
+    {
+      href: '/reference/processing/response-declaration/',
+      label: 'qti-response-declaration',
+      description: 'Declares the multiple / directedPair response this interaction binds to.',
+    },
+    {
+      href: '/concepts/interactions-overview/',
+      label: 'Interactions overview',
+      description: 'How interactions collect candidate responses in QTI 3.0.',
+    },
+  ]}
+/>
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about gap match interactions in the QTI 3.0 specification</SpecLink>

@@ -1,0 +1,144 @@
+---
+title: qti-graphic-associate-interaction
+description: Connect hotspots on an image with lines.
+sidebar:
+  order: 14
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+
+<SupportBadge phpQti3="no" qtiComponents="yes" note="php-qti3 does not parse this interaction type." />
+
+The `qti-graphic-associate-interaction` presents a background image with a number of predefined hotspots. The candidate creates associations by drawing lines that connect pairs of hotspots.
+
+## Purpose
+
+Use this interaction when the candidate has to indicate relationships between locations, regions, or objects on an image by connecting them:
+
+- Linking related parts of a diagram, map, or schematic.
+- Pairing points on a picture that belong together (for example matching a country to its capital marked on a map).
+- Any task where "which of these marked positions go together?" is answered visually rather than with text.
+
+It is the graphic counterpart of the [qti-associate-interaction](/reference/interactions/associate-interaction/): both build unordered pairs, but here the choices are hotspots on an image instead of text-based choices.
+
+## Place in the hierarchy
+
+- **Parent:** appears in the item body, wherever block-level interaction content is allowed.
+- **Children:**
+  - A single background image, provided by a `qti-object` element.
+  - One or more `qti-associable-hotspot` elements that define the connectable regions.
+- **Bound variable:** the interaction binds to the response variable named by its `response-identifier`. That response declaration must have cardinality `multiple` and base type `pair`, because each association is an unordered pair of hotspot identifiers.
+
+Each `qti-associable-hotspot` carries:
+
+- `identifier` — the identifier used when forming pairs.
+- `shape` — the hotspot shape (for example `circle`, `rect`, `poly`, `ellipse`, `default`).
+- `coords` — the coordinates defining the hotspot, interpreted according to `shape`.
+- `match-max` — the maximum number of associations that may connect to this hotspot (`0` means unlimited).
+
+## Attributes
+
+<AttributesTable
+  attributes={[
+    {
+      name: 'response-identifier',
+      type: 'identifier',
+      required: true,
+      description: 'The identifier of the bound response variable. Must reference a response declaration with cardinality <code>multiple</code> and base type <code>pair</code>.',
+    },
+    {
+      name: 'max-associations',
+      type: 'integer',
+      required: false,
+      default: '1',
+      description: 'The maximum number of associations the candidate is allowed to make. A value of <code>0</code> means there is no limit.',
+    },
+    {
+      name: 'min-associations',
+      type: 'integer',
+      required: false,
+      default: '0',
+      description: 'The minimum number of associations the candidate must make to form a valid response. A value of <code>0</code> means the response is not required.',
+    },
+  ]}
+  caption="Attributes of qti-graphic-associate-interaction"
+/>
+
+## Example
+
+<Example title="Connect the matching points on a map">
+
+```xml
+<qti-response-declaration identifier="RESPONSE" cardinality="multiple" base-type="pair">
+  <qti-correct-response>
+    <qti-value>A P</qti-value>
+    <qti-value>B Q</qti-value>
+  </qti-correct-response>
+</qti-response-declaration>
+
+<qti-item-body>
+  <qti-graphic-associate-interaction
+    response-identifier="RESPONSE"
+    max-associations="2"
+    min-associations="1">
+    <qti-prompt>Draw a line connecting each city to its country.</qti-prompt>
+    <qti-object type="image/png" data="images/map.png" width="600" height="400"/>
+    <qti-associable-hotspot identifier="A" shape="circle" coords="120,90,10" match-max="1"/>
+    <qti-associable-hotspot identifier="B" shape="circle" coords="340,210,10" match-max="1"/>
+    <qti-associable-hotspot identifier="P" shape="circle" coords="500,110,10" match-max="1"/>
+    <qti-associable-hotspot identifier="Q" shape="circle" coords="480,300,10" match-max="1"/>
+  </qti-graphic-associate-interaction>
+</qti-item-body>
+```
+
+</Example>
+
+:::note
+A live demo is omitted here: outside a full item/player context the connector
+lines are drawn against a collapsed host, so they escape the image bounds and the
+interaction does not behave correctly. See a working example in the
+[qti-components Storybook](https://qti-components.citolab.nl).
+:::
+
+## Cross-references
+
+<Related
+  links={[
+    {
+      href: '/reference/interactions/associate-interaction/',
+      label: 'qti-associate-interaction',
+      description: 'The text-based equivalent for building unordered pairs of choices.',
+    },
+    {
+      href: '/reference/interactions/hotspot-interaction/',
+      label: 'qti-hotspot-interaction',
+      description: 'Select one or more hotspots on an image (no line drawing).',
+    },
+    {
+      href: '/reference/interactions/graphic-gap-match-interaction/',
+      label: 'qti-graphic-gap-match-interaction',
+      description: 'Drag choices onto gap positions defined on an image.',
+    },
+    {
+      href: '/reference/interactions/graphic-order-interaction/',
+      label: 'qti-graphic-order-interaction',
+      description: 'Put hotspots on an image into a sequence.',
+    },
+    {
+      href: '/concepts/interactions-overview/',
+      label: 'Interactions overview',
+      description: 'How interactions bind to response variables in QTI 3.0.',
+    },
+    {
+      href: '/reference/processing/response-declaration/',
+      label: 'qti-response-declaration',
+      description: 'Declaring the multiple / pair response variable this interaction populates.',
+    },
+  ]}
+/>
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about graphic associate interactions in the QTI 3.0 specification</SpecLink>

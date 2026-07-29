@@ -1,0 +1,139 @@
+---
+title: qti-associate-interaction
+description: Pair up members within a single set.
+sidebar:
+  order: 7
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+
+<SupportBadge phpQti3="no" qtiComponents="yes" note="php-qti3 does not parse this interaction type." />
+
+The `qti-associate-interaction` presents a single set of choices and asks the candidate to pair members of that set together. Unlike `qti-match-interaction`, which associates members drawn from two separate sets, all associations here are formed within one collection of choices.
+
+## Purpose
+
+Use this interaction when the task is to connect items that all belong to the same pool, for example:
+
+- Matching synonyms or antonyms within one word list.
+- Grouping items that logically belong together (capital cities with their countries when both appear in a single list).
+- Building pairs such as "opposite of" or "reacts with" relationships among a homogeneous set of terms.
+
+Each pairing produces an unordered pair, so linking `A` to `B` is treated the same as linking `B` to `A`.
+
+## Place in the hierarchy
+
+- **Parent** — appears in the item body (`qti-item-body`) or nested block content of an [assessment item](/concepts/assessment-item/).
+- **Children** — one or more `qti-simple-associable-choice` elements, each of which carries an `identifier`, plus optional `match-max` and `match-min` attributes that limit how many pairs a given choice may participate in.
+- **Binds to** — a [response variable](/reference/processing/response-declaration/) named by `response-identifier`. The bound variable has cardinality `multiple` and base-type `pair`; each value is an unordered pair of two choice identifiers.
+
+The matching `qti-response-declaration` therefore declares `cardinality="multiple"` and `base-type="pair"`, and its `qti-correct-response` lists each correct pair as a `qti-value` containing two identifiers separated by a space, for example `A B`.
+
+## Attributes
+
+<AttributesTable
+  attributes={[
+    {
+      name: 'response-identifier',
+      type: 'identifier',
+      required: true,
+      description: 'Identifier of the response variable bound to this interaction. Must match a <code>qti-response-declaration</code> with cardinality <code>multiple</code> and base-type <code>pair</code>.',
+    },
+    {
+      name: 'shuffle',
+      type: 'boolean',
+      default: 'false',
+      description: 'When <code>true</code>, the order in which the <code>qti-simple-associable-choice</code> elements are presented is randomized for each candidate.',
+    },
+    {
+      name: 'max-associations',
+      type: 'integer',
+      default: '1',
+      description: 'Maximum number of pairs the candidate may create. A value of <code>0</code> means there is no upper limit.',
+    },
+    {
+      name: 'min-associations',
+      type: 'integer',
+      default: '0',
+      description: 'Minimum number of pairs the candidate must create for the response to be considered valid.',
+    },
+  ]}
+  caption="Attributes of qti-associate-interaction"
+/>
+
+Each `qti-simple-associable-choice` child additionally supports `match-max` (required — the maximum number of pairs the choice may take part in, <code>0</code> for unlimited) and `match-min` (optional, default <code>0</code>).
+
+## Example
+
+<Example title="Pair opposite meanings within one set">
+
+```xml
+<qti-response-declaration identifier="RESPONSE" cardinality="multiple" base-type="pair">
+  <qti-correct-response>
+    <qti-value>hot cold</qti-value>
+    <qti-value>up down</qti-value>
+    <qti-value>fast slow</qti-value>
+  </qti-correct-response>
+</qti-response-declaration>
+
+<qti-item-body>
+  <qti-associate-interaction
+    response-identifier="RESPONSE"
+    shuffle="true"
+    max-associations="3">
+    <qti-prompt>Pair each word with its opposite.</qti-prompt>
+    <qti-simple-associable-choice identifier="hot" match-max="1">hot</qti-simple-associable-choice>
+    <qti-simple-associable-choice identifier="cold" match-max="1">cold</qti-simple-associable-choice>
+    <qti-simple-associable-choice identifier="up" match-max="1">up</qti-simple-associable-choice>
+    <qti-simple-associable-choice identifier="down" match-max="1">down</qti-simple-associable-choice>
+    <qti-simple-associable-choice identifier="fast" match-max="1">fast</qti-simple-associable-choice>
+    <qti-simple-associable-choice identifier="slow" match-max="1">slow</qti-simple-associable-choice>
+  </qti-associate-interaction>
+</qti-item-body>
+```
+
+</Example>
+
+:::note
+A standalone live demo is omitted here: outside a full item context the
+`@citolab/qti-components` renderer shows this interaction imperfectly. See a
+working example in the [qti-components Storybook](https://qti-components.citolab.nl).
+:::
+
+## Cross-references
+
+<Related
+  links={[
+    {
+      href: '/reference/interactions/match-interaction/',
+      label: 'qti-match-interaction',
+      description: 'Associate members drawn from two distinct sets rather than one.',
+    },
+    {
+      href: '/reference/interactions/graphic-associate-interaction/',
+      label: 'qti-graphic-associate-interaction',
+      description: 'The graphical counterpart, pairing hotspots on an image.',
+    },
+    {
+      href: '/reference/interactions/gap-match-interaction/',
+      label: 'qti-gap-match-interaction',
+      description: 'Drag choices into gaps embedded in a text or object.',
+    },
+    {
+      href: '/reference/processing/response-declaration/',
+      label: 'qti-response-declaration',
+      description: 'Declares the multiple/pair response variable this interaction binds to.',
+    },
+    {
+      href: '/concepts/interactions-overview/',
+      label: 'Interactions overview',
+      description: 'How interactions fit into an assessment item and its variables.',
+    },
+  ]}
+/>
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about qti-associate-interaction in the QTI 3.0 specification</SpecLink>

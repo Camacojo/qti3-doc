@@ -1,0 +1,53 @@
+---
+title: qti-weight
+description: Weights an item's outcomes when they are aggregated into the test score.
+sidebar:
+  order: 9
+---
+
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+
+`qti-weight` gives an [item reference](/reference/test/assessment-item-ref/) a
+named multiplier, so some items count for more than others when
+[outcome processing](/reference/processing/outcome-processing/) aggregates the
+test score. The item's own scoring is unchanged; only its contribution to the
+total is scaled.
+
+## Place in the hierarchy
+
+A child of [`qti-assessment-item-ref`](/reference/test/assessment-item-ref/). An
+item reference may carry several weights, each with its own identifier, and
+outcome processing chooses which to apply.
+
+## Attributes
+
+<AttributesTable attributes={[
+  { name: 'identifier', type: 'identifier', required: true, description: 'Names this weight so outcome processing can reference it.' },
+  { name: 'value', type: 'float', required: true, description: 'The multiplier applied to the item’s weighted outcome.' },
+]} caption="qti-weight attributes" />
+
+## Example
+
+<Example title="An essay item worth double">
+```xml
+<qti-assessment-item-ref identifier="essay" href="items/essay.xml">
+  <qti-weight identifier="WEIGHT" value="2.0"/>
+</qti-assessment-item-ref>
+```
+</Example>
+
+Outcome processing reads the weighted value with a `qti-test-variables`
+expression that names the `weight-identifier`.
+
+## Cross-references
+
+<Related links={[
+  { href: '/reference/test/assessment-item-ref/', label: 'qti-assessment-item-ref', description: 'The element weights attach to' },
+  { href: '/reference/processing/outcome-processing/', label: 'qti-outcome-processing', description: 'Where weights are applied' },
+  { href: '/concepts/outcomes-and-scoring/', label: 'Outcomes & scoring', description: 'How scores aggregate' },
+]} />
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about qti-weight in the QTI 3.0 specification</SpecLink>

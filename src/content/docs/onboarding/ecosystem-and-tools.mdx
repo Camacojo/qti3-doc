@@ -1,0 +1,53 @@
+---
+title: The QTI ecosystem
+description: How authoring tools, delivery engines, packages and the specification relate to each other in a QTI-based assessment stack.
+sidebar:
+  order: 3
+---
+
+import Related from '@components/Related.astro';
+
+QTI is one link in a chain that runs from authoring a question to showing a score.
+Understanding the roles helps you decide what to build and what to adopt.
+
+## The lifecycle of an item
+
+1. **Authoring.** An author creates items and tests in an authoring tool, which
+   exports them as QTI XML inside a [content package](/concepts/content-packaging/).
+2. **Storage / item banking.** Packages are stored in an item bank, tagged with
+   [metadata](/reference/packaging/metadata/) for search and reuse.
+3. **Delivery.** A delivery engine (test player) unpacks the QTI, renders the
+   [item body](/concepts/item-body/) and its [interactions](/concepts/interactions-overview/),
+   and manages the candidate's session.
+4. **Scoring.** When the candidate submits, [response processing](/concepts/response-processing/)
+   produces [outcomes](/concepts/outcomes-and-scoring/) such as a score.
+5. **Reporting.** Outcomes are collected and reported — outside the scope of QTI
+   itself.
+
+## Who does what
+
+| Role | Responsibility | QTI's part |
+| --- | --- | --- |
+| Authoring tool | Create & edit content | Exports QTI XML |
+| Item bank | Store, search, version | Reads metadata & packages |
+| Delivery engine | Render & run the session | Renders item body + interactions |
+| Scoring engine | Evaluate responses | Runs response processing |
+| Reporting | Aggregate results | Consumes outcomes (non-QTI) |
+
+The same QTI content can flow through different combinations of these tools —
+that is the whole point of the standard.
+
+## Rendering vs. processing
+
+Two distinct jobs, often handled by different components:
+
+- **Rendering** — turning the item body into an interactive UI in the browser.
+  This is what [`@citolab/qti-components`](/onboarding/open-source-packages/) does.
+- **Processing** — parsing packages, validating, and scoring responses on the
+  server. This is what [`kennisnet/php-qti3`](/onboarding/open-source-packages/) does.
+
+<Related links={[
+  { href: '/onboarding/open-source-packages/', label: 'Open-source packages', description: 'The tools referenced here' },
+  { href: '/concepts/content-packaging/', label: 'Content packaging', description: 'How content is bundled for exchange' },
+  { href: '/concepts/response-processing/', label: 'Response processing', description: 'The scoring step in detail' },
+]} />

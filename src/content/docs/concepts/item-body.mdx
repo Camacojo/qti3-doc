@@ -1,0 +1,69 @@
+---
+title: Item body
+description: The HTML5-based content model that holds an item's presentation and interactions in QTI 3.0.
+sidebar:
+  order: 3
+---
+
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+
+The **item body** (`qti-item-body`) is what the candidate sees. In QTI 3.0 it is
+**HTML5**: ordinary elements like `p`, `img`, `ul`, and `table`, mixed with QTI's
+own `qti-` elements for interactions and structure. This HTML-first model is the
+defining change of QTI 3.0.
+
+## What goes inside
+
+- **Standard HTML** for presentation: paragraphs, lists, tables, images, figures.
+- **Interactions** — the response controls, e.g.
+  [`qti-choice-interaction`](/reference/interactions/choice-interaction/). See the
+  [interactions overview](/concepts/interactions-overview/).
+- **Prompts** (`qti-prompt`) inside interactions for the question text.
+- **Structural QTI blocks** such as `qti-rubric-block` (instructions for a
+  specific audience) and feedback blocks. See [Feedback](/concepts/feedback/).
+
+<Example title="An item body mixing HTML and an interaction">
+```xml
+<qti-item-body>
+  <p>Study the diagram, then answer the question.</p>
+  <img src="images/water-cycle.png" alt="The water cycle"/>
+  <qti-choice-interaction response-identifier="RESPONSE" max-choices="1">
+    <qti-prompt>Which process is labelled <strong>A</strong>?</qti-prompt>
+    <qti-simple-choice identifier="A">Evaporation</qti-simple-choice>
+    <qti-simple-choice identifier="B">Condensation</qti-simple-choice>
+  </qti-choice-interaction>
+</qti-item-body>
+```
+</Example>
+
+## Styling with the shared vocabulary
+
+Instead of arbitrary CSS classes, QTI 3.0 defines a **shared CSS vocabulary** —
+standard class names such as `qti-input-width-*`, `qti-orientation-horizontal`,
+and layout helpers — so that a stylesheet written for one player behaves
+predictably in another. You can still add your own classes, but the shared
+vocabulary is what keeps presentation portable.
+
+An item may also reference a stylesheet with
+[`qti-stylesheet`](/reference/content/stylesheet/), and inline styling follows
+normal HTML/CSS rules.
+
+## Mathematical content
+
+Because the body is HTML5, mathematics is expressed with **MathML** embedded
+directly in the content — a `<math>` element in the MathML namespace. Delivery
+engines render it natively (or via a polyfill). Keep the MathML namespace intact
+when generating or transforming items, or the maths will not render.
+
+## Rendering
+
+The item body is exactly what a renderer like
+[`@citolab/qti-components`](/onboarding/open-source-packages/) turns into
+interactive UI in the browser.
+
+<Related links={[
+  { href: '/concepts/interactions-overview/', label: 'Interactions overview', description: 'The controls placed in the body' },
+  { href: '/concepts/accessibility/', label: 'Accessibility', description: 'Catalogs and alternative content' },
+  { href: '/guides/rendering-with-qti-components/', label: 'Render with qti-components', description: 'See a body rendered' },
+]} />

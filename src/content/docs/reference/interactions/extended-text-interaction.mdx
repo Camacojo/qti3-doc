@@ -1,0 +1,100 @@
+---
+title: qti-extended-text-interaction
+description: A longer free-text response such as an essay.
+sidebar:
+  order: 3
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+import QtiDemo from '@components/QtiDemo.astro';
+
+<SupportBadge phpQti3="yes" qtiComponents="yes" />
+
+The `qti-extended-text-interaction` presents a multi-line text area in which the candidate types a longer free-text response, such as an essay, a short explanation, or a worked-out argument. It is the long-form counterpart to the single-line `qti-text-entry-interaction`.
+
+## Purpose
+
+Use `qti-extended-text-interaction` when you want the candidate to compose a substantial written answer rather than a single word or number.
+
+- Essay questions and open-ended writing prompts.
+- Explanations, justifications, or step-by-step reasoning.
+- Any response that naturally spans multiple lines or paragraphs.
+
+Extended-text responses are usually **human-scored**: the item typically has no automatic correct answer, so there is no `qti-correct-response` in the response declaration and no automatic response processing. Scoring is deferred to a human marker (or an external scoring service). You can still supply hints to renderers, such as an expected length or number of lines.
+
+## Place in the hierarchy
+
+- **Parent:** appears within the `qti-item-body` (directly or nested inside block-level content).
+- **Children:** may contain an optional `qti-prompt` element that gives the question text or instructions shown to the candidate.
+- **Bound variable:** the `response-identifier` attribute binds the interaction to a `qti-response-declaration` with base-type `string`. Its cardinality is `single` (one block of text) or `multiple` (several separate strings, for example when `max-strings` allows more than one line to be captured as distinct values).
+
+## Attributes
+
+<AttributesTable
+  attributes={[
+    { name: 'response-identifier', type: 'identifier', required: true, description: 'Identifier of the <code>qti-response-declaration</code> that captures the candidate\'s answer. Must match a declared response variable of base-type <code>string</code>.' },
+    { name: 'expected-length', type: 'integer', required: false, description: 'A hint to the renderer for the expected number of characters in the response. Purely a rendering hint; it does not constrain what the candidate may enter.' },
+    { name: 'expected-lines', type: 'integer', required: false, description: 'A hint to the renderer for the expected number of lines of text, which can be used to size the text area.' },
+    { name: 'max-strings', type: 'integer', required: false, description: 'The maximum number of separate strings the candidate may enter. Relevant when the bound response variable has <code>multiple</code> cardinality.' },
+    { name: 'min-strings', type: 'integer', required: false, default: '0', description: 'The minimum number of non-empty strings the candidate must enter for the response to be valid.' },
+    { name: 'format', type: 'plain | preFormatted | xhtml', required: false, default: 'plain', description: 'The format expected for the response text: <code>plain</code> for plain text, <code>preFormatted</code> to preserve whitespace, or <code>xhtml</code> to allow marked-up rich text.' },
+  ]}
+  caption="Attributes of qti-extended-text-interaction"
+/>
+
+## Example
+
+<Example title="Essay prompt (human-scored)">
+
+```xml
+<qti-response-declaration identifier="RESPONSE" cardinality="single" base-type="string"/>
+
+<qti-outcome-declaration identifier="SCORE" cardinality="single" base-type="float">
+  <qti-default-value>
+    <qti-value>0</qti-value>
+  </qti-default-value>
+</qti-outcome-declaration>
+
+<qti-item-body>
+  <qti-extended-text-interaction
+    response-identifier="RESPONSE"
+    expected-lines="10"
+    expected-length="800"
+    format="plain">
+    <qti-prompt>
+      Explain how photosynthesis converts light energy into chemical energy.
+      Use at least two examples to support your answer.
+    </qti-prompt>
+  </qti-extended-text-interaction>
+</qti-item-body>
+```
+
+The response variable is declared with base-type `string` and no correct response, so the answer is stored for a human marker. The `SCORE` outcome is set during marking rather than by automatic response processing.
+
+</Example>
+
+## Try it
+
+<QtiDemo markup={`
+  <qti-extended-text-interaction response-identifier="RESPONSE" expected-lines="4">
+    <qti-prompt>In one paragraph, explain why the sky appears blue.</qti-prompt>
+  </qti-extended-text-interaction>
+`} />
+
+## Cross-references
+
+<Related
+  links={[
+    { href: '/reference/interactions/text-entry-interaction/', label: 'qti-text-entry-interaction', description: 'The single-line counterpart for short free-text answers.' },
+    { href: '/reference/processing/response-declaration/', label: 'qti-response-declaration', description: 'Declares the string variable this interaction binds to.' },
+    { href: '/concepts/interactions-overview/', label: 'Interactions overview', description: 'How interactions collect candidate responses in QTI 3.0.' },
+    { href: '/concepts/outcomes-and-scoring/', label: 'Outcomes and scoring', description: 'How human-scored responses are turned into outcome values.' },
+    { href: '/reference/processing/response-processing/', label: 'Response processing', description: 'Why extended-text items usually have no automatic response processing.' },
+  ]}
+/>
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about the extended text interaction in the QTI 3.0 specification</SpecLink>

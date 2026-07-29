@@ -1,0 +1,107 @@
+---
+title: Render with qti-components
+description: Display QTI 3.0 items in the browser using the open-source @citolab/qti-components web components — from a single interaction to a full navigable test.
+sidebar:
+  order: 2
+---
+
+import Example from '@components/Example.astro';
+import QtiDemo from '@components/QtiDemo.astro';
+import Related from '@components/Related.astro';
+
+[`@citolab/qti-components`](/onboarding/open-source-packages/) is a framework-agnostic
+Web Component library that renders QTI 3.0 content in the browser. Because the
+components are native custom elements, they work in React, Vue, Angular, or a
+plain HTML page alike.
+
+:::note
+The library is under active development (its authors label it a work in
+progress). Pin a version and test upgrades. This site uses it for the live
+examples on the interaction reference pages.
+:::
+
+## Install and register
+
+<Example title="Install">
+```bash
+npm install @citolab/qti-components
+```
+</Example>
+
+Importing the package registers all the QTI custom elements, so the browser
+knows how to upgrade `qti-*` markup into interactive UI. Also load the stylesheet:
+
+<Example title="Register the components">
+```js
+import '@citolab/qti-components';
+import '@citolab/qti-components/item.css';
+```
+</Example>
+
+There is also a CDN build: `import 'https://unpkg.com/@citolab/qti-components/cdn';`.
+
+## Three levels of use
+
+1. **A single interaction** — drop an interaction element straight into the page.
+   It renders standalone, no full item required.
+2. **`qti-item`** — render a complete assessment item with variables and scoring.
+3. **`qti-test`** — render a whole test, with navigation between items.
+
+### A single interaction (standalone)
+
+Interactions render on their own. Handy standalone attributes let you demo an
+answer without response processing:
+
+- `correct-response` — the correct answer(s) as a comma-separated string.
+- `show-correct-response` — mark the correct choice(s) inline.
+
+<Example title="A standalone choice interaction">
+```html
+<qti-choice-interaction response-identifier="RESPONSE" max-choices="1"
+    correct-response="ChoiceC" show-correct-response>
+  <qti-prompt>What is the capital of the Netherlands?</qti-prompt>
+  <qti-simple-choice identifier="ChoiceA">Rotterdam</qti-simple-choice>
+  <qti-simple-choice identifier="ChoiceB">The Hague</qti-simple-choice>
+  <qti-simple-choice identifier="ChoiceC">Amsterdam</qti-simple-choice>
+</qti-choice-interaction>
+```
+  <QtiDemo slot="demo" markup={`
+    <qti-choice-interaction response-identifier="RESPONSE" max-choices="1" correct-response="ChoiceC" show-correct-response>
+      <qti-prompt>What is the capital of the Netherlands?</qti-prompt>
+      <qti-simple-choice identifier="ChoiceA">Rotterdam</qti-simple-choice>
+      <qti-simple-choice identifier="ChoiceB">The Hague</qti-simple-choice>
+      <qti-simple-choice identifier="ChoiceC">Amsterdam</qti-simple-choice>
+    </qti-choice-interaction>
+  `} />
+</Example>
+
+### A full test
+
+For a complete test with navigation, `qti-test` loads a package by URL and pairs
+with navigation components:
+
+<Example title="Render a test with navigation">
+```html
+<qti-test navigate="item">
+  <test-navigation>
+    <test-container test-url="/path/to/assessment.xml"></test-container>
+    <test-prev>previous</test-prev>
+    <test-next>next</test-next>
+  </test-navigation>
+</qti-test>
+```
+</Example>
+
+## How this site embeds demos
+
+Each live example is rendered by a small `QtiDemo` wrapper: it passes the QTI
+markup through `set:html` (so the docs framework never has to parse the custom
+elements) and includes a client-side `import '@citolab/qti-components'` to
+register them. Use explicit closing tags in the markup — self-closing custom
+elements do not work in HTML `innerHTML`.
+
+<Related links={[
+  { href: '/onboarding/open-source-packages/', label: 'Open-source packages', description: 'Overview of the tooling' },
+  { href: '/reference/interactions/choice-interaction/', label: 'qti-choice-interaction', description: 'A reference page with a live demo' },
+  { href: '/guides/parsing-with-php-qti3/', label: 'Parse & score with php-qti3', description: 'The server-side counterpart' },
+]} />

@@ -1,0 +1,150 @@
+---
+title: Operators
+description: The operators that combine values into a result during scoring.
+sidebar:
+  order: 8
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+
+<SupportBadge phpQti3="yes" />
+
+**Operators** are expressions that take one or more sub-expressions as operands and combine their values into a single result. They form the working vocabulary of response processing: comparing a candidate's response to the correct answer, doing arithmetic on scores, and testing membership in containers all happen through operators.
+
+## Purpose
+
+Use an operator whenever a rule needs to *derive* a value from other values rather than simply read one. Operators nest freely, so the operand of one operator is typically another expression such as `qti-variable`, `qti-correct`, `qti-base-value`, or another operator.
+
+- **Logical** operators build the boolean conditions used by `qti-response-if` and related rules.
+- **Comparison** operators test one value against another and yield a single boolean.
+- **Arithmetic** operators compute numeric results, most often to build a `SCORE`.
+- **Container and string** operators inspect multi-valued responses and text.
+
+Operators propagate NULL: if a required operand is NULL, most operators return NULL rather than a value. Test for this with `qti-is-null` before relying on a result.
+
+## Operator reference
+
+Operators are grouped below by the kind of work they do. Each takes its operands as child expressions.
+
+### Logical operators
+
+<AttributesTable
+  attributes={[
+    { name: 'qti-and', type: 'boolean', description: 'True only if <code>every</code> boolean operand is true. Returns false if any operand is false; NULL propagates.' },
+    { name: 'qti-or', type: 'boolean', description: 'True if <code>at least one</code> boolean operand is true.' },
+    { name: 'qti-not', type: 'boolean', description: 'Negates a single boolean operand: true becomes false and vice versa.' }
+  ]}
+  caption="Logical operators"
+/>
+
+### Comparison operators
+
+<AttributesTable
+  attributes={[
+    { name: 'qti-match', type: 'boolean', description: 'True if the two operands are equal. Works for any base type and cardinality, comparing containers as a whole (order matters for <code>ordered</code>).' },
+    { name: 'qti-equal', type: 'boolean', description: 'True if two numeric operands are equal, using a tolerance mode (<code>exact</code>, <code>absolute</code>, or <code>relative</code>) set by its <code>tolerance</code> attributes.' },
+    { name: 'qti-equal-rounded', type: 'boolean', description: 'True if two numeric operands are equal after rounding to a given number of <code>significant-figures</code> or <code>decimal-places</code>.' },
+    { name: 'qti-gt', type: 'boolean', description: 'True if the first numeric operand is strictly greater than the second.' },
+    { name: 'qti-gte', type: 'boolean', description: 'True if the first numeric operand is greater than or equal to the second.' },
+    { name: 'qti-lt', type: 'boolean', description: 'True if the first numeric operand is strictly less than the second.' },
+    { name: 'qti-lte', type: 'boolean', description: 'True if the first numeric operand is less than or equal to the second.' }
+  ]}
+  caption="Comparison operators"
+/>
+
+### Arithmetic operators
+
+<AttributesTable
+  attributes={[
+    { name: 'qti-sum', type: 'numeric', description: 'Adds all numeric operands and returns the total.' },
+    { name: 'qti-subtract', type: 'numeric', description: 'Subtracts the second operand from the first.' },
+    { name: 'qti-product', type: 'numeric', description: 'Multiplies all numeric operands together.' },
+    { name: 'qti-divide', type: 'numeric', description: 'Divides the first operand by the second.' },
+    { name: 'qti-round', type: 'integer', description: 'Rounds a single numeric operand to the nearest integer.' }
+  ]}
+  caption="Arithmetic operators"
+/>
+
+### Container and string operators
+
+<AttributesTable
+  attributes={[
+    { name: 'qti-member', type: 'boolean', description: 'True if the first operand (a single value) is one of the values in the second operand (a container).' },
+    { name: 'qti-contains', type: 'boolean', description: 'True if the first container contains the second container as a sub-sequence.' },
+    { name: 'qti-is-null', type: 'boolean', description: 'True if its single operand is NULL (an unanswered response or empty container).' },
+    { name: 'qti-index', type: 'any', description: 'Returns the value at the 1-based position <code>n</code> within an <code>ordered</code> container.' },
+    { name: 'qti-string-match', type: 'boolean', description: 'True if two strings match; a <code>case-sensitive</code> attribute controls whether case is significant.' },
+    { name: 'qti-substring', type: 'boolean', description: 'True if the second string operand contains the first as a substring, honouring <code>case-sensitive</code>.' },
+    { name: 'qti-pattern-match', type: 'boolean', description: 'True if the string operand matches the regular expression given by the <code>pattern</code> attribute.' }
+  ]}
+  caption="Container and string operators"
+/>
+
+## Example
+
+<Example title="Combining operators to score a numeric response">
+
+```xml
+<qti-response-condition>
+  <qti-response-if>
+    <qti-and>
+      <qti-gte>
+        <qti-variable identifier="RESPONSE"/>
+        <qti-base-value base-type="float">0.5</qti-base-value>
+      </qti-gte>
+      <qti-lt>
+        <qti-variable identifier="RESPONSE"/>
+        <qti-base-value base-type="float">1.5</qti-base-value>
+      </qti-lt>
+    </qti-and>
+    <qti-set-outcome-value identifier="SCORE">
+      <qti-base-value base-type="float">1</qti-base-value>
+    </qti-set-outcome-value>
+  </qti-response-if>
+  <qti-response-else>
+    <qti-set-outcome-value identifier="SCORE">
+      <qti-base-value base-type="float">0</qti-base-value>
+    </qti-set-outcome-value>
+  </qti-response-else>
+</qti-response-condition>
+```
+
+</Example>
+
+## Cross-references
+
+<Related
+  links={[
+    {
+      href: '/reference/processing/expressions/',
+      label: 'Expressions',
+      description: 'The value-producing terms (variables, correct, base-value) that operators take as operands.'
+    },
+    {
+      href: '/reference/processing/rules/',
+      label: 'Response-processing rules',
+      description: 'The rules such as qti-response-condition that evaluate boolean operators to drive scoring.'
+    },
+    {
+      href: '/reference/processing/response-processing/',
+      label: 'qti-response-processing',
+      description: 'The container that holds the rules and expressions built from operators.'
+    },
+    {
+      href: '/concepts/response-processing/',
+      label: 'Response processing',
+      description: 'Conceptual overview of how responses are turned into scores.'
+    },
+    {
+      href: '/concepts/outcomes-and-scoring/',
+      label: 'Outcomes and scoring',
+      description: 'How arithmetic operators build outcome variables such as SCORE.'
+    }
+  ]}
+/>
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about operators in the QTI 3.0 specification</SpecLink>

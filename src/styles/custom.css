@@ -1,0 +1,52 @@
+/* QTI 3.0 Docs — simple, clear design system.
+   Built on Starlight's CSS custom properties so light/dark stay consistent. */
+
+:root {
+	/* Accent — a calm, professional blue used for links, active nav, buttons. */
+	--sl-color-accent-low: #d0e2ff;
+	--sl-color-accent: #2f6fed;
+	--sl-color-accent-high: #16386f;
+
+	/* Slightly wider content column for spec tables and code examples. */
+	--sl-content-width: 50rem;
+
+	/* Typography */
+	--sl-font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+	--sl-font-mono: 'JetBrains Mono', 'SFMono-Regular', ui-monospace, monospace;
+}
+
+:root[data-theme='dark'] {
+	--sl-color-accent-low: #14284d;
+	--sl-color-accent: #5b8dff;
+	--sl-color-accent-high: #cdddff;
+}
+
+/* Landing hero: keep it understated and readable. */
+.hero h1 {
+	letter-spacing: -0.02em;
+}
+
+/* Tables (attribute references) — comfortable, scannable. */
+.sl-markdown-content table {
+	font-size: var(--sl-text-sm);
+}
+.sl-markdown-content th {
+	background: var(--sl-color-gray-6);
+}
+.sl-markdown-content td,
+.sl-markdown-content th {
+	vertical-align: top;
+}
+
+/* Small "audience" and "support" badges reused across pages. */
+.badge-row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.4rem;
+	margin: 0.25rem 0 1rem;
+}
+
+/* Make cross-reference callouts feel light. */
+.sl-markdown-content .card {
+	border-color: var(--sl-color-gray-5);
+}

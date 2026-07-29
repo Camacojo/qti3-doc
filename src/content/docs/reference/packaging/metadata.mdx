@@ -1,0 +1,116 @@
+---
+title: Metadata
+description: QTI and LOM metadata attached to items and tests for discovery and reuse.
+sidebar:
+  order: 3
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+
+<SupportBadge phpQti3="yes" />
+
+Metadata describes what an item or test is, who made it, and how it can be used. It lets tools index, search, filter, and reuse resources in a bank without opening the underlying XML.
+
+## Purpose
+
+Attach descriptive information to the resources in a content package so that authoring tools, item banks, and delivery systems can discover and reuse them. QTI 3.0 draws on two complementary vocabularies:
+
+- **IEEE LOM (Learning Object Metadata)** — general-purpose educational metadata, organised into categories such as:
+  - *general* (title, description, keywords, language),
+  - *lifecycle* (version, contribute roles like author and publisher),
+  - *educational* (typical age range, difficulty, learning context),
+  - *technical* (format, required tools or players).
+- **QTI-specific metadata** — properties meaningful to assessment resources, for example the interaction types used, whether the item is *time dependent*, whether it is built from an item *template*, the *tool vendor*, and the *composite* or *feedback* characteristics.
+
+Use metadata whenever items and tests need to be organised, searched, or exchanged between systems rather than authored and delivered in isolation.
+
+## Place in the hierarchy
+
+Metadata is not a QTI body element; it lives alongside packaging rather than inside the item's `qti-assessment-item`. It can appear in two places:
+
+- **Resource metadata in the manifest** — inside a `<metadata>` element of a `<resource>` in `imsmanifest.xml`. This is the most common location and is what tools read when scanning a package.
+- **Accompanying metadata files** — separate XML files referenced from the manifest, used when the metadata record is large or maintained independently.
+
+Because QTI-specific and LOM elements come from their own namespaces, a manifest that carries metadata declares those namespaces at the top of the file.
+
+## Attributes
+
+Metadata is expressed through nested elements rather than attributes on a single QTI element. The table below lists the main information groups an authoring or discovery tool typically populates.
+
+<AttributesTable
+  attributes={[
+    { name: 'general.title', type: 'LangString', description: 'Human-readable name of the item or test.' },
+    { name: 'general.description', type: 'LangString', description: 'Short summary of the content, used in search results.' },
+    { name: 'general.keyword', type: 'LangString', description: 'One or more subject keywords for filtering and discovery.' },
+    { name: 'lifecycle.version', type: 'LangString', description: 'Version label of this resource.' },
+    { name: 'lifecycle.contribute', type: 'group', description: 'Role plus entity, e.g. <code>author</code> or <code>publisher</code> and the person or organisation.' },
+    { name: 'educational.difficulty', type: 'Vocabulary', description: 'Estimated difficulty, e.g. <code>very easy</code> … <code>very difficult</code>.' },
+    { name: 'educational.typicalAgeRange', type: 'LangString', description: 'Intended learner age range.' },
+    { name: 'technical.format', type: 'string', description: 'MIME type(s) of the resource content.' },
+    { name: 'qti.interaction-type', type: 'string', description: 'Interaction elements used, e.g. <code>choice-interaction</code>, <code>text-entry-interaction</code>.' },
+    { name: 'qti.time-dependent', type: 'boolean', description: 'Whether scoring or behaviour depends on time taken.' },
+    { name: 'qti.tool-vendor', type: 'string', description: 'Identifier of the authoring tool vendor that produced the resource.' },
+    { name: 'qti.item-template', type: 'boolean', description: 'Whether the item is generated from a template (cloned items).' },
+  ]}
+  caption="Common LOM and QTI-specific metadata groups used for discovery and reuse."
+/>
+
+## Example
+
+A resource entry in the manifest carrying both QTI-specific and LOM metadata. The example is trimmed to the essentials.
+
+<Example title="Resource metadata inside imsmanifest.xml">
+
+```xml
+<resource identifier="item-0001"
+          type="imsqti_item_xmlv3p0"
+          href="items/item-0001.xml">
+  <metadata>
+    <!-- QTI-specific metadata -->
+    <qti:qti-metadata xmlns:qti="http://www.imsglobal.org/xsd/imsqtiasi_metadata_v3p0">
+      <qti:interaction-type>choice-interaction</qti:interaction-type>
+      <qti:time-dependent>false</qti:time-dependent>
+      <qti:tool-vendor>example.com</qti:tool-vendor>
+    </qti:qti-metadata>
+
+    <!-- IEEE LOM metadata -->
+    <lom:lom xmlns:lom="http://ltsc.ieee.org/xsd/LOM">
+      <lom:general>
+        <lom:title>
+          <lom:string language="en">Capital of France</lom:string>
+        </lom:title>
+        <lom:keyword>
+          <lom:string language="en">geography</lom:string>
+        </lom:keyword>
+      </lom:general>
+      <lom:educational>
+        <lom:difficulty>
+          <lom:value>easy</lom:value>
+        </lom:difficulty>
+      </lom:educational>
+    </lom:lom>
+  </metadata>
+
+  <file href="items/item-0001.xml"/>
+</resource>
+```
+
+</Example>
+
+## Cross-references
+
+<Related
+  links={[
+    { href: '/reference/packaging/imsmanifest/', label: 'imsmanifest.xml', description: 'The manifest file where resource metadata is declared.' },
+    { href: '/reference/packaging/content-package/', label: 'Content package', description: 'How items, tests, and metadata are bundled together.' },
+    { href: '/concepts/content-packaging/', label: 'Content packaging concept', description: 'Why packaging and metadata matter for exchange and reuse.' },
+    { href: '/concepts/assessment-item/', label: 'Assessment item', description: 'The resource that metadata most often describes.' },
+    { href: '/concepts/interactions-overview/', label: 'Interactions overview', description: 'The interaction types recorded in QTI-specific metadata.' },
+  ]}
+/>
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about metadata in the QTI 3.0 specification</SpecLink>

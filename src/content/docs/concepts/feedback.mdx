@@ -1,0 +1,61 @@
+---
+title: Feedback
+description: Modal, inline and block feedback in QTI — how content is shown to candidates based on outcome values.
+sidebar:
+  order: 8
+---
+
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+
+**Feedback** is content shown to the candidate that depends on how they answered.
+It is not free-form: feedback is selected by an [outcome variable](/concepts/outcomes-and-scoring/)
+that [response processing](/concepts/response-processing/) sets.
+
+## The pattern
+
+Feedback always works the same way:
+
+1. Response processing sets a feedback outcome (commonly `FEEDBACK`) to an
+   identifier.
+2. A feedback element declares `outcome-identifier` and `identifier`, plus
+   `show-hide="show"`. It appears only when the outcome matches its identifier.
+
+<Example title="Show feedback only when the answer is correct">
+```xml
+<!-- in response processing -->
+<qti-set-outcome-value identifier="FEEDBACK">
+  <qti-base-value base-type="identifier">CORRECT</qti-base-value>
+</qti-set-outcome-value>
+
+<!-- in the item -->
+<qti-modal-feedback outcome-identifier="FEEDBACK" identifier="CORRECT" show-hide="show">
+  <p>Correct — Amsterdam is the capital of the Netherlands.</p>
+</qti-modal-feedback>
+```
+</Example>
+
+## The three kinds
+
+- **Modal feedback** (`qti-modal-feedback`) — shown after the attempt, typically
+  in a dialog. Declared at item level.
+- **Feedback block** (`qti-feedback-block`) — block-level feedback embedded in the
+  [item body](/concepts/item-body/).
+- **Feedback inline** (`qti-feedback-inline`) — inline feedback within a line of
+  text.
+
+All three use the same `outcome-identifier` / `identifier` / `show-hide`
+mechanism; they differ only in where and how they render.
+
+## Adaptive items
+
+In adaptive items, feedback and further interactions can be revealed across
+multiple attempts, often using an
+[end-attempt interaction](/reference/interactions/end-attempt-interaction/) to
+submit and reveal feedback without ending the item.
+
+<Related links={[
+  { href: '/concepts/response-processing/', label: 'Response processing', description: 'Sets the feedback outcome' },
+  { href: '/concepts/outcomes-and-scoring/', label: 'Outcomes & scoring', description: 'The variable feedback reads' },
+  { href: '/reference/interactions/end-attempt-interaction/', label: 'qti-end-attempt-interaction', description: 'Reveal feedback mid-item' },
+]} />

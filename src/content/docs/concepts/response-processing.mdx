@@ -1,0 +1,80 @@
+---
+title: Response processing
+description: How QTI turns a candidate's response into outcome values using rules, expressions and reusable templates.
+sidebar:
+  order: 6
+---
+
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+
+**Response processing** is the scoring engine of an item. After the candidate
+submits, it reads the [response variables](/concepts/variables-and-declarations/)
+and writes [outcome variables](/concepts/outcomes-and-scoring/) such as `SCORE`.
+It lives in a single `qti-response-processing` element.
+
+## Two ways to do it
+
+**1. Use a built-in template.** The common cases are covered by standardised
+[response processing templates](/reference/processing/built-in-templates/),
+referenced by URI. No rules to write:
+
+<Example title="Score with the match_correct template">
+```xml
+<qti-response-processing
+  template="https://www.imsglobal.org/question/qti_v3p0/rptemplates/match_correct"/>
+```
+</Example>
+
+The three built-ins:
+
+- **match_correct** — full marks if the response equals the correct response.
+- **map_response** — score from a [mapping](/reference/processing/response-declaration/),
+  enabling partial credit.
+- **map_response_point** — like `map_response` but for point responses on images.
+
+**2. Write explicit rules.** For anything custom, response processing is a small
+program built from [rules](/reference/processing/rules/),
+[expressions](/reference/processing/expressions/), and
+[operators](/reference/processing/operators/).
+
+<Example title="Equivalent of match_correct, written out">
+```xml
+<qti-response-processing>
+  <qti-response-condition>
+    <qti-response-if>
+      <qti-match>
+        <qti-variable identifier="RESPONSE"/>
+        <qti-correct identifier="RESPONSE"/>
+      </qti-match>
+      <qti-set-outcome-value identifier="SCORE">
+        <qti-base-value base-type="float">1</qti-base-value>
+      </qti-set-outcome-value>
+    </qti-response-if>
+    <qti-response-else>
+      <qti-set-outcome-value identifier="SCORE">
+        <qti-base-value base-type="float">0</qti-base-value>
+      </qti-set-outcome-value>
+    </qti-response-else>
+  </qti-response-condition>
+</qti-response-processing>
+```
+</Example>
+
+## How to read a rule
+
+- **Rules** are the statements — conditions (`qti-response-condition`) and
+  assignments (`qti-set-outcome-value`).
+- **Expressions** produce values — `qti-variable` (read a variable),
+  `qti-correct` (the correct response), `qti-base-value` (a literal).
+- **Operators** combine values into a result — `qti-match`, `qti-equal`,
+  `qti-sum`, `qti-and`, and so on.
+
+Nested, these express any scoring logic you need.
+
+<Related links={[
+  { href: '/reference/processing/built-in-templates/', label: 'Built-in RP templates', description: 'match_correct, map_response, map_response_point' },
+  { href: '/reference/processing/rules/', label: 'Response rules', description: 'The control-flow statements' },
+  { href: '/reference/processing/expressions/', label: 'Expressions', description: 'Value-producing elements' },
+  { href: '/concepts/outcomes-and-scoring/', label: 'Outcomes & scoring', description: 'What it writes to' },
+]} />

@@ -1,0 +1,126 @@
+---
+title: qti-upload-interaction
+description: Upload a file as the response.
+sidebar:
+  order: 17
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+import QtiDemo from '@components/QtiDemo.astro';
+
+<SupportBadge phpQti3="no" qtiComponents="yes" note="php-qti3 does not parse this interaction type." />
+
+The `qti-upload-interaction` lets a candidate upload a file as their response. The candidate selects a document, image, spreadsheet, or other file from their device, and that file becomes the response bound to a single response variable of base type `file`.
+
+## Purpose
+
+Use `qti-upload-interaction` when the expected answer is a whole file rather than text typed into the item. Typical cases include:
+
+- Submitting an essay, report, or document produced in an external application.
+- Uploading a scanned worksheet, drawing, or photograph of hand-written work.
+- Handing in a spreadsheet, source-code file, or other artefact created offline.
+
+Because the response is an arbitrary file, this interaction is almost always **human-scored**: response processing cannot meaningfully inspect the file's contents, so scoring is deferred to a marker or examiner. You can constrain the kind of file the candidate is allowed to submit with the `type` attribute.
+
+## Place in the hierarchy
+
+- **Parent:** appears within the `qti-item-body` (directly or nested inside block-level content).
+- **Children:** may contain an optional `qti-prompt` that gives the candidate instructions. It has no other interaction children.
+- **Binds to:** a single response variable declared by a `qti-response-declaration` whose `identifier` matches `response-identifier`, with `cardinality="single"` and `base-type="file"`.
+
+## Attributes
+
+<AttributesTable
+  attributes={[
+    {
+      name: 'response-identifier',
+      type: 'identifier',
+      required: true,
+      description: 'The <code>identifier</code> of the bound <code>qti-response-declaration</code>. That declaration must use <code>cardinality="single"</code> and <code>base-type="file"</code>.',
+    },
+    {
+      name: 'type',
+      type: 'MIME type',
+      required: false,
+      description: 'The expected MIME type of the uploaded file (for example <code>application/pdf</code> or <code>image/png</code>). Used to restrict and hint which file types the candidate may submit. If omitted, any file type is accepted.',
+    },
+  ]}
+  caption="Attributes of qti-upload-interaction"
+/>
+
+The interaction also accepts the shared attributes common to all interactions (such as `id`, `class`, `label`, and `data-*` attributes).
+
+## Example
+
+<Example title="Upload a completed report as a PDF">
+
+```xml
+<qti-response-declaration identifier="RESPONSE"
+                          cardinality="single"
+                          base-type="file"/>
+
+<qti-outcome-declaration identifier="SCORE"
+                         cardinality="single"
+                         base-type="float">
+  <qti-default-value>
+    <qti-value>0</qti-value>
+  </qti-default-value>
+</qti-outcome-declaration>
+
+<qti-item-body>
+  <qti-upload-interaction response-identifier="RESPONSE"
+                          type="application/pdf">
+    <qti-prompt>
+      Upload your completed lab report as a single PDF file.
+    </qti-prompt>
+  </qti-upload-interaction>
+</qti-item-body>
+```
+
+</Example>
+
+## Try it
+
+<QtiDemo markup={`
+  <qti-upload-interaction response-identifier="RESPONSE">
+    <qti-prompt>Upload your completed worksheet as a PDF.</qti-prompt>
+  </qti-upload-interaction>
+`} />
+
+## Cross-references
+
+<Related
+  links={[
+    {
+      href: '/reference/interactions/drawing-interaction/',
+      label: 'qti-drawing-interaction',
+      description: 'Capture a drawing produced on a supplied canvas instead of an uploaded file.',
+    },
+    {
+      href: '/reference/interactions/extended-text-interaction/',
+      label: 'qti-extended-text-interaction',
+      description: 'Collect a longer free-text answer typed directly into the item.',
+    },
+    {
+      href: '/reference/processing/response-declaration/',
+      label: 'qti-response-declaration',
+      description: 'Declare the file response variable this interaction binds to.',
+    },
+    {
+      href: '/concepts/interactions-overview/',
+      label: 'Interactions overview',
+      description: 'How interactions collect candidate responses in QTI 3.0.',
+    },
+    {
+      href: '/concepts/outcomes-and-scoring/',
+      label: 'Outcomes and scoring',
+      description: 'Why file uploads are typically routed to human scoring.',
+    },
+  ]}
+/>
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about qti-upload-interaction in the QTI 3.0 specification</SpecLink>

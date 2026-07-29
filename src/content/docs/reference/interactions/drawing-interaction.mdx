@@ -1,0 +1,133 @@
+---
+title: qti-drawing-interaction
+description: Draw on top of a background image.
+sidebar:
+  order: 16
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+
+<SupportBadge phpQti3="no" qtiComponents="yes" note="php-qti3 does not parse this interaction type." />
+
+The `qti-drawing-interaction` presents the candidate with a drawing surface laid over a background image. The candidate draws freely on top of that image, and the resulting picture is captured as the response.
+
+## Purpose
+
+Use `qti-drawing-interaction` when the task is to produce a freehand drawing rather than a selection or a text entry. Typical uses include:
+
+- Annotating or marking up a diagram, map, or photograph.
+- Sketching a shape, graph, or geometric construction over grid paper supplied as the background.
+- Any open-ended visual task where the answer is a drawn image.
+
+Because the response is a produced image file, the outcome is almost always **human-scored** (or reviewed) rather than machine-scored. There is no built-in way for response processing to inspect the drawing.
+
+## Place in the hierarchy
+
+`qti-drawing-interaction` is a block-level interaction that appears inside the `qti-assessment-item` body.
+
+- **Parent:** the item body (or a block container within it).
+- **Children:** a single `qti-object` element that supplies the background image to draw on. This object provides the canvas dimensions (via its `width` and `height`) and its `type` (MIME type) and `data` (image reference).
+- **Bound variable:** the interaction binds to the response variable named by its `response-identifier`. That response variable must be declared with **cardinality `single`** and **base-type `file`**, since the candidate's drawing is delivered as an image file.
+
+## Attributes
+
+<AttributesTable
+  attributes={[
+    {
+      name: 'response-identifier',
+      type: 'identifier',
+      required: true,
+      description: 'The identifier of the response variable bound to this interaction. Must match a <code>qti-response-declaration</code> with cardinality <code>single</code> and base-type <code>file</code>.'
+    }
+  ]}
+  caption="Attributes of qti-drawing-interaction"
+/>
+
+The interaction also supports the shared attributes common to all interactions, such as `id`, `class`, `xml:lang`, and data attributes.
+
+## Example
+
+<Example title="Annotate a map by drawing on it">
+
+```xml
+<qti-assessment-item
+    xmlns="http://www.imsglobal.org/xsd/imsqtiasi_v3p0"
+    identifier="draw-flood-zone"
+    title="Mark the flood zone"
+    adaptive="false"
+    time-dependent="false">
+
+  <qti-response-declaration identifier="RESPONSE"
+                            cardinality="single"
+                            base-type="file"/>
+
+  <qti-outcome-declaration identifier="SCORE"
+                           cardinality="single"
+                           base-type="float">
+    <qti-default-value>
+      <qti-value>0</qti-value>
+    </qti-default-value>
+  </qti-outcome-declaration>
+
+  <qti-item-body>
+    <p>Using the drawing tools, shade the area of the map that lies within the flood zone.</p>
+
+    <qti-drawing-interaction response-identifier="RESPONSE">
+      <qti-object type="image/png"
+                  data="images/river-map.png"
+                  width="600"
+                  height="400">
+        Map of the river valley
+      </qti-object>
+    </qti-drawing-interaction>
+  </qti-item-body>
+
+  <!-- The drawing is delivered as a file and scored by a human reviewer. -->
+</qti-assessment-item>
+```
+
+</Example>
+
+:::note
+A live demo is omitted here: the drawing surface needs a raster background image
+(supplied via `qti-object`) that this documentation does not bundle. See a
+working example in the [qti-components Storybook](https://qti-components.citolab.nl).
+:::
+
+## Cross-references
+
+<Related
+  links={[
+    {
+      href: '/reference/interactions/upload-interaction/',
+      label: 'qti-upload-interaction',
+      description: 'Collect a candidate-supplied file instead of a drawing; also binds a base-type file response.'
+    },
+    {
+      href: '/reference/interactions/hotspot-interaction/',
+      label: 'qti-hotspot-interaction',
+      description: 'Select predefined regions on a background image when the response can be scored automatically.'
+    },
+    {
+      href: '/reference/interactions/select-point-interaction/',
+      label: 'qti-select-point-interaction',
+      description: 'Mark points on an image, capturing coordinates rather than a freehand drawing.'
+    },
+    {
+      href: '/concepts/interactions-overview/',
+      label: 'Interactions overview',
+      description: 'How interactions bind to response variables in QTI 3.0.'
+    },
+    {
+      href: '/reference/processing/response-declaration/',
+      label: 'qti-response-declaration',
+      description: 'Declare the single / file response variable this interaction populates.'
+    }
+  ]}
+/>
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about qti-drawing-interaction in the QTI 3.0 specification</SpecLink>

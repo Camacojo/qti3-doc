@@ -1,0 +1,135 @@
+---
+title: qti-order-interaction
+description: Arrange a set of choices into the correct order.
+sidebar:
+  order: 6
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+import QtiDemo from '@components/QtiDemo.astro';
+
+<SupportBadge phpQti3="yes" qtiComponents="yes" />
+
+The `qti-order-interaction` presents a set of choices to the candidate and asks them to arrange those choices into the correct sequence. The candidate's response is the ordered list of the choices they selected.
+
+## Purpose
+
+Use `qti-order-interaction` when the skill you want to assess is the correct *ordering* of items rather than simply selecting or matching them. Typical uses include:
+
+- Placing historical events in chronological order.
+- Sequencing the steps of a procedure or process.
+- Ranking items from smallest to largest, or from least to most.
+- Arranging words into a grammatically correct sentence.
+
+Each candidate response is a single ordering of the available choices, so this interaction is a good fit whenever there is exactly one correct sequence to be judged.
+
+## Place in the hierarchy
+
+`qti-order-interaction` is a block-level interaction that appears inside the `qti-item-body` of an assessment item.
+
+- **Parent:** `qti-item-body` (or a block container within it).
+- **Children:** one or more `qti-simple-choice` elements, each carrying a unique `identifier`.
+- **Bound variable:** it binds to the `qti-response-declaration` named by its `response-identifier`.
+
+The associated response variable must be declared with cardinality `ordered` and base-type `identifier`. The `qti-correct-response` is the ordered list of the child `qti-simple-choice` identifiers in their intended sequence.
+
+## Attributes
+
+<AttributesTable
+  attributes={[
+    {
+      name: 'response-identifier',
+      type: 'identifier',
+      required: true,
+      description: 'The <code>identifier</code> of the <code>qti-response-declaration</code> this interaction binds to. The response variable must have cardinality <code>ordered</code> and base-type <code>identifier</code>.'
+    },
+    {
+      name: 'shuffle',
+      type: 'boolean',
+      required: false,
+      default: 'false',
+      description: 'When <code>true</code>, the order in which the child <code>qti-simple-choice</code> elements are initially presented is randomized. Choices with <code>fixed="true"</code> keep their position.'
+    },
+    {
+      name: 'orientation',
+      type: 'orientation',
+      required: false,
+      description: 'A hint to the rendering engine for the layout of the choices: <code>horizontal</code> or <code>vertical</code>.'
+    }
+  ]}
+  caption="Attributes of qti-order-interaction"
+/>
+
+## Example
+
+<Example title="Order events in chronological sequence">
+
+```xml
+<qti-response-declaration identifier="RESPONSE" cardinality="ordered" base-type="identifier">
+  <qti-correct-response>
+    <qti-value>eventA</qti-value>
+    <qti-value>eventB</qti-value>
+    <qti-value>eventC</qti-value>
+    <qti-value>eventD</qti-value>
+  </qti-correct-response>
+</qti-response-declaration>
+
+<qti-item-body>
+  <qti-order-interaction response-identifier="RESPONSE" shuffle="true" orientation="vertical">
+    <qti-prompt>Place these events in chronological order, earliest first.</qti-prompt>
+    <qti-simple-choice identifier="eventA">Invention of the printing press</qti-simple-choice>
+    <qti-simple-choice identifier="eventB">The French Revolution</qti-simple-choice>
+    <qti-simple-choice identifier="eventC">The first powered flight</qti-simple-choice>
+    <qti-simple-choice identifier="eventD">The first Moon landing</qti-simple-choice>
+  </qti-order-interaction>
+</qti-item-body>
+```
+
+  <QtiDemo slot="demo" markup={`
+    <qti-order-interaction response-identifier="RESPONSE" orientation="vertical">
+      <qti-prompt>Place these events in chronological order, earliest first.</qti-prompt>
+      <qti-simple-choice identifier="eventA">Invention of the printing press</qti-simple-choice>
+      <qti-simple-choice identifier="eventB">The French Revolution</qti-simple-choice>
+      <qti-simple-choice identifier="eventC">The first powered flight</qti-simple-choice>
+      <qti-simple-choice identifier="eventD">The first Moon landing</qti-simple-choice>
+    </qti-order-interaction>
+  `} />
+</Example>
+
+## Cross-references
+
+<Related
+  links={[
+    {
+      href: '/reference/interactions/choice-interaction/',
+      label: 'qti-choice-interaction',
+      description: 'Select one or more choices from a set (no ordering).'
+    },
+    {
+      href: '/reference/interactions/graphic-order-interaction/',
+      label: 'qti-graphic-order-interaction',
+      description: 'The graphical counterpart: order hotspots on an image.'
+    },
+    {
+      href: '/reference/interactions/match-interaction/',
+      label: 'qti-match-interaction',
+      description: 'Associate the members of two sets of choices.'
+    },
+    {
+      href: '/reference/processing/response-declaration/',
+      label: 'qti-response-declaration',
+      description: 'Declare the ordered response variable this interaction binds to.'
+    },
+    {
+      href: '/concepts/interactions-overview/',
+      label: 'Interactions overview',
+      description: 'How interactions fit into an assessment item.'
+    }
+  ]}
+/>
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about the order interaction in the QTI 3.0 specification</SpecLink>

@@ -1,0 +1,46 @@
+---
+/**
+ * Live, interactive rendering of a QTI interaction using the open-source
+ * @citolab/qti-components web components. Pass the QTI markup as a string via
+ * `markup` (rendered with set:html so MDX never has to parse the custom
+ * elements). The client script registers the components so they upgrade in the
+ * browser.
+ *
+ * Interactions render standalone (no full assessment-item wrapper needed). Use
+ * the standalone `correct-response` attribute plus `show-correct-response` to
+ * demonstrate answers.
+ *
+ * Usage (inside an <Example> demo slot):
+ *   <QtiDemo slot="demo" markup={`
+ *     <qti-choice-interaction response-identifier="RESPONSE" max-choices="1">
+ *       <qti-prompt>...</qti-prompt>
+ *       <qti-simple-choice identifier="A">A</qti-simple-choice>
+ *     </qti-choice-interaction>
+ *   `} />
+ */
+import '@citolab/qti-components/item.css';
+
+interface Props {
+	markup: string;
+}
+const { markup } = Astro.props;
+---
+
+<div class="qti-demo not-content" set:html={markup}></div>
+
+<script>
+	// Registers all QTI interaction custom elements so the markup above upgrades.
+	import '@citolab/qti-components';
+</script>
+
+<style>
+	.qti-demo {
+		font-size: var(--sl-text-base);
+	}
+	/* Give the interactive controls a little breathing room. */
+	.qti-demo :global(qti-simple-choice),
+	.qti-demo :global(qti-inline-choice),
+	.qti-demo :global(qti-simple-associable-choice) {
+		line-height: 1.6;
+	}
+</style>

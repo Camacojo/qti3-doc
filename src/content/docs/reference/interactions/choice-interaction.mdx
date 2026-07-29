@@ -1,0 +1,128 @@
+---
+title: qti-choice-interaction
+description: Single- or multiple-choice selection from a fixed set of options — the most common QTI 3.0 interaction.
+sidebar:
+  order: 1
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+import QtiDemo from '@components/QtiDemo.astro';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+<SupportBadge phpQti3="yes" qtiComponents="yes" />
+
+The **choice interaction** presents the candidate with a set of choices and asks
+them to select one (single choice) or several (multiple choice). It is the most
+widely used interaction in QTI.
+
+## Purpose
+
+Use a choice interaction when the candidate picks from a predefined list:
+multiple-choice and multiple-response questions, true/false, and yes/no items.
+
+- Set `max-choices="1"` for single choice (radio-button behaviour).
+- Set `max-choices="0"` (unlimited) or a higher number for multiple response
+  (checkbox behaviour).
+
+## Place in the hierarchy
+
+- **Parent:** [`qti-item-body`](/concepts/item-body/) (or a block within it).
+- **Children:** an optional [`qti-prompt`](/concepts/item-body/), followed by one
+  or more `qti-simple-choice` elements.
+- **Bound to:** a [`qti-response-declaration`](/reference/processing/response-declaration/)
+  with `base-type="identifier"`. Cardinality is `single` for one choice and
+  `multiple` when more than one is allowed.
+
+## Attributes
+
+<AttributesTable attributes={[
+  { name: 'response-identifier', type: 'identifier', required: true, description: 'Identifier of the bound <code>qti-response-declaration</code>.' },
+  { name: 'max-choices', type: 'integer', default: '1', description: 'Maximum choices the candidate may select. <code>0</code> means no limit.' },
+  { name: 'min-choices', type: 'integer', default: '0', description: 'Minimum choices required for a valid response.' },
+  { name: 'shuffle', type: 'boolean', default: 'false', description: 'Randomise the order of choices at delivery. Use <code>fixed</code> on a choice to pin it in place.' },
+  { name: 'orientation', type: 'vertical | horizontal', description: 'Layout hint for how choices are arranged.' },
+]} caption="qti-choice-interaction attributes" />
+
+Each `qti-simple-choice` takes an `identifier` (required) and an optional
+`fixed="true"` to exclude it from shuffling.
+
+## Example
+
+Switch between single choice (`max-choices="1"`, radio buttons) and multiple
+response (`cardinality="multiple"`, checkboxes). The demos below are interactive —
+rendering is powered by [`@citolab/qti-components`](/onboarding/open-source-packages/).
+
+<Tabs>
+  <TabItem label="Single choice">
+```xml
+<qti-response-declaration identifier="RESPONSE" cardinality="single" base-type="identifier">
+  <qti-correct-response>
+    <qti-value>ChoiceC</qti-value>
+  </qti-correct-response>
+</qti-response-declaration>
+
+<qti-item-body>
+  <qti-choice-interaction response-identifier="RESPONSE" max-choices="1" shuffle="false">
+    <qti-prompt>What is the capital of the Netherlands?</qti-prompt>
+    <qti-simple-choice identifier="ChoiceA">Rotterdam</qti-simple-choice>
+    <qti-simple-choice identifier="ChoiceB">The Hague</qti-simple-choice>
+    <qti-simple-choice identifier="ChoiceC">Amsterdam</qti-simple-choice>
+  </qti-choice-interaction>
+</qti-item-body>
+```
+    <QtiDemo markup={`
+      <qti-choice-interaction response-identifier="RESPONSE" max-choices="1">
+        <qti-prompt>What is the capital of the Netherlands?</qti-prompt>
+        <qti-simple-choice identifier="ChoiceA">Rotterdam</qti-simple-choice>
+        <qti-simple-choice identifier="ChoiceB">The Hague</qti-simple-choice>
+        <qti-simple-choice identifier="ChoiceC">Amsterdam</qti-simple-choice>
+      </qti-choice-interaction>
+    `} />
+  </TabItem>
+  <TabItem label="Multiple response">
+```xml
+<qti-response-declaration identifier="RESPONSE" cardinality="multiple" base-type="identifier">
+  <qti-correct-response>
+    <qti-value>A</qti-value>
+    <qti-value>C</qti-value>
+  </qti-correct-response>
+</qti-response-declaration>
+
+<qti-item-body>
+  <qti-choice-interaction response-identifier="RESPONSE" max-choices="0">
+    <qti-prompt>Which of these are cities in the Netherlands? Select all that apply.</qti-prompt>
+    <qti-simple-choice identifier="A">Rotterdam</qti-simple-choice>
+    <qti-simple-choice identifier="B">Brussels</qti-simple-choice>
+    <qti-simple-choice identifier="C">Utrecht</qti-simple-choice>
+    <qti-simple-choice identifier="D">Antwerp</qti-simple-choice>
+  </qti-choice-interaction>
+</qti-item-body>
+```
+    <QtiDemo markup={`
+      <qti-choice-interaction response-identifier="RESPONSE" max-choices="0">
+        <qti-prompt>Which of these are cities in the Netherlands? Select all that apply.</qti-prompt>
+        <qti-simple-choice identifier="A">Rotterdam</qti-simple-choice>
+        <qti-simple-choice identifier="B">Brussels</qti-simple-choice>
+        <qti-simple-choice identifier="C">Utrecht</qti-simple-choice>
+        <qti-simple-choice identifier="D">Antwerp</qti-simple-choice>
+      </qti-choice-interaction>
+    `} />
+  </TabItem>
+</Tabs>
+
+## Cross-references
+
+<Related links={[
+  { href: '/concepts/interactions-overview/', label: 'Interactions overview', description: 'How this fits among all interaction types' },
+  { href: '/reference/processing/response-declaration/', label: 'qti-response-declaration', description: 'Declares the bound response variable' },
+  { href: '/reference/processing/built-in-templates/', label: 'Built-in RP templates', description: 'Score it with match_correct or map_response' },
+  { href: '/reference/interactions/order-interaction/', label: 'qti-order-interaction', description: 'When order matters instead of selection' },
+]} />
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl#h.q3ptqzehb5oq">
+  qti-choice-interaction in the QTI 3.0 specification
+</SpecLink>

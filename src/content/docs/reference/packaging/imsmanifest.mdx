@@ -1,0 +1,95 @@
+---
+title: imsmanifest.xml
+description: The manifest that describes resources and dependencies in a QTI package.
+sidebar:
+  order: 2
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+
+<SupportBadge phpQti3="yes" />
+
+Every QTI 3.0 content package contains a single `imsmanifest.xml` file at the root of the package. It is the table of contents for the package: it lists every resource (assessment items, tests, stimuli) and the files each resource is built from, including any shared media files those resources depend on.
+
+## Purpose
+
+Use `imsmanifest.xml` to tell a receiving system what is inside a package and how the parts fit together. It follows the IMS Content Packaging model that QTI 3.0 reuses.
+
+- Declares each **resource** (an item, a test, a stimulus) with a stable identifier and a `type` that identifies it as QTI content.
+- Points at the primary XML file of each resource through its `href`.
+- Lists every **file** that belongs to a resource, such as the item XML and any images, audio, or video it references.
+- Expresses **dependencies** so a resource can reuse files declared by another resource without duplicating them.
+
+A processor reading the package starts from the manifest, never by guessing at the file layout on disk.
+
+## Place in the hierarchy
+
+The manifest has a fixed top-level structure. The root is `<manifest>`, which carries an `identifier` and the required namespace and schema declarations. It contains, in order:
+
+- `<metadata>` — describes the package as a whole (schema name, schema version, and optional descriptive metadata).
+- `<organizations>` — the content-packaging structure element. QTI packages generally do not use organizations, so this element is usually present but empty.
+- `<resources>` — the container for one or more `<resource>` elements.
+
+Each `<resource>` has an `identifier`, a `type`, and an `href` to its main file. Inside a resource, `<file>` elements list each physical file (the resource's own XML plus its assets), and `<dependency>` elements reference other resources by their identifier so their files are included as well.
+
+## Attributes
+
+The attributes below apply to the `<resource>` element, which is where QTI-specific packaging information lives.
+
+<AttributesTable attributes={[
+  { name: 'identifier', type: 'string', required: true, description: 'A package-unique identifier for the resource. Used as the target of a <code>&lt;dependency&gt;</code> from another resource.' },
+  { name: 'type', type: 'string', required: true, description: 'The content type of the resource, for example <code>imsqti_item_xmlv3p0</code> for a QTI 3.0 assessment item or <code>imsqti_test_xmlv3p0</code> for a test.' },
+  { name: 'href', type: 'URI', required: false, description: 'Relative path to the primary file of the resource, for example the item XML. Should also appear as one of the child <code>&lt;file&gt;</code> elements.' }
+]} caption="Attributes of the <resource> element in imsmanifest.xml" />
+
+The child elements carry their own attributes: `<file>` uses `href` (relative path to a physical file), and `<dependency>` uses `identifierref` (the `identifier` of another resource in the same manifest).
+
+## Example
+
+<Example title="A manifest for one item resource with a shared image">
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest identifier="MANIFEST-QTI-1"
+          xmlns="http://www.imsglobal.org/xsd/imscp_v1p1"
+          xmlns:imsmd="http://www.imsglobal.org/xsd/imsmd_v1p2"
+          xmlns:imsqti="http://www.imsglobal.org/xsd/imsqti_metadata_v3p0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.imsglobal.org/xsd/imscp_v1p1 http://www.imsglobal.org/xsd/qti/qtiv3p0/imscp_v1p1p3.xsd">
+  <metadata>
+    <schema>QTI Package</schema>
+    <schemaversion>1.0.0</schemaversion>
+  </metadata>
+  <organizations/>
+  <resources>
+    <resource identifier="item-001"
+              type="imsqti_item_xmlv3p0"
+              href="items/item-001.xml">
+      <file href="items/item-001.xml"/>
+      <dependency identifierref="media-diagram"/>
+    </resource>
+    <resource identifier="media-diagram" type="webcontent">
+      <file href="media/diagram.png"/>
+    </resource>
+  </resources>
+</manifest>
+```
+
+</Example>
+
+The item resource references its own XML through both `href` and a `<file>` entry, then declares a `<dependency>` on the `media-diagram` resource. That dependency pulls in `media/diagram.png` without the item having to list the image directly, so the same media resource can be reused by several items.
+
+## Cross-references
+
+<Related links={[
+  { href: '/reference/packaging/content-package/', label: 'Content package', description: 'The overall structure of a QTI 3.0 package that this manifest describes.' },
+  { href: '/reference/packaging/metadata/', label: 'Metadata', description: 'Descriptive metadata that can be attached to the package and to individual resources.' },
+  { href: '/concepts/content-packaging/', label: 'Content packaging (concept)', description: 'Why QTI reuses the IMS Content Packaging model and how packages are consumed.' },
+  { href: '/concepts/assessment-item/', label: 'Assessment item', description: 'The kind of resource most commonly listed in a QTI manifest.' }
+]} />
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about packaging and the manifest in the QTI 3.0 specification</SpecLink>

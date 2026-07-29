@@ -1,0 +1,109 @@
+---
+title: qti-custom-interaction (PCI)
+description: Portable Custom Interactions for bespoke response types.
+sidebar:
+  order: 20
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+
+<SupportBadge phpQti3="no" qtiComponents="partial" note="php-qti3 does not parse this interaction type." />
+
+`qti-custom-interaction` is the extension point for interaction types that fall outside the standard QTI set. It uses the Portable Custom Interaction (PCI) mechanism to reference a JavaScript module together with its configuration, letting authors deliver bespoke interactivity while still producing a normal QTI response variable.
+
+## Purpose
+
+Use `qti-custom-interaction` when none of the standard interactions can capture the response you need. Typical cases include:
+
+- Specialised subject tooling (a chemistry equation builder, a music-notation editor, a number-line manipulator).
+- Rich, domain-specific widgets that must still return a scorable value.
+- Reusing an existing interactive component across engines without rewriting it per platform.
+
+A PCI packages a JavaScript module (its rendering and interaction logic) plus a configuration block. At runtime the delivery engine instantiates the module, and the interaction reports a value of an appropriate base-type back into a bound response variable so that ordinary response processing can score it.
+
+Portability is not automatic: it depends on the delivery engine implementing the PCI runtime contract. An item using a custom interaction only renders where the target engine supports PCI and can resolve the referenced module. Where PCI is unsupported, the interaction will not run.
+
+## Place in the hierarchy
+
+- **Parent:** appears within the `qti-item-body` (directly or nested inside block-level content), like any other interaction.
+- **Children:** typically a configuration/markup subtree consumed by the PCI module (for example a properties block and the interaction's own markup). The exact children are defined by the PCI's module and its configuration.
+- **Binds to:** a single response variable via `response-identifier`. The corresponding `qti-response-declaration` must declare a base-type and cardinality compatible with the value the module reports.
+
+## Attributes
+
+<AttributesTable
+  attributes={[
+    {
+      name: 'response-identifier',
+      type: 'identifier',
+      required: true,
+      description: 'Identifier of the <code>qti-response-declaration</code> this interaction binds its response to.'
+    },
+    {
+      name: 'id',
+      type: 'identifier',
+      required: false,
+      description: 'Unique identifier for the element, e.g. for styling or scripting.'
+    },
+    {
+      name: 'class',
+      type: 'string list',
+      required: false,
+      description: 'One or more style class names, used for presentation.'
+    }
+  ]}
+  caption="Core attributes of qti-custom-interaction. The PCI module reference and its configuration are carried in the interaction's child content rather than as fixed attributes."
+/>
+
+## Example
+
+<Example title="A schematic custom interaction referencing a PCI module">
+
+```xml
+<qti-custom-interaction response-identifier="RESPONSE">
+  <object type="application/javascript" data="modules/numberLine.js">
+    <!-- PCI configuration consumed by the module -->
+    <properties>
+      <property name="min">0</property>
+      <property name="max">10</property>
+      <property name="step">1</property>
+    </properties>
+    <!-- Fallback markup / instructions -->
+    <p>Place a marker on the number line at the correct value.</p>
+  </object>
+</qti-custom-interaction>
+```
+
+The matching declaration might report a single float value:
+
+```xml
+<qti-response-declaration identifier="RESPONSE" cardinality="single" base-type="float"/>
+```
+
+</Example>
+
+The markup above is schematic. A real PCI defines its own module identifier, configuration schema, and reported value; consult your delivery engine's PCI documentation for the exact packaging and structure it expects.
+
+:::note
+A live demo is omitted here because a Portable Custom Interaction requires its
+own JavaScript module and configuration to render. See PCI examples in the
+[qti-components Storybook](https://qti-components.citolab.nl).
+:::
+
+## Cross-references
+
+<Related
+  links={[
+    { href: '/concepts/interactions-overview/', label: 'Interactions overview', description: 'How interactions fit into an assessment item and bind to response variables.' },
+    { href: '/reference/processing/response-declaration/', label: 'qti-response-declaration', description: 'Declares the response variable and base-type the custom interaction reports to.' },
+    { href: '/concepts/variables-and-declarations/', label: 'Variables and declarations', description: 'Base-types and cardinality that the reported value must match.' },
+    { href: '/reference/processing/response-processing/', label: 'Response processing', description: 'Scoring the value produced by the custom interaction.' },
+    { href: '/concepts/content-packaging/', label: 'Content packaging', description: 'Bundling the PCI module and its assets with the item.' }
+  ]}
+/>
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about custom interactions and the Portable Custom Interaction mechanism in the QTI 3.0 specification</SpecLink>

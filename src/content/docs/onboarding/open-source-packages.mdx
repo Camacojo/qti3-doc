@@ -1,0 +1,76 @@
+---
+title: Open-source packages
+description: Get started fast with two open-source QTI 3.0 packages — render items in the browser with @citolab/qti-components and parse, validate and score them server-side with kennisnet/php-qti3.
+sidebar:
+  order: 4
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+
+You do not have to implement QTI from scratch. Two actively maintained
+open-source packages cover the two halves of the job — [rendering and
+processing](/onboarding/ecosystem-and-tools/#rendering-vs-processing).
+
+<CardGrid>
+	<Card title="@citolab/qti-components" icon="seti:html">
+		**Browser rendering.** Framework-agnostic Web Components that render QTI 3.0
+		items and tests as interactive UI. Works with any framework or plain HTML.
+	</Card>
+	<Card title="kennisnet/php-qti3" icon="seti:php">
+		**Server-side processing.** A PHP library to read, write, validate, and score
+		QTI 3.0 packages, tests, and items.
+	</Card>
+</CardGrid>
+
+## @citolab/qti-components (rendering)
+
+Web Components by Citolab that turn QTI markup into an interactive assessment UI
+in the browser. Because they are native custom elements, they drop into React,
+Vue, Angular, or a plain page alike.
+
+<Example title="Install">
+```bash
+npm install @citolab/qti-components
+```
+</Example>
+
+- **Repository:** [github.com/citolab/qti-components](https://github.com/citolab/qti-components)
+- **Live examples (Storybook):** [qti-components.citolab.nl](https://qti-components.citolab.nl)
+- **License:** GPLv3
+
+We use these components for the live examples on interaction reference pages. See
+the [rendering guide](/guides/rendering-with-qti-components/).
+
+## kennisnet/php-qti3 (processing)
+
+A PHP library maintained by Kennisnet for working with QTI 3.0 on the server:
+parsing packages into typed models, regenerating XML, validating against the XSD
+schemas, editing tests, and running [response processing](/concepts/response-processing/)
+to calculate outcomes.
+
+<Example title="Install">
+```bash
+composer require wikiwijs/php-qti3
+```
+</Example>
+
+- **Repository:** [github.com/kennisnet/php-qti3](https://github.com/kennisnet/php-qti3)
+- **Composer package:** `wikiwijs/php-qti3`
+- It is built around a `QtiClient` service container that takes PSR-compliant
+  implementations for filesystem, validation, and resource downloading.
+
+See the [parsing & scoring guide](/guides/parsing-with-php-qti3/).
+
+## How they fit together
+
+A typical stack uses **both**: `php-qti3` on the server to import, validate, and
+score packages, and `qti-components` in the browser to render items to the
+candidate. QTI XML is the contract between them.
+
+<Related links={[
+  { href: '/onboarding/ecosystem-and-tools/', label: 'The QTI ecosystem', description: 'Where rendering and processing fit' },
+  { href: '/guides/rendering-with-qti-components/', label: 'Render with qti-components', description: 'Hands-on browser rendering' },
+  { href: '/guides/parsing-with-php-qti3/', label: 'Parse & score with php-qti3', description: 'Hands-on server-side processing' },
+]} />

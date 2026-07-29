@@ -1,0 +1,151 @@
+---
+title: qti-match-interaction
+description: Associate members of two sets in a grid.
+sidebar:
+  order: 5
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+import QtiDemo from '@components/QtiDemo.astro';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+<SupportBadge phpQti3="yes" qtiComponents="yes" />
+
+The `qti-match-interaction` presents two sets of choices and asks the candidate to create associations between members of the first (source) set and members of the second (target) set. It is typically rendered as a grid of checkboxes, with the source choices as rows and the target choices as columns.
+
+## Purpose
+
+Use `qti-match-interaction` when the candidate must pair items from one set with items from another set. Common scenarios include:
+
+- Matching terms to their definitions.
+- Pairing countries with their capitals.
+- Classifying a set of statements as true or false (a two-column target set).
+
+Each selected cell in the grid represents a directed pair linking a source choice to a target choice. Use `max-associations` and the per-choice `match-max` / `match-min` attributes to control how many pairs may be formed.
+
+## Place in the hierarchy
+
+- **Parent:** the interaction appears in the [item body](/concepts/item-body/) of an [assessment item](/concepts/assessment-item/).
+- **Children:** exactly two `qti-simple-match-set` elements. The first holds the source choices, the second holds the target choices. Each `qti-simple-match-set` contains one or more `qti-simple-associable-choice` elements (with `identifier`, `match-max`, and optional `match-min`).
+- **Bound variable:** the interaction binds to the response variable named by `response-identifier`. That variable must be declared with a [response declaration](/reference/processing/response-declaration/) of cardinality `multiple` and base type `directedPair`. Each directed pair is written as `SOURCE TARGET`, where `SOURCE` is a source-set identifier and `TARGET` is a target-set identifier.
+
+## Attributes
+
+<AttributesTable
+  attributes={[
+    { name: 'response-identifier', type: 'identifier', required: true, description: 'Identifier of the response variable this interaction binds to. Must be declared with cardinality <code>multiple</code> and base type <code>directedPair</code>.' },
+    { name: 'shuffle', type: 'boolean', default: 'false', description: 'When <code>true</code>, the order of the choices within each match set is randomized for delivery. Individual choices can opt out with <code>fixed="true"</code>.' },
+    { name: 'max-associations', type: 'integer', default: '1', description: 'Maximum number of associations (pairs) the candidate may make. A value of <code>0</code> means no limit.' },
+    { name: 'min-associations', type: 'integer', default: '0', description: 'Minimum number of associations the candidate must make for the response to be considered valid.' },
+  ]}
+  caption="Attributes of qti-match-interaction"
+/>
+
+The `qti-simple-associable-choice` children carry their own attributes: `identifier` (required), `match-max` (the maximum number of pairs the choice may take part in; `0` means no limit), and `match-min` (the minimum).
+
+## Example
+
+<Tabs>
+  <TabItem label="Match two sets">
+```xml
+<qti-response-declaration identifier="RESPONSE" cardinality="multiple" base-type="directedPair">
+  <qti-correct-response>
+    <qti-value>C_BACH N_GERMAN</qti-value>
+    <qti-value>C_VERDI N_ITALIAN</qti-value>
+    <qti-value>C_RAVEL N_FRENCH</qti-value>
+  </qti-correct-response>
+</qti-response-declaration>
+
+<qti-item-body>
+  <qti-match-interaction response-identifier="RESPONSE" shuffle="true" max-associations="3">
+    <qti-prompt>Match each composer to their nationality.</qti-prompt>
+    <qti-simple-match-set>
+      <qti-simple-associable-choice identifier="C_BACH" match-max="1">Johann Sebastian Bach</qti-simple-associable-choice>
+      <qti-simple-associable-choice identifier="C_VERDI" match-max="1">Giuseppe Verdi</qti-simple-associable-choice>
+      <qti-simple-associable-choice identifier="C_RAVEL" match-max="1">Maurice Ravel</qti-simple-associable-choice>
+    </qti-simple-match-set>
+    <qti-simple-match-set>
+      <qti-simple-associable-choice identifier="N_GERMAN" match-max="0">German</qti-simple-associable-choice>
+      <qti-simple-associable-choice identifier="N_ITALIAN" match-max="0">Italian</qti-simple-associable-choice>
+      <qti-simple-associable-choice identifier="N_FRENCH" match-max="0">French</qti-simple-associable-choice>
+    </qti-simple-match-set>
+  </qti-match-interaction>
+</qti-item-body>
+```
+Each composer (`match-max="1"`) takes one nationality; each nationality (`match-max="0"`) accepts any number of composers.
+    <QtiDemo markup={`
+      <qti-match-interaction response-identifier="RESPONSE" max-associations="3">
+        <qti-prompt>Match each composer to their nationality.</qti-prompt>
+        <qti-simple-match-set>
+          <qti-simple-associable-choice identifier="C_BACH" match-max="1">Johann Sebastian Bach</qti-simple-associable-choice>
+          <qti-simple-associable-choice identifier="C_VERDI" match-max="1">Giuseppe Verdi</qti-simple-associable-choice>
+          <qti-simple-associable-choice identifier="C_RAVEL" match-max="1">Maurice Ravel</qti-simple-associable-choice>
+        </qti-simple-match-set>
+        <qti-simple-match-set>
+          <qti-simple-associable-choice identifier="N_GERMAN" match-max="0">German</qti-simple-associable-choice>
+          <qti-simple-associable-choice identifier="N_ITALIAN" match-max="0">Italian</qti-simple-associable-choice>
+          <qti-simple-associable-choice identifier="N_FRENCH" match-max="0">French</qti-simple-associable-choice>
+        </qti-simple-match-set>
+      </qti-match-interaction>
+    `} />
+  </TabItem>
+  <TabItem label="True/false grid">
+```xml
+<qti-response-declaration identifier="RESPONSE" cardinality="multiple" base-type="directedPair">
+  <qti-correct-response>
+    <qti-value>S1 TRUE</qti-value>
+    <qti-value>S2 FALSE</qti-value>
+    <qti-value>S3 TRUE</qti-value>
+  </qti-correct-response>
+</qti-response-declaration>
+
+<qti-item-body>
+  <qti-match-interaction response-identifier="RESPONSE" class="qti-match-tabular" max-associations="3">
+    <qti-prompt>Mark each statement as true or false.</qti-prompt>
+    <qti-simple-match-set>
+      <qti-simple-associable-choice identifier="S1" match-max="1">Amsterdam is the capital of the Netherlands.</qti-simple-associable-choice>
+      <qti-simple-associable-choice identifier="S2" match-max="1">The Rhine flows through Spain.</qti-simple-associable-choice>
+      <qti-simple-associable-choice identifier="S3" match-max="1">Brussels is in Belgium.</qti-simple-associable-choice>
+    </qti-simple-match-set>
+    <qti-simple-match-set>
+      <qti-simple-associable-choice identifier="TRUE" match-max="0">True</qti-simple-associable-choice>
+      <qti-simple-associable-choice identifier="FALSE" match-max="0">False</qti-simple-associable-choice>
+    </qti-simple-match-set>
+  </qti-match-interaction>
+</qti-item-body>
+```
+A common pattern: a two-column target set (`True` / `False`) turns a match into a classification grid. The `class="qti-match-tabular"` from the QTI [shared CSS vocabulary](/concepts/item-body/) is what renders it as a rows-by-columns table of checkboxes rather than a drag-and-drop area.
+    <QtiDemo markup={`
+      <qti-match-interaction response-identifier="RESPONSE" class="qti-match-tabular" max-associations="3">
+        <qti-prompt>Mark each statement as true or false.</qti-prompt>
+        <qti-simple-match-set>
+          <qti-simple-associable-choice identifier="S1" match-max="1">Amsterdam is the capital of the Netherlands.</qti-simple-associable-choice>
+          <qti-simple-associable-choice identifier="S2" match-max="1">The Rhine flows through Spain.</qti-simple-associable-choice>
+          <qti-simple-associable-choice identifier="S3" match-max="1">Brussels is in Belgium.</qti-simple-associable-choice>
+        </qti-simple-match-set>
+        <qti-simple-match-set>
+          <qti-simple-associable-choice identifier="TRUE" match-max="0">True</qti-simple-associable-choice>
+          <qti-simple-associable-choice identifier="FALSE" match-max="0">False</qti-simple-associable-choice>
+        </qti-simple-match-set>
+      </qti-match-interaction>
+    `} />
+  </TabItem>
+</Tabs>
+
+## Cross-references
+
+<Related
+  links={[
+    { href: '/concepts/interactions-overview/', label: 'Interactions overview', description: 'How interactions collect candidate responses across QTI 3.0.' },
+    { href: '/reference/interactions/associate-interaction/', label: 'qti-associate-interaction', description: 'Associate members within a single set instead of across two sets.' },
+    { href: '/reference/interactions/gap-match-interaction/', label: 'qti-gap-match-interaction', description: 'Match choices into gaps embedded in a passage of content.' },
+    { href: '/reference/processing/response-declaration/', label: 'qti-response-declaration', description: 'Declare the multiple / directedPair variable this interaction binds to.' },
+    { href: '/concepts/variables-and-declarations/', label: 'Variables and declarations', description: 'Cardinality and base types, including directedPair.' },
+  ]}
+/>
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about qti-match-interaction in the QTI 3.0 specification</SpecLink>

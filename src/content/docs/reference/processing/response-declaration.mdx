@@ -1,0 +1,117 @@
+---
+title: qti-response-declaration
+description: Declares a response variable and its correct-response and mapping information.
+sidebar:
+  order: 1
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+
+<SupportBadge phpQti3="yes" />
+
+The `qti-response-declaration` element declares a **response variable**: a container that holds a candidate's response to an interaction. It also carries the information needed to score that response, such as the correct answer and any mapping used for partial credit.
+
+## Purpose
+
+Use `qti-response-declaration` whenever an item collects a response from the candidate. Each interaction binds to exactly one response variable, and that variable must be declared before it can be used in response processing.
+
+- Give every response variable a unique `identifier` that an interaction references through its `response-identifier` attribute.
+- Record the intended answer in a `qti-correct-response` child so built-in response-processing templates (such as *match correct*) can score it.
+- Attach a `qti-mapping` (or `qti-area-mapping` for point-based responses) to award partial credit by mapping individual response values to numeric contributions.
+
+By convention the primary response variable of a simple item is named `RESPONSE`. Items with several interactions declare one response variable per interaction (for example `RESPONSE_1`, `RESPONSE_2`).
+
+## Place in the hierarchy
+
+`qti-response-declaration` is a direct child of `qti-assessment-item`. It appears alongside `qti-outcome-declaration` and `qti-template-declaration` and before the `qti-item-body` and response-processing sections.
+
+- **Parent:** `qti-assessment-item`
+- **Children (all optional, in order):**
+  - `qti-default-value` — the value the variable holds before the candidate responds.
+  - `qti-correct-response` — the correct answer, containing one or more `qti-value` elements.
+  - `qti-mapping` — maps response values to numeric scores via `qti-map-entry` elements (attributes `map-key`, `mapped-value`), with `default-value`, `lower-bound`, and `upper-bound` on the mapping itself.
+  - `qti-area-mapping` — the point/area equivalent of `qti-mapping`, used for graphic and point-selection responses.
+- **Binds to:** the interaction whose `response-identifier` matches this declaration's `identifier`.
+
+## Attributes
+
+<AttributesTable
+  attributes={[
+    {
+      name: 'identifier',
+      type: 'identifier',
+      required: true,
+      description: 'The name used to reference this response variable. An interaction binds to it via its <code>response-identifier</code>. The conventional default is <code>RESPONSE</code>.'
+    },
+    {
+      name: 'cardinality',
+      type: 'single | multiple | ordered | record',
+      required: true,
+      description: 'How many values the variable holds and whether order matters. Must match the cardinality expected by the bound interaction.'
+    },
+    {
+      name: 'base-type',
+      type: 'identifier | string | integer | float | boolean | point | pair | directedPair | duration | file | uri | intOrIdentifier',
+      required: false,
+      description: 'The value type of the variable. Required for every cardinality except <code>record</code>, where each field carries its own base type.'
+    }
+  ]}
+  caption="Attributes of qti-response-declaration"
+/>
+
+## Example
+
+<Example title="Single-choice response with partial-credit mapping">
+
+```xml
+<qti-response-declaration identifier="RESPONSE" cardinality="single" base-type="identifier">
+  <qti-correct-response>
+    <qti-value>ChoiceA</qti-value>
+  </qti-correct-response>
+  <qti-mapping default-value="0" lower-bound="0" upper-bound="1">
+    <qti-map-entry map-key="ChoiceA" mapped-value="1"/>
+    <qti-map-entry map-key="ChoiceB" mapped-value="0.5"/>
+    <qti-map-entry map-key="ChoiceC" mapped-value="0"/>
+  </qti-mapping>
+</qti-response-declaration>
+```
+
+</Example>
+
+## Cross-references
+
+<Related
+  links={[
+    {
+      href: '/concepts/variables-and-declarations/',
+      label: 'Variables and declarations',
+      description: 'How response, outcome, and template variables are declared and used.'
+    },
+    {
+      href: '/reference/processing/outcome-declaration/',
+      label: 'qti-outcome-declaration',
+      description: 'Declares outcome variables such as SCORE that response processing sets.'
+    },
+    {
+      href: '/reference/processing/response-processing/',
+      label: 'qti-response-processing',
+      description: 'The rules that read response variables and compute outcomes.'
+    },
+    {
+      href: '/concepts/response-processing/',
+      label: 'Response processing',
+      description: 'Conceptual overview of how responses are turned into scores.'
+    },
+    {
+      href: '/concepts/interactions-overview/',
+      label: 'Interactions overview',
+      description: 'How interactions collect responses and bind to response variables.'
+    }
+  ]}
+/>
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about response declarations in the QTI 3.0 specification</SpecLink>

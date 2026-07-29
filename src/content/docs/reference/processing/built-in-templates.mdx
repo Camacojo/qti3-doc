@@ -1,0 +1,177 @@
+---
+title: Built-in RP templates
+description: "The standard response processing templates: match_correct, map_response and map_response_point."
+sidebar:
+  order: 5
+---
+
+import SupportBadge from '@components/SupportBadge.astro';
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+<SupportBadge phpQti3="yes" />
+
+QTI 3.0 defines a small set of standard response processing templates that cover the most common scoring patterns. Instead of writing out the response processing rules by hand, you reference a template by its URI on the <code>template</code> attribute of `qti-response-processing`. A conforming engine then applies the well-known logic that the URI stands for.
+
+## Purpose
+
+Built-in templates let you score an item without authoring any explicit rules. You declare a response variable, provide a `qti-correct-response` (and optionally a `qti-mapping` or `qti-area-mapping`), and point the item's response processing at the appropriate template.
+
+Use a built-in template when your scoring follows one of these standard shapes:
+
+- **match_correct** — all-or-nothing scoring. The candidate earns full marks only if the submitted response exactly matches the declared correct response; otherwise the score is zero. Best for single-answer questions and any item where partial credit is not wanted.
+- **map_response** — partial credit driven by a `qti-mapping` on the response declaration. Each possible response value carries a `mapped-value`; the outcome is the sum of the mapped values for the selected/entered values. Best for multiple-response choice items and text entry where individual answers carry different weights.
+- **map_response_point** — partial credit for point-based responses, driven by a `qti-area-mapping` on the response declaration. Points that fall inside defined areas contribute their mapped values. Best for graphic and point interactions such as `qti-select-point-interaction` and `qti-hotspot-interaction`.
+
+When your scoring goes beyond these patterns, write custom rules inside `qti-response-processing` instead of referencing a template.
+
+## Place in the hierarchy
+
+These templates are not elements; they are URIs supplied to the `template` attribute of `qti-response-processing`, which lives inside `qti-assessment-item`. The full template URIs are:
+
+- `https://www.imsglobal.org/question/qti_v3p0/rptemplates/match_correct`
+- `https://www.imsglobal.org/question/qti_v3p0/rptemplates/map_response`
+- `https://www.imsglobal.org/question/qti_v3p0/rptemplates/map_response_point`
+
+Each template operates on the item's declared variables by convention:
+
+- **match_correct** reads the response variable named <code>RESPONSE</code> and its `qti-correct-response`, then sets the outcome variable named <code>SCORE</code> (and, in the standard template, <code>MAXSCORE</code>).
+- **map_response** reads <code>RESPONSE</code> and its `qti-mapping`, then sets <code>SCORE</code>.
+- **map_response_point** reads <code>RESPONSE</code> and its `qti-area-mapping`, then sets <code>SCORE</code>.
+
+Because the templates rely on these conventional variable names, your item must declare a response variable named `RESPONSE` and an outcome variable named `SCORE` for the standard templates to work.
+
+## Attributes
+
+The `template` attribute is the single attribute you set to invoke a built-in template. It belongs to `qti-response-processing`.
+
+<AttributesTable
+  attributes={[
+    {
+      name: 'template',
+      type: 'URI',
+      required: false,
+      description: 'The URI of a response processing template. When present, the engine applies the logic that URI stands for. Use one of the three standard values: <code>.../rptemplates/match_correct</code>, <code>.../rptemplates/map_response</code>, or <code>.../rptemplates/map_response_point</code>.'
+    },
+    {
+      name: 'template-location',
+      type: 'URI',
+      required: false,
+      description: 'Optional reference to an external file containing the template definition. Not needed for the standard built-in templates, which engines recognise by their <code>template</code> URI.'
+    }
+  ]}
+  caption="Attributes of qti-response-processing used to reference a built-in template."
+/>
+
+## Example
+
+The three templates side by side — each pairs a response declaration with the
+matching `template` URI:
+
+<Tabs>
+  <TabItem label="match_correct">
+```xml
+<qti-response-declaration identifier="RESPONSE" cardinality="single" base-type="identifier">
+  <qti-correct-response>
+    <qti-value>ChoiceA</qti-value>
+  </qti-correct-response>
+</qti-response-declaration>
+
+<qti-outcome-declaration identifier="SCORE" cardinality="single" base-type="float">
+  <qti-default-value>
+    <qti-value>0</qti-value>
+  </qti-default-value>
+</qti-outcome-declaration>
+
+<qti-response-processing
+  template="https://www.imsglobal.org/question/qti_v3p0/rptemplates/match_correct"/>
+```
+_All-or-nothing: full marks only when `RESPONSE` equals the correct response._
+  </TabItem>
+  <TabItem label="map_response">
+```xml
+<qti-response-declaration identifier="RESPONSE" cardinality="multiple" base-type="identifier">
+  <qti-correct-response>
+    <qti-value>A</qti-value>
+    <qti-value>C</qti-value>
+  </qti-correct-response>
+  <qti-mapping default-value="0" lower-bound="0" upper-bound="2">
+    <qti-map-entry map-key="A" mapped-value="1"/>
+    <qti-map-entry map-key="B" mapped-value="-1"/>
+    <qti-map-entry map-key="C" mapped-value="1"/>
+  </qti-mapping>
+</qti-response-declaration>
+
+<qti-outcome-declaration identifier="SCORE" cardinality="single" base-type="float">
+  <qti-default-value>
+    <qti-value>0</qti-value>
+  </qti-default-value>
+</qti-outcome-declaration>
+
+<qti-response-processing
+  template="https://www.imsglobal.org/question/qti_v3p0/rptemplates/map_response"/>
+```
+_Partial credit: sums the `mapped-value` of each selected value (clamped to the bounds)._
+  </TabItem>
+  <TabItem label="map_response_point">
+```xml
+<qti-response-declaration identifier="RESPONSE" cardinality="single" base-type="point">
+  <qti-area-mapping default-value="0">
+    <qti-area-map-entry shape="circle" coords="100,100,20" mapped-value="1"/>
+  </qti-area-mapping>
+</qti-response-declaration>
+
+<qti-outcome-declaration identifier="SCORE" cardinality="single" base-type="float">
+  <qti-default-value>
+    <qti-value>0</qti-value>
+  </qti-default-value>
+</qti-outcome-declaration>
+
+<qti-response-processing
+  template="https://www.imsglobal.org/question/qti_v3p0/rptemplates/map_response_point"/>
+```
+_Partial credit for point responses: points inside a mapped area score its value._
+  </TabItem>
+</Tabs>
+
+## Cross-references
+
+<Related
+  links={[
+    {
+      href: '/reference/processing/response-processing/',
+      label: 'qti-response-processing',
+      description: 'The element that carries the template attribute and holds custom rules.'
+    },
+    {
+      href: '/reference/processing/response-declaration/',
+      label: 'qti-response-declaration',
+      description: 'Declares RESPONSE and holds the correct response, mapping and area-mapping the templates read.'
+    },
+    {
+      href: '/reference/processing/outcome-declaration/',
+      label: 'qti-outcome-declaration',
+      description: 'Declares the SCORE outcome the templates set.'
+    },
+    {
+      href: '/concepts/response-processing/',
+      label: 'Response processing (concept)',
+      description: 'How scoring works and when to use a template versus custom rules.'
+    },
+    {
+      href: '/concepts/outcomes-and-scoring/',
+      label: 'Outcomes and scoring',
+      description: 'Background on SCORE, MAXSCORE and partial credit.'
+    },
+    {
+      href: '/reference/processing/rules/',
+      label: 'Response processing rules',
+      description: 'The building blocks for custom scoring when no built-in template fits.'
+    }
+  ]}
+/>
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl">Read more about response processing templates in the QTI 3.0 specification</SpecLink>
