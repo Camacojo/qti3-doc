@@ -63,7 +63,7 @@ npm run preview  # preview the production build
 ### Phase 5 — Search, quality & deploy
 - [x] Search (Pagefind) building; site-wide dead-link check — 3069 internal links, 0 dead; sitemap generated
 - [x] Design polish (landing page, two audience tracks) verified in-browser; light/dark supported
-- [x] Deploy workflow — GitLab Pages via `.gitlab-ci.yml` (build → publish `public/`). Site configured with `base: '/qti3-doc/'`; a rehype pass base-prefixes Markdown prose links and a `withBase()` helper handles component links, so all links + assets + Pagefind search resolve under the subpath. Verified: `/qti3-doc/` and `/qti3-doc/pagefind/pagefind.js` return 200. Hosted at https://gitlab.bks.kennisnet.nl/visser01/qti3-doc. To serve from a root/unique domain instead, set `BASE = ''` in astro.config.mjs and drop the base from the hero links in index.mdx.
+- [x] Deploy workflow — GitLab Pages via `.gitlab-ci.yml` (build → publish `public/`). CI uses `npm install` (not `npm ci`) to avoid cross-platform lock drift. The project uses a Pages "unique domain" serving from the **root**, so `BASE = ''` (no base path); a `withBase()` helper + a rehype pass keep links portable if a base is ever needed. Repo: https://gitlab.bks.kennisnet.nl/visser01/qti3-doc — live at **https://qti3-doc-ac52af.pages.bks.kennisnet.nl/**. Pipeline #290931 passed; base/asset paths corrected in a follow-up so styling + Pagefind search load from root.
 
 ## Key references
 

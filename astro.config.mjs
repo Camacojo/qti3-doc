@@ -2,10 +2,11 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 
-// GitLab Pages (project) serves under a subpath, so the site needs a base.
-// Change to '' for root/"unique-domain" hosting (and drop the base from the
-// hero links in src/content/docs/index.mdx).
-const BASE = '/qti3-doc';
+// This GitLab Pages project uses a "unique domain" and serves from the root
+// (https://qti3-doc-ac52af.pages.bks.kennisnet.nl/), so no base path is needed.
+// If it were served under a subpath instead, set this to e.g. '/qti3-doc' and
+// add the same prefix to the hero links in src/content/docs/index.mdx.
+const BASE = '';
 
 /**
  * Prefix root-relative links/sources in Markdown & MDX prose with the base path.
@@ -37,9 +38,8 @@ function rehypeBasePaths() {
 
 // https://astro.build/config
 export default defineConfig({
-	// `site` is used for sitemap/canonical URLs — update the host to the real
-	// Pages domain once known.
-	site: 'https://visser01.pages.bks.kennisnet.nl',
+	// Used for sitemap/canonical URLs.
+	site: 'https://qti3-doc-ac52af.pages.bks.kennisnet.nl',
 	base: BASE + '/',
 	markdown: {
 		rehypePlugins: [rehypeBasePaths],
@@ -64,7 +64,7 @@ export default defineConfig({
 			],
 			customCss: ['./src/styles/custom.css'],
 			editLink: {
-				baseUrl: 'https://github.com/kennisnet/qti3-doc/edit/main/',
+				baseUrl: 'https://gitlab.bks.kennisnet.nl/visser01/qti3-doc/-/edit/main/',
 			},
 			lastUpdated: true,
 			sidebar: [

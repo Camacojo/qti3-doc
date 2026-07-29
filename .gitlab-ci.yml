@@ -1,12 +1,11 @@
 # Build the Astro Starlight site and publish it to GitLab Pages.
 #
-# The site is configured with `base: '/qti3-doc/'` in astro.config.mjs, matching
-# the project-Pages URL (https://<namespace>.<pages-domain>/qti3-doc/). Pagefind
-# search and all assets/links resolve under that base.
+# This project uses a GitLab Pages "unique domain" and is served from the root
+# (https://qti3-doc-ac52af.pages.bks.kennisnet.nl/), so astro.config.mjs uses no
+# base path. Pagefind search and all assets/links resolve from the root.
 #
-# If this instance serves Pages from a root ("unique domain") instead, set
-# `base: '/'` in astro.config.mjs and drop the base from the hero links in
-# src/content/docs/index.mdx.
+# If it is ever served under a subpath instead, set `BASE` in astro.config.mjs
+# (e.g. '/qti3-doc') and prefix the hero links in src/content/docs/index.mdx.
 
 image: node:22
 

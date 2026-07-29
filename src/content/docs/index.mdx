@@ -5,13 +5,14 @@ template: splash
 hero:
   tagline: Understand and build with the 1EdTech QTI 3.0 assessment standard — concepts, a full element reference, and open-source tooling in one place.
   actions:
-    # Hero action links are used verbatim by Starlight, so they include the base
-    # path (`/qti3-doc`) explicitly. Keep in sync with `base` in astro.config.mjs.
+    # Hero action links are used verbatim by Starlight. The site is served from
+    # the root, so these are plain root-relative paths. If a base path is ever
+    # configured (astro.config.mjs), prefix these to match.
     - text: Start with the basics
-      link: /qti3-doc/onboarding/what-is-qti-3/
+      link: /onboarding/what-is-qti-3/
       icon: right-arrow
     - text: Browse the reference
-      link: /qti3-doc/reference/
+      link: /reference/
       icon: open-book
       variant: minimal
 ---
