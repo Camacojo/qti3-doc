@@ -80,6 +80,7 @@ export default defineConfig({
 					label: 'Reference',
 					items: [
 						{ label: 'Overview', slug: 'reference' },
+						{ label: 'Shared attributes', slug: 'reference/shared-attributes' },
 						{
 							label: 'Interactions',
 							items: [{ autogenerate: { directory: 'reference/interactions' } }],

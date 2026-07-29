@@ -1,0 +1,96 @@
+---
+title: Shared attributes
+description: The generic attributes that interactions and most content elements accept in addition to their element-specific ones.
+---
+
+import AttributesTable from '@components/AttributesTable.astro';
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+import SpecLink from '@components/SpecLink.astro';
+
+Element reference pages on this site list only the attributes **specific** to
+that element. On top of those, QTI 3.0 defines a set of generic attributes that
+interactions and most body/content elements inherit from a common base. This
+page documents that shared set once, so the individual pages don't have to
+repeat it.
+
+## The shared set
+
+<AttributesTable attributes={[
+  { name: 'id', type: 'identifier', description: 'Unique identifier for this element within the document. Used as an anchor for styling, scripting and references such as <code>data-catalog-idref</code> targets.' },
+  { name: 'class', type: 'string', description: 'Space-separated list of class names. Besides regular CSS styling, this carries the QTI <em>shared vocabulary</em> classes that steer standardised presentation (e.g. <code>qti-match-tabular</code>, <code>qti-orientation-horizontal</code>, <code>qti-input-width-10</code>).' },
+  { name: 'lang', type: 'language code', description: 'Language of the element content (e.g. <code>en</code>, <code>nl</code>), for spell-checking, text-to-speech and font selection.' },
+  { name: 'label', type: 'string', description: 'Authoring label for the element. Not shown to candidates; used by authoring tools.' },
+  { name: 'dir', type: 'ltr | rtl | auto', default: 'auto', description: 'Text direction of the content.' },
+  { name: 'data-catalog-idref', type: 'IDREF', description: 'Links the element to a <code>qti-catalog</code> with accessibility support content — glossary entries, translations, spoken renderings (see the catalog-info page under Cross-references).' },
+  { name: 'data-qti-suppress-tts', type: 'string', description: 'Tells text-to-speech tooling to skip this element (e.g. for content that a screen reader should not verbalise).' },
+]} />
+
+Two open-ended groups come on top of the table above:
+
+- **ARIA attributes** — `role` and the full set of `aria-*` attributes
+  (`aria-label`, `aria-describedby`, `aria-hidden`, `aria-live`, …) are allowed
+  on these elements, exactly as in HTML. Delivery engines pass them through to
+  the rendered output. See [accessibility](/concepts/accessibility/) for when
+  to reach for ARIA versus a catalog.
+- **`data-*` extension attributes** — arbitrary `data-` prefixed attributes are
+  allowed as an extension point. Some interactions define their own documented
+  ones (e.g. `data-max-selections-message` on
+  [choice](/reference/interactions/choice-interaction/)); anything else is
+  tool-specific and travels through conforming systems untouched.
+
+## Interactions: `response-identifier`
+
+Every interaction additionally carries the **required** `response-identifier`
+attribute, binding it to the
+[response declaration](/reference/processing/response-declaration/) that holds
+the candidate's answer. It is listed on each interaction page because it is
+required, but it works identically everywhere.
+
+## Which elements take the shared set
+
+- **All interactions**, including
+  [portable custom interactions](/reference/interactions/custom-interaction/).
+- **Most body/content elements**: the HTML content of the
+  [item body](/concepts/item-body/), choice/child elements such as
+  `qti-simple-choice`, `qti-gap-text` and `qti-hottext`, and content elements
+  such as [feedback block and inline](/reference/content/feedback-block-and-inline/),
+  [rubric-block](/reference/content/rubric-block/) and
+  [prompt](/reference/content/prompt/).
+
+A few content elements carry only their own attribute sets instead:
+[qti-modal-feedback](/reference/content/modal-feedback/),
+[qti-stylesheet](/reference/content/stylesheet/) and
+[qti-printed-variable](/reference/content/printed-variable/) (the latter does
+take `id`, `class` and `label`). Elements outside the item body — test
+structure, variable declarations, processing rules and packaging — have their
+own attribute vocabularies, documented on their pages.
+
+## Example
+
+<Example title="Shared attributes in use">
+```xml
+<qti-choice-interaction
+    response-identifier="RESPONSE"
+    max-choices="1"
+    id="q1-interaction"
+    class="qti-orientation-horizontal"
+    lang="en"
+    aria-label="Question 1">
+  <qti-prompt>Which planet is closest to the Sun?</qti-prompt>
+  <qti-simple-choice identifier="A" data-catalog-idref="cat-mercury">Mercury</qti-simple-choice>
+  <qti-simple-choice identifier="B">Venus</qti-simple-choice>
+</qti-choice-interaction>
+```
+</Example>
+
+## Cross-references
+
+<Related links={[
+  { href: '/concepts/accessibility/', label: 'Accessibility', description: 'Catalogs, ARIA and PNP — how the accessibility attributes fit together' },
+  { href: '/reference/content/catalog-info/', label: 'qti-catalog-info', description: 'The catalog that data-catalog-idref points at' },
+  { href: '/concepts/item-body/', label: 'Item body', description: 'The content model these elements live in' },
+  { href: '/reference/processing/response-declaration/', label: 'qti-response-declaration', description: 'What response-identifier binds an interaction to' },
+]} />
+
+<SpecLink href="https://www.imsglobal.org/spec/qti/v3p0/impl" />

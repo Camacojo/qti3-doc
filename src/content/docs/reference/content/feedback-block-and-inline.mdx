@@ -33,7 +33,7 @@ the same outcome-driven mechanism as [`qti-modal-feedback`](/reference/content/m
 Both elements share the same attributes (unlike `qti-modal-feedback`, where
 `show-hide` is required and a `title` attribute is available):
 
-<AttributesTable attributes={[
+<AttributesTable shared attributes={[
   { name: 'outcome-identifier', type: 'identifier', required: true, description: 'The outcome variable whose value selects this feedback.' },
   { name: 'identifier', type: 'identifier', required: true, description: 'The value the outcome must hold for this feedback to show.' },
   { name: 'show-hide', type: 'show | hide', default: 'show', description: 'Whether a match shows or hides the content.' },

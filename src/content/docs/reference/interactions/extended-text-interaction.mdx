@@ -35,6 +35,7 @@ Extended-text responses are usually **human-scored**: the item typically has no 
 ## Attributes
 
 <AttributesTable
+  shared
   attributes={[
     { name: 'response-identifier', type: 'identifier', required: true, description: 'Identifier of the <code>qti-response-declaration</code> that captures the candidate\'s answer. Must match a declared response variable, usually of base-type <code>string</code>.' },
     { name: 'expected-length', type: 'integer', required: false, description: 'A hint to the renderer for the expected number of characters in the response. Purely a rendering hint; it does not constrain what the candidate may enter.' },

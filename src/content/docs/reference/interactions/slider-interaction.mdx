@@ -37,6 +37,7 @@ Use `base-type="integer"` together with an integer `step` when only whole-number
 ## Attributes
 
 <AttributesTable
+  shared
   attributes={[
     { name: 'response-identifier', type: 'identifier', required: true, description: 'Identifier of the response variable this interaction binds to. Must match a <code>qti-response-declaration</code> with single cardinality and base-type <code>float</code> or <code>integer</code>.' },
     { name: 'lower-bound', type: 'float', required: true, description: 'The lowest value the candidate can select (the start of the range).' },

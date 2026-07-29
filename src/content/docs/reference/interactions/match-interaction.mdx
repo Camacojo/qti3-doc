@@ -36,6 +36,7 @@ Each selected cell in the grid represents a directed pair linking a source choic
 ## Attributes
 
 <AttributesTable
+  shared
   attributes={[
     { name: 'response-identifier', type: 'identifier', required: true, description: 'Identifier of the response variable this interaction binds to. Must be declared with cardinality <code>multiple</code> and base type <code>directedPair</code>.' },
     { name: 'shuffle', type: 'boolean', default: 'false', description: 'When <code>true</code>, the order of the choices within each match set is randomized for delivery. Individual choices can opt out with <code>fixed="true"</code>.' },

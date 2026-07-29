@@ -43,7 +43,7 @@ canonical worked example.
 | Component         | Purpose                                                        |
 | ----------------- | -------------------------------------------------------------- |
 | `SupportBadge`    | Tooling-support row (`php-qti3` / `qti-components`), levels `yes`/`partial`/`no`. |
-| `AttributesTable` | Consistent attribute table from an `attributes` array. Descriptions may contain inline HTML (`<code>`). |
+| `AttributesTable` | Consistent attribute table from an `attributes` array. Descriptions may contain inline HTML (`<code>`). Add the `shared` boolean prop on the **main table** of elements that inherit the shared QTI attributes (all interactions, most body/content elements) — it renders a one-line pointer to `/reference/shared-attributes/` instead of repeating them. |
 | `Example`         | Titled example; default slot = fenced code, optional `demo` slot for live rendering (Phase 4). |
 | `Related`         | Compact cross-reference list from a `links` array.             |
 | `SpecLink`        | Styled link to the authoritative 1EdTech spec.                 |

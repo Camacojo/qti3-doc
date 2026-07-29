@@ -21,9 +21,18 @@ interface Attribute {
 interface Props {
 	attributes: Attribute[];
 	caption?: string;
+	/**
+	 * Set on the main table of an element that inherits the shared QTI
+	 * attributes (interactions and most body/content elements) to render a
+	 * one-line pointer to the shared-attributes reference page instead of
+	 * repeating them here.
+	 */
+	shared?: boolean;
 }
 
-const { attributes, caption } = Astro.props;
+import { withBase } from '../lib/withBase';
+
+const { attributes, caption, shared } = Astro.props;
 ---
 
 <table class="attrs">
@@ -53,6 +62,16 @@ const { attributes, caption } = Astro.props;
 		}
 	</tbody>
 </table>
+{
+	shared && (
+		<p class="shared-note">
+			This element also accepts the shared QTI attributes (<code>id</code>,{' '}
+			<code>class</code>, <code>lang</code>, <code>label</code>, <code>dir</code>, ARIA and{' '}
+			<code>data-*</code> attributes) — see{' '}
+			<a href={withBase('/reference/shared-attributes/')}>Shared attributes</a>.
+		</p>
+	)
+}
 
 <style>
 	.attrs {
@@ -68,5 +87,10 @@ const { attributes, caption } = Astro.props;
 	.attrs td code,
 	.attrs th code {
 		font-size: 0.85em;
+	}
+	.shared-note {
+		font-size: var(--sl-text-sm);
+		color: var(--sl-color-gray-2);
+		margin-top: 0.5rem;
 	}
 </style>
