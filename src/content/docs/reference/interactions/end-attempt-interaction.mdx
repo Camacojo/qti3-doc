@@ -45,8 +45,15 @@ The bound response variable records simply whether the button was pressed during
     {
       name: 'title',
       type: 'string',
+      required: true,
+      description: 'The label shown on the button (for example <code>Show hint</code> or <code>End attempt</code>).',
+    },
+    {
+      name: 'count-attempt',
+      type: 'boolean',
       required: false,
-      description: 'The label shown on the button (for example <code>Show hint</code> or <code>End attempt</code>). If omitted, the delivery engine uses a default label.',
+      default: 'true',
+      description: 'Whether ending the attempt via this interaction increments the <code>numAttempts</code> counter. Set to <code>false</code> for controls (such as hint buttons) that should not count as a scored attempt.',
     },
   ]}
   caption="Attributes of qti-end-attempt-interaction"
@@ -57,18 +64,25 @@ The bound response variable records simply whether the button was pressed during
 <Example title="An end-attempt button that reveals a hint in an adaptive item">
 
 ```xml
+<qti-response-declaration identifier="RESPONSE" base-type="string" cardinality="single"/>
 <qti-response-declaration identifier="HINTREQUEST" base-type="boolean" cardinality="single"/>
 
+<qti-outcome-declaration identifier="FEEDBACK" base-type="identifier" cardinality="single"/>
+
 <qti-item-body>
-  <qti-text-entry-interaction response-identifier="RESPONSE" expected-length="10"/>
+  <p>
+    <qti-text-entry-interaction response-identifier="RESPONSE" expected-length="10"/>
+  </p>
 
   <qti-end-attempt-interaction
     response-identifier="HINTREQUEST"
     title="Show hint"/>
 
-  <qti-feedback-inline outcome-identifier="FEEDBACK" identifier="HINT" show-hide="show">
-    Remember to convert to metres before adding.
-  </qti-feedback-inline>
+  <p>
+    <qti-feedback-inline outcome-identifier="FEEDBACK" identifier="HINT" show-hide="show">
+      Remember to convert to metres before adding.
+    </qti-feedback-inline>
+  </p>
 </qti-item-body>
 ```
 

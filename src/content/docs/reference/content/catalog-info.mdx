@@ -28,6 +28,13 @@ content accordingly. This is the reference companion to the
 - Each `qti-catalog` contains `qti-card` elements, one per alternative, tagged
   with a `support` type such as `glossary-on-screen`, `spoken`, or `keyword-translation`.
 
+## Place in the hierarchy
+
+In an item, `qti-catalog-info` is a **direct child of `qti-assessment-item`**,
+placed after the `qti-item-body` — it is *not* part of the item body itself. The
+body only carries the `data-catalog-idref` references; the catalog with the
+alternative content sits at item level.
+
 ## Attributes
 
 <AttributesTable attributes={[
@@ -39,8 +46,10 @@ content accordingly. This is the reference companion to the
 
 <Example title="A glossary alternative for a term">
 ```xml
+<!-- inside qti-item-body -->
 <p>The <span data-catalog-idref="cat-photosynthesis">photosynthesis</span> process…</p>
 
+<!-- direct child of qti-assessment-item, after qti-item-body -->
 <qti-catalog-info>
   <qti-catalog id="cat-photosynthesis">
     <qti-card support="glossary-on-screen">

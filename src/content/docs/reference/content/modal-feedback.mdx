@@ -28,6 +28,9 @@ For feedback woven into the body of the item, use
 ## Place in the hierarchy
 
 - **Parent:** the `qti-assessment-item` (a direct child, not inside the item body).
+- **Children:** the feedback content itself sits in a required `qti-content-body`
+  wrapper (optionally preceded by `qti-stylesheet` elements and followed by
+  `qti-catalog-info`).
 - **Driven by:** an outcome variable (commonly `FEEDBACK`) that response
   processing sets to this block's `identifier`.
 
@@ -36,7 +39,7 @@ For feedback woven into the body of the item, use
 <AttributesTable attributes={[
   { name: 'outcome-identifier', type: 'identifier', required: true, description: 'The outcome variable whose value selects this feedback.' },
   { name: 'identifier', type: 'identifier', required: true, description: 'The value the outcome must hold for this feedback to show.' },
-  { name: 'show-hide', type: 'show | hide', default: 'show', description: 'Whether a match shows or hides the content.' },
+  { name: 'show-hide', type: 'show | hide', required: true, description: 'Whether a match shows or hides the content. Required here (no default) — unlike the feedback block/inline elements, where it is optional and defaults to <code>show</code>.' },
   { name: 'title', type: 'string', description: 'Optional title for the feedback (e.g. a dialog heading).' },
 ]} caption="qti-modal-feedback attributes" />
 
@@ -51,7 +54,9 @@ For feedback woven into the body of the item, use
 
 <!-- direct child of qti-assessment-item -->
 <qti-modal-feedback outcome-identifier="FEEDBACK" identifier="CORRECT" show-hide="show" title="Well done">
-  <p>Correct — Amsterdam is the capital of the Netherlands.</p>
+  <qti-content-body>
+    <p>Correct — Amsterdam is the capital of the Netherlands.</p>
+  </qti-content-body>
 </qti-modal-feedback>
 ```
 </Example>

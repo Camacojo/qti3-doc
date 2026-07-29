@@ -28,7 +28,7 @@ An item declares at most one `qti-response-processing` element. For the conceptu
 
 ## Place in the hierarchy
 
-- **Parent:** `qti-assessment-item`. It appears after the `qti-item-body`, alongside the variable declarations.
+- **Parent:** `qti-assessment-item`. It follows the `qti-item-body`, whereas the variable declarations precede it.
 - **Children:** when no template is used, a sequence of response rules such as `qti-set-outcome-value`, `qti-response-condition`, and `qti-exit-response`. When a template is used, the element is typically empty.
 - **Variables it uses:** it reads the `qti-response-declaration` variables (for example `RESPONSE`) and writes to `qti-outcome-declaration` variables (for example `SCORE`). It does not itself bind to a single variable — it operates across all declared variables of the item.
 
@@ -40,7 +40,7 @@ An item declares at most one `qti-response-processing` element. For the conceptu
       name: 'template',
       type: 'URI',
       required: false,
-      description: 'Identifies a standard response processing template to apply, for example <code>https://www.imsglobal.org/question/qti_v3p0/rptemplates/match_correct</code>. When set, the element should not also contain explicit rules.'
+      description: 'Identifies a standard response processing template to apply, for example <code>https://purl.imsglobal.org/spec/qti/v3p0/rptemplates/match_correct.xml</code>. When set, the element should not also contain explicit rules.'
     },
     {
       name: 'template-location',
@@ -58,7 +58,7 @@ An item declares at most one `qti-response-processing` element. For the conceptu
 
 ```xml
 <qti-response-processing
-  template="https://www.imsglobal.org/question/qti_v3p0/rptemplates/match_correct"/>
+  template="https://purl.imsglobal.org/spec/qti/v3p0/rptemplates/match_correct.xml"/>
 ```
 
 </Example>
@@ -96,7 +96,7 @@ An item declares at most one `qti-response-processing` element. For the conceptu
     { href: '/reference/processing/built-in-templates/', label: 'Built-in templates', description: 'The standard templates you can reference with the template attribute.' },
     { href: '/reference/processing/rules/', label: 'Response rules', description: 'The rule elements you place inside explicit response processing.' },
     { href: '/reference/processing/expressions/', label: 'Expressions', description: 'Value-producing constructs used within rules.' },
-    { href: '/reference/processing/operators/', label: 'Operators', description: 'Operators such as match and correct used to build expressions.' },
+    { href: '/reference/processing/operators/', label: 'Operators', description: 'Operators such as qti-match and qti-and used to build expressions.' },
     { href: '/reference/processing/response-declaration/', label: 'qti-response-declaration', description: 'Declares the response variables that processing reads.' },
     { href: '/reference/processing/outcome-declaration/', label: 'qti-outcome-declaration', description: 'Declares the outcome variables that processing writes.' }
   ]}

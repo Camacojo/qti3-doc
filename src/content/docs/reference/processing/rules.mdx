@@ -6,7 +6,6 @@ sidebar:
 ---
 
 import SupportBadge from '@components/SupportBadge.astro';
-import AttributesTable from '@components/AttributesTable.astro';
 import Example from '@components/Example.astro';
 import Related from '@components/Related.astro';
 import SpecLink from '@components/SpecLink.astro';
@@ -36,21 +35,18 @@ Response rules appear directly inside [`qti-response-processing`](/reference/pro
 
 Rules that assign values (`qti-set-outcome-value`, `qti-lookup-outcome-value`) reference an [outcome variable](/reference/processing/outcome-declaration/) by its `identifier`; the values they read typically come from [response variables](/reference/processing/response-declaration/) via expressions and operators.
 
-## Attributes
+## Rule reference
 
-<AttributesTable
-  attributes={[
-    { name: 'qti-response-condition', type: 'element', description: 'Branching construct. Contains one <code>qti-response-if</code>, zero or more <code>qti-response-else-if</code>, and an optional <code>qti-response-else</code>. The first branch whose condition is <code>true</code> runs; if none match, the <code>qti-response-else</code> runs.' },
-    { name: 'qti-response-if', type: 'element', description: 'First branch of a condition. Starts with one boolean expression; if it evaluates to <code>true</code>, the rules that follow are executed.' },
-    { name: 'qti-response-else-if', type: 'element', description: 'Additional branch, evaluated only if all preceding branches were <code>false</code>. Also starts with a single boolean expression followed by rules.' },
-    { name: 'qti-response-else', type: 'element', description: 'Fallback branch containing only rules (no condition). Runs when no <code>if</code>/<code>else-if</code> condition matched.' },
-    { name: 'qti-set-outcome-value', type: 'element', description: 'Assigns the value of its contained expression to the outcome variable named by its <code>identifier</code> attribute.' },
-    { name: 'qti-lookup-outcome-value', type: 'element', description: 'Sets the outcome variable named by <code>identifier</code> using the interpolation or match table declared on that outcome, indexed by the contained expression.' },
-    { name: 'qti-exit-response', type: 'element', description: 'Terminates response processing immediately. No attributes; any rules after it are skipped.' },
-    { name: 'qti-response-processing-fragment', type: 'element', description: 'Groups a reusable sequence of response rules, commonly used when expanding a shared response-processing template.' },
-  ]}
-  caption="Main response-rule (statement) elements and their purpose"
-/>
+| Rule | Description |
+| ---- | ----------- |
+| `qti-response-condition` | Branching construct. Contains one `qti-response-if`, zero or more `qti-response-else-if`, and an optional `qti-response-else`. The first branch whose condition is `true` runs; if none match, the `qti-response-else` runs. |
+| `qti-response-if` | First branch of a condition. Starts with one boolean expression; if it evaluates to `true`, the rules that follow are executed. |
+| `qti-response-else-if` | Additional branch, evaluated only if all preceding branches were `false`. Also starts with a single boolean expression followed by rules. |
+| `qti-response-else` | Fallback branch containing only rules (no condition). Runs when no `if`/`else-if` condition matched. |
+| `qti-set-outcome-value` | Assigns the value of its contained expression to the outcome variable named by its `identifier` attribute. |
+| `qti-lookup-outcome-value` | Sets the outcome variable named by `identifier` using the interpolation or match table declared on that outcome, indexed by the contained expression. |
+| `qti-exit-response` | Terminates response processing immediately. No attributes; any rules after it are skipped. |
+| `qti-response-processing-fragment` | Groups a reusable sequence of response rules, commonly used when expanding a shared response-processing template. |
 
 Note that `qti-set-outcome-value` and `qti-lookup-outcome-value` carry a required `identifier` attribute naming the target outcome variable.
 

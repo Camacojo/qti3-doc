@@ -30,7 +30,7 @@ Each gap is a drop target embedded directly in the flow of the content, so the s
 
 - **Parent:** the interaction lives in the item body (`qti-item-body`), typically within block-level content such as a paragraph or blockquote.
 - **Children:**
-  - `qti-gap-text` elements are the draggable choices. Each has an `identifier` and a `match-max` controlling how many gaps it may be dropped into. These are usually declared before the passage content.
+  - `qti-gap-text` (text) or `qti-gap-img` (image) elements are the draggable choices. Each has an `identifier` and a `match-max` controlling how many gaps it may be dropped into. These are usually declared before the passage content.
   - `qti-gap` elements are the inline drop targets, placed within the content of the passage. Each has an `identifier`.
 - **Variable binding:** it binds to a response variable (named by `response-identifier`) declared with a `qti-response-declaration`. The response has cardinality `multiple` and base-type `directedPair`, where each pair associates a `qti-gap-text` identifier with a `qti-gap` identifier (in that order: gapText then gap).
 
@@ -51,6 +51,20 @@ Each gap is a drop target embedded directly in the flow of the content, so the s
       default: 'false',
       description: 'When <code>true</code>, the order in which the <code>qti-gap-text</code> choices are presented is randomized for each candidate.',
     },
+    {
+      name: 'max-associations',
+      type: 'integer',
+      required: false,
+      default: '1',
+      description: 'The maximum number of associations (filled gaps) the candidate may make. A value of <code>0</code> means no limit — set <code>0</code> when the passage has more than one gap, otherwise the default of <code>1</code> blocks the second gap.',
+    },
+    {
+      name: 'min-associations',
+      type: 'integer',
+      required: false,
+      default: '0',
+      description: 'The minimum number of associations the candidate must make for the response to be valid.',
+    },
   ]}
   caption="Attributes of qti-gap-match-interaction"
 />
@@ -68,7 +82,7 @@ Key attributes on the child elements:
     {
       name: 'match-max',
       type: 'integer',
-      required: false,
+      required: true,
       description: 'On <code>qti-gap-text</code>: the maximum number of gaps this choice may be associated with. A value of <code>0</code> means no limit.',
     },
   ]}

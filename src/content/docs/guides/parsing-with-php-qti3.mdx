@@ -25,10 +25,16 @@ composer require wikiwijs/php-qti3
 ## Set up the QtiClient
 
 The library exposes a `QtiClient` service container. It expects three
-PSR-based implementations — a filesystem package factory, a resource validator,
-and a resource downloader — for which the library ships default implementations
-(these pull in a few extra Composer packages such as Flysystem and a PSR-18 HTTP
-client).
+implementations — a Flysystem-based package factory, plus a PSR-18/PSR-17-based
+resource validator and resource downloader — for which the library ships
+defaults. Their dependencies are only Composer *suggests*, so you must
+additionally install them yourself:
+
+<Example title="Install the default implementations' dependencies">
+```bash
+composer require league/flysystem symfony/http-client nyholm/psr7
+```
+</Example>
 
 <Example title="Initialise the client">
 ```php
@@ -87,11 +93,11 @@ $outcomes = $itemState->outcomeSet->outcomes;
 
 ## Supported interactions
 
-The parser supports exactly these interaction types; others (associate, slider,
-media, the graphic interactions, …) throw a `ParseError`:
+The parser supports exactly these interaction types; others (inline-choice,
+associate, slider, media, the graphic interactions, …) throw a `ParseError`:
 
 `choice` · `text-entry` · `extended-text` · `gap-match` · `hotspot` · `hottext` ·
-`inline-choice` · `match` · `order` · `select-point`.
+`match` · `order` · `select-point`.
 
 Each interaction reference page shows this support with a badge at the top.
 

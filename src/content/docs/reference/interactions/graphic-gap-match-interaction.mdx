@@ -29,8 +29,8 @@ It is the graphical counterpart of the [`qti-gap-match-interaction`](/reference/
 
 - **Parent:** the interaction lives in the item body (`qti-item-body`).
 - **Children:**
-  - A background `qti-object` element that defines the image on which the hotspots are positioned. This is a direct child of the interaction (not wrapped in a gap image).
-  - One or more `qti-gap-img` elements, each wrapping a `qti-object` that renders the draggable image tile. Each `qti-gap-img` carries an `identifier` and a `match-max`.
+  - A background image, supplied as an HTML `object`, `img`, or `picture` element, that defines the image on which the hotspots are positioned. This is a direct child of the interaction (not wrapped in a gap image).
+  - One or more `qti-gap-img` elements, each wrapping an HTML `img` (or `object`/`picture`) element that renders the draggable image tile. Each `qti-gap-img` carries an `identifier` and a `match-max`.
   - One or more `qti-associable-hotspot` elements that act as the drop targets. Each has an `identifier`, a `shape`, `coords`, and a `match-max`.
 - **Variable binding:** it binds to a response variable (named by `response-identifier`) declared with a `qti-response-declaration`. The response has cardinality `multiple` and base-type `directedPair`, where each pair associates a `qti-gap-img` identifier with a `qti-associable-hotspot` identifier (in that order: gap image then hotspot).
 
@@ -43,13 +43,6 @@ It is the graphical counterpart of the [`qti-gap-match-interaction`](/reference/
       type: 'identifier',
       required: true,
       description: 'The identifier of the bound response variable. Must match a <code>qti-response-declaration</code> with cardinality <code>multiple</code> and base-type <code>directedPair</code>.',
-    },
-    {
-      name: 'shuffle',
-      type: 'boolean',
-      required: false,
-      default: 'false',
-      description: 'When <code>true</code>, the order in which the <code>qti-gap-img</code> choices are presented is randomized for each candidate.',
     },
     {
       name: 'max-associations',
@@ -89,7 +82,7 @@ Key attributes on the child elements:
       name: 'shape',
       type: 'string',
       required: true,
-      description: 'On <code>qti-associable-hotspot</code>: the shape of the hotspot region. One of <code>circle</code>, <code>rect</code>, <code>poly</code>, or <code>ellipse</code>.',
+      description: 'On <code>qti-associable-hotspot</code>: the shape of the hotspot region. One of <code>circle</code>, <code>default</code>, <code>ellipse</code>, <code>poly</code>, or <code>rect</code> (<code>ellipse</code> is deprecated).',
     },
     {
       name: 'coords',
@@ -114,14 +107,14 @@ Key attributes on the child elements:
 </qti-response-declaration>
 
 <qti-item-body>
-  <qti-graphic-gap-match-interaction response-identifier="RESPONSE" shuffle="true" max-associations="2">
+  <qti-graphic-gap-match-interaction response-identifier="RESPONSE" max-associations="2">
     <qti-prompt>Drag each label onto the correct organ.</qti-prompt>
-    <qti-object type="image/png" data="images/body-diagram.png" width="480" height="360"/>
+    <img src="images/body-diagram.png" alt="Diagram of the human body" width="480" height="360"/>
     <qti-gap-img identifier="IMG_HEART" match-max="1">
-      <qti-object type="image/png" data="images/label-heart.png" width="80" height="24"/>
+      <img src="images/label-heart.png" alt="Heart" width="80" height="24"/>
     </qti-gap-img>
     <qti-gap-img identifier="IMG_LUNG" match-max="1">
-      <qti-object type="image/png" data="images/label-lung.png" width="80" height="24"/>
+      <img src="images/label-lung.png" alt="Lung" width="80" height="24"/>
     </qti-gap-img>
     <qti-associable-hotspot identifier="H1" shape="circle" coords="180,140,25" match-max="1"/>
     <qti-associable-hotspot identifier="H2" shape="circle" coords="300,150,25" match-max="1"/>

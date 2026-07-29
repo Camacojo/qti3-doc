@@ -20,10 +20,13 @@ referenced, never inlined, so the same item can appear in many tests.
 ## Place in the hierarchy
 
 - **Parent:** a [section](/reference/test/assessment-section/).
-- **Children:** optional per-item [preconditions & branch rules](/reference/test/branch-rule-and-preconditions/),
+- **Children (in order, all optional):** per-item
+  [preconditions & branch rules](/reference/test/branch-rule-and-preconditions/),
   [`qti-item-session-control`](/reference/test/item-session-control/),
-  [`qti-time-limits`](/reference/test/time-limits/) and one or more
-  [`qti-weight`](/reference/test/weight/) elements.
+  [`qti-time-limits`](/reference/test/time-limits/), variable mappings
+  (`qti-variable-mapping`), zero or more
+  [`qti-weight`](/reference/test/weight/) elements, and template defaults
+  (`qti-template-default`).
 
 ## Attributes
 

@@ -29,7 +29,7 @@ The candidate assigns a rank to each hotspot, and the resulting ordered list of 
 
 - **Parent:** appears within the `qti-item-body` (directly or nested inside block-level content).
 - **Children:**
-  - Exactly one `qti-object` element that references the background image and defines its dimensions.
+  - Exactly one HTML `object`, `img`, or `picture` element that references the background image and defines its dimensions.
   - One `qti-hotspot-choice` element for each selectable region. Each hotspot declares an `identifier`, a `shape`, and the matching `coords`.
 - **Binds to:** a `qti-response-declaration` with cardinality `ordered` and base-type `identifier`. The declared correct response is the ordered sequence of hotspot identifiers.
 
@@ -90,7 +90,7 @@ The child `qti-hotspot-choice` elements each carry their own attributes, most im
 <qti-item-body>
   <qti-graphic-order-interaction response-identifier="RESPONSE">
     <qti-prompt>Place the stages of the water cycle in the correct order.</qti-prompt>
-    <qti-object type="image/png" data="images/water-cycle.png" width="600" height="400"/>
+    <img src="images/water-cycle.png" alt="Diagram of the water cycle" width="600" height="400"/>
     <qti-hotspot-choice identifier="evaporation" shape="circle" coords="120,300,40"/>
     <qti-hotspot-choice identifier="condensation" shape="circle" coords="300,80,40"/>
     <qti-hotspot-choice identifier="precipitation" shape="circle" coords="470,180,40"/>

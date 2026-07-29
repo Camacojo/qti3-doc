@@ -22,8 +22,10 @@ you will see everywhere:
 - `MAXSCORE` — the maximum possible (`float`), useful for normalisation.
 - `FEEDBACK` — an identifier selecting which feedback to show.
 
-Give outcomes a sensible `qti-default-value` (usually `0` for `SCORE`) so an
-unscored item has a defined value.
+Give outcomes a sensible `qti-default-value` (usually `0` for `SCORE`) — numeric
+outcomes implicitly initialize to `0` even without one, but declaring the
+default makes the intent explicit; non-numeric outcomes otherwise start as
+NULL.
 
 ## Scoring models
 

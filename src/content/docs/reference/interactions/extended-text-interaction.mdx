@@ -30,18 +30,20 @@ Extended-text responses are usually **human-scored**: the item typically has no 
 
 - **Parent:** appears within the `qti-item-body` (directly or nested inside block-level content).
 - **Children:** may contain an optional `qti-prompt` element that gives the question text or instructions shown to the candidate.
-- **Bound variable:** the `response-identifier` attribute binds the interaction to a `qti-response-declaration` with base-type `string`. Its cardinality is `single` (one block of text) or `multiple` (several separate strings, for example when `max-strings` allows more than one line to be captured as distinct values).
+- **Bound variable:** the `response-identifier` attribute binds the interaction to a `qti-response-declaration`, usually with base-type `string` (the spec also allows `integer` and `float`). Its cardinality is `single` (one block of text) or `multiple`/`ordered` (several separate strings, for example when `max-strings` allows more than one entry to be captured as distinct values).
 
 ## Attributes
 
 <AttributesTable
   attributes={[
-    { name: 'response-identifier', type: 'identifier', required: true, description: 'Identifier of the <code>qti-response-declaration</code> that captures the candidate\'s answer. Must match a declared response variable of base-type <code>string</code>.' },
+    { name: 'response-identifier', type: 'identifier', required: true, description: 'Identifier of the <code>qti-response-declaration</code> that captures the candidate\'s answer. Must match a declared response variable, usually of base-type <code>string</code>.' },
     { name: 'expected-length', type: 'integer', required: false, description: 'A hint to the renderer for the expected number of characters in the response. Purely a rendering hint; it does not constrain what the candidate may enter.' },
     { name: 'expected-lines', type: 'integer', required: false, description: 'A hint to the renderer for the expected number of lines of text, which can be used to size the text area.' },
     { name: 'max-strings', type: 'integer', required: false, description: 'The maximum number of separate strings the candidate may enter. Relevant when the bound response variable has <code>multiple</code> cardinality.' },
     { name: 'min-strings', type: 'integer', required: false, default: '0', description: 'The minimum number of non-empty strings the candidate must enter for the response to be valid.' },
-    { name: 'format', type: 'plain | preFormatted | xhtml', required: false, default: 'plain', description: 'The format expected for the response text: <code>plain</code> for plain text, <code>preFormatted</code> to preserve whitespace, or <code>xhtml</code> to allow marked-up rich text.' },
+    { name: 'format', type: 'plain | preformatted | xhtml', required: false, default: 'plain', description: 'The format expected for the response text: <code>plain</code> for plain text, <code>preformatted</code> to preserve whitespace, or <code>xhtml</code> to allow marked-up rich text.' },
+    { name: 'base', type: 'integer', required: false, default: '10', description: 'The number base to use when interpreting the response as an integer (for response variables of base-type <code>integer</code>).' },
+    { name: 'string-identifier', type: 'identifier', required: false, description: 'Identifier of an additional string response variable that records the literal text entered, when the main response variable has a numeric base-type.' },
   ]}
   caption="Attributes of qti-extended-text-interaction"
 />

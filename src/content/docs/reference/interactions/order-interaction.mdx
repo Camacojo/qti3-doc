@@ -55,6 +55,18 @@ The associated response variable must be declared with cardinality `ordered` and
       description: 'When <code>true</code>, the order in which the child <code>qti-simple-choice</code> elements are initially presented is randomized. Choices with <code>fixed="true"</code> keep their position.'
     },
     {
+      name: 'min-choices',
+      type: 'integer',
+      required: false,
+      description: 'The minimum number of choices the candidate must include in the order for the response to be valid.'
+    },
+    {
+      name: 'max-choices',
+      type: 'integer',
+      required: false,
+      description: 'The maximum number of choices the candidate may include in the order. Allows the candidate to order a subset of the choices.'
+    },
+    {
       name: 'orientation',
       type: 'orientation',
       required: false,

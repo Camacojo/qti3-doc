@@ -15,8 +15,9 @@ import SpecLink from '@components/SpecLink.astro';
 
 `qti-feedback-block` and `qti-feedback-inline` embed feedback **inside the
 [item body](/concepts/item-body/)** rather than in a separate dialog. They use
-the same outcome-driven mechanism as [`qti-modal-feedback`](/reference/content/modal-feedback/),
-differing only in placement:
+the same outcome-driven mechanism as [`qti-modal-feedback`](/reference/content/modal-feedback/)
+(which differs in more than placement: its `show-hide` is required and it has a
+`title` attribute). The two body-level variants are:
 
 - **`qti-feedback-block`** — block-level feedback (its own paragraph or region).
 - **`qti-feedback-inline`** — inline feedback within a line of running text.
@@ -29,7 +30,8 @@ differing only in placement:
 
 ## Attributes
 
-Both elements share the same attributes:
+Both elements share the same attributes (unlike `qti-modal-feedback`, where
+`show-hide` is required and a `title` attribute is available):
 
 <AttributesTable attributes={[
   { name: 'outcome-identifier', type: 'identifier', required: true, description: 'The outcome variable whose value selects this feedback.' },
@@ -44,11 +46,17 @@ Both elements share the same attributes:
 <qti-item-body>
   <!-- interaction here -->
   <qti-feedback-block outcome-identifier="FEEDBACK" identifier="EXPLAIN" show-hide="show">
-    <p>The Amazon carries more water than the next seven largest rivers combined.</p>
+    <qti-content-body>
+      <p>The Amazon carries more water than the next seven largest rivers combined.</p>
+    </qti-content-body>
   </qti-feedback-block>
 </qti-item-body>
 ```
 </Example>
+
+Note the asymmetry: `qti-feedback-block` requires its content to be wrapped in a
+`qti-content-body` element, while `qti-feedback-inline` takes inline content
+directly.
 
 ## Cross-references
 

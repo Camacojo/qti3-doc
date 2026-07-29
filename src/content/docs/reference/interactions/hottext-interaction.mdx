@@ -48,12 +48,14 @@ The response has base type `identifier`. Use cardinality `single` when exactly o
       name: 'max-choices',
       type: 'integer',
       required: false,
+      default: '1',
       description: 'The maximum number of hot spans the candidate may select. A value of <code>0</code> means no limit. When set to <code>1</code>, use single cardinality.',
     },
     {
       name: 'min-choices',
       type: 'integer',
       required: false,
+      default: '0',
       description: 'The minimum number of hot spans the candidate must select for a valid response. When <code>0</code> or omitted, a response is not required.',
     },
   ]}

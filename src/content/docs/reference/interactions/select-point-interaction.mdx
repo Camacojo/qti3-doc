@@ -29,7 +29,7 @@ Because the response is a raw coordinate, scoring is done by comparing selected 
 ## Place in the hierarchy
 
 - **Parent:** appears in the item body (`qti-item-body`), like other interactions.
-- **Children:** contains a background image declared with `qti-object`, and may include an optional prompt (`qti-prompt`).
+- **Children:** contains a background image declared with an HTML `object`, `img`, or `picture` element, and may include an optional prompt (`qti-prompt`).
 - **Binds to:** a response variable declared by a `qti-response-declaration` whose `identifier` matches the `response-identifier` attribute. The response uses base-type `point` with cardinality `single` (one point) or `multiple` (several points).
 
 ## Attributes
@@ -46,12 +46,14 @@ Because the response is a raw coordinate, scoring is done by comparing selected 
       name: 'max-choices',
       type: 'integer',
       required: false,
-      description: 'The maximum number of points the candidate may select. A value of <code>0</code> means there is no limit.'
+      default: '0',
+      description: 'The maximum number of points the candidate may select. A value of <code>0</code> means there is no limit — note this default differs from <code>qti-hotspot-interaction</code>, which defaults to <code>1</code>.'
     },
     {
       name: 'min-choices',
       type: 'integer',
       required: false,
+      default: '0',
       description: 'The minimum number of points the candidate must select for the response to be considered complete.'
     }
   ]}
@@ -75,7 +77,7 @@ Because the response is a raw coordinate, scoring is done by comparing selected 
 <qti-item-body>
   <qti-select-point-interaction response-identifier="RESPONSE" max-choices="1">
     <qti-prompt>Click on the capital city of the highlighted country.</qti-prompt>
-    <qti-object type="image/png" data="images/map.png" width="400" height="300"/>
+    <img src="images/map.png" alt="Map of the highlighted country" width="400" height="300"/>
   </qti-select-point-interaction>
 </qti-item-body>
 ```

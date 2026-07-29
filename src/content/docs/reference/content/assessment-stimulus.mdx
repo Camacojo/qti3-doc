@@ -5,7 +5,6 @@ sidebar:
   order: 2
 ---
 
-import SupportBadge from '@components/SupportBadge.astro';
 import Example from '@components/Example.astro';
 import Related from '@components/Related.astro';
 import SpecLink from '@components/SpecLink.astro';
@@ -38,6 +37,10 @@ Editing the stimulus once updates it for every item that references it.
   [content package](/reference/packaging/content-package/) and referenced by the
   items (or the test) that use it, so delivery presents the passage alongside
   those items.
+- Inside an item, the reference is made with the `qti-assessment-stimulus-ref`
+  element — a direct child of `qti-assessment-item` that points at the stimulus
+  by `identifier` and `href`. The manifest additionally records the relationship
+  as a resource dependency.
 
 ## Example
 

@@ -25,7 +25,9 @@ delivery engines, and use a stylesheet for the rest.
 
 ## Place in the hierarchy
 
-A child of `qti-assessment-item`, declared before the item body. The referenced
+A child of `qti-assessment-item`, declared before the item body. It also appears
+in the same position on `qti-assessment-test` (and on a stimulus, rubric blocks
+and feedback elements, before their `qti-content-body`). The referenced
 CSS file must be included in the [content package](/reference/packaging/content-package/)
 and listed in the [manifest](/reference/packaging/imsmanifest/).
 
@@ -33,7 +35,7 @@ and listed in the [manifest](/reference/packaging/imsmanifest/).
 
 <AttributesTable attributes={[
   { name: 'href', type: 'URI', required: true, description: 'Relative path to the CSS file within the package.' },
-  { name: 'type', type: 'mime-type', default: 'text/css', description: 'The stylesheet media type.' },
+  { name: 'type', type: 'mime-type', required: true, description: 'The stylesheet media type — in practice always <code>text/css</code>. Required; there is no default.' },
   { name: 'media', type: 'string', description: 'Optional media query, as in HTML (e.g. <code>screen</code>, <code>print</code>).' },
   { name: 'title', type: 'string', description: 'Optional title for the stylesheet.' },
 ]} caption="qti-stylesheet attributes" />

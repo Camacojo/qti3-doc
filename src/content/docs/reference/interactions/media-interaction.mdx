@@ -28,7 +28,7 @@ The media clip is embedded inside the interaction, and the response variable sto
 ## Place in the hierarchy
 
 - **Parent:** the interaction is placed in the `qti-item-body` (directly or nested within block content).
-- **Children:** it contains a single embedded media object. This is a `qti-object` element (or an HTML `audio` / `video` element) that references the audio or video resource.
+- **Children:** it contains a single embedded media object. This is an HTML `object`, `audio`, or `video` element that references the audio or video resource.
 - **Bound variable:** it binds to a `qti-response-declaration` named by its `response-identifier`. That response declaration must have cardinality `single` and base-type `integer`, since the recorded value is the number of plays.
 
 ## Attributes
@@ -37,9 +37,9 @@ The media clip is embedded inside the interaction, and the response variable sto
   attributes={[
     { name: 'response-identifier', type: 'identifier', required: true, description: 'Identifier of the bound <code>qti-response-declaration</code> (cardinality <code>single</code>, base-type <code>integer</code>). Stores the number of times the media was played.' },
     { name: 'autostart', type: 'boolean', required: true, description: 'Whether the media should begin playing automatically when the item is presented (<code>true</code>) or wait for the candidate to start it (<code>false</code>).' },
-    { name: 'min-plays', type: 'integer', required: false, description: 'Minimum number of times the media must be played for the response to be considered valid. A value of <code>0</code> means no minimum.' },
-    { name: 'max-plays', type: 'integer', required: false, description: 'Maximum number of times the media may be played. A value of <code>0</code> means there is no upper limit.' },
-    { name: 'loop', type: 'boolean', required: false, description: 'Whether playback loops continuously (<code>true</code>) or plays through once per play (<code>false</code>).' },
+    { name: 'min-plays', type: 'integer', required: false, default: '0', description: 'Minimum number of times the media must be played for the response to be considered valid. A value of <code>0</code> means no minimum.' },
+    { name: 'max-plays', type: 'integer', required: false, default: '0', description: 'Maximum number of times the media may be played. A value of <code>0</code> means there is no upper limit.' },
+    { name: 'loop', type: 'boolean', required: false, default: 'false', description: 'Whether playback loops continuously (<code>true</code>) or plays through once per play (<code>false</code>).' },
   ]}
   caption="Attributes of qti-media-interaction"
 />
@@ -59,9 +59,10 @@ The media clip is embedded inside the interaction, and the response variable sto
                          min-plays="1"
                          max-plays="3"
                          loop="false">
-    <qti-object type="video/mp4" data="clip.mp4" width="480" height="270">
+    <video width="480" height="270">
+      <source src="clip.mp4" type="video/mp4"/>
       A short introductory video.
-    </qti-object>
+    </video>
   </qti-media-interaction>
 </qti-item-body>
 ```

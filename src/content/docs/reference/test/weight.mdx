@@ -26,7 +26,7 @@ outcome processing chooses which to apply.
 
 <AttributesTable attributes={[
   { name: 'identifier', type: 'identifier', required: true, description: 'Names this weight so outcome processing can reference it.' },
-  { name: 'value', type: 'float', required: true, description: 'The multiplier applied to the item’s weighted outcome.' },
+  { name: 'value', type: 'float', required: true, description: 'The multiplier applied to the item’s outcome value when this weight is selected.' },
 ]} caption="qti-weight attributes" />
 
 ## Example
@@ -40,7 +40,8 @@ outcome processing chooses which to apply.
 </Example>
 
 Outcome processing reads the weighted value with a `qti-test-variables`
-expression that names the `weight-identifier`.
+expression that names the `weight-identifier`. If an item reference does not
+define the named weight, a default weight of 1.0 applies.
 
 ## Cross-references
 

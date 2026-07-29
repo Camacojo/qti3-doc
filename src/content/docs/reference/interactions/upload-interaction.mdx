@@ -44,9 +44,9 @@ Because the response is an arbitrary file, this interaction is almost always **h
     },
     {
       name: 'type',
-      type: 'MIME type',
+      type: 'MIME type list',
       required: false,
-      description: 'The expected MIME type of the uploaded file (for example <code>application/pdf</code> or <code>image/png</code>). Used to restrict and hint which file types the candidate may submit. If omitted, any file type is accepted.',
+      description: 'A space-separated list of accepted MIME types for the uploaded file (for example <code>application/pdf image/png</code>). Used to restrict and hint which file types the candidate may submit. If omitted, any file type is accepted.',
     },
   ]}
   caption="Attributes of qti-upload-interaction"

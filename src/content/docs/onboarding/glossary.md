@@ -33,8 +33,9 @@ The question text or instruction shown at the start of an interaction
 
 ### Response variable
 A variable that captures what the candidate did, declared with
-[`qti-response-declaration`](/reference/processing/response-declaration/). The
-default one is `RESPONSE`.
+[`qti-response-declaration`](/reference/processing/response-declaration/). By
+convention (and as required by the built-in response-processing templates) it is
+usually named `RESPONSE`.
 
 ### Outcome variable
 A variable that holds a result of scoring, such as `SCORE`, declared with
@@ -57,7 +58,8 @@ The value(s) considered correct for a response variable
 
 ### Mapping
 A lookup from response values to numeric scores (`qti-mapping`), enabling partial
-credit. See [Built-in RP templates](/reference/processing/built-in-templates/).
+credit. Defined on the [response declaration](/reference/processing/response-declaration/)
+and used by e.g. the `map_response` [built-in RP template](/reference/processing/built-in-templates/).
 
 ### Response processing
 The rules that turn responses into outcomes. See [Response processing](/concepts/response-processing/).

@@ -6,7 +6,6 @@ sidebar:
 ---
 
 import SupportBadge from '@components/SupportBadge.astro';
-import AttributesTable from '@components/AttributesTable.astro';
 import Example from '@components/Example.astro';
 import Related from '@components/Related.astro';
 import SpecLink from '@components/SpecLink.astro';
@@ -28,61 +27,50 @@ Operators propagate NULL: if a required operand is NULL, most operators return N
 
 ## Operator reference
 
-Operators are grouped below by the kind of work they do. Each takes its operands as child expressions.
+Operators are grouped below by the kind of work they do. Each takes its operands as child expressions. The most common operators are described here — the specification defines more.
 
 ### Logical operators
 
-<AttributesTable
-  attributes={[
-    { name: 'qti-and', type: 'boolean', description: 'True only if <code>every</code> boolean operand is true. Returns false if any operand is false; NULL propagates.' },
-    { name: 'qti-or', type: 'boolean', description: 'True if <code>at least one</code> boolean operand is true.' },
-    { name: 'qti-not', type: 'boolean', description: 'Negates a single boolean operand: true becomes false and vice versa.' }
-  ]}
-  caption="Logical operators"
-/>
+| Operator | Result | Description |
+| -------- | ------ | ----------- |
+| `qti-and` | boolean | True only if *every* boolean operand is true. Returns false if any operand is false; NULL propagates. |
+| `qti-or` | boolean | True if *at least one* boolean operand is true. |
+| `qti-not` | boolean | Negates a single boolean operand: true becomes false and vice versa. |
 
 ### Comparison operators
 
-<AttributesTable
-  attributes={[
-    { name: 'qti-match', type: 'boolean', description: 'True if the two operands are equal. Works for any base type and cardinality, comparing containers as a whole (order matters for <code>ordered</code>).' },
-    { name: 'qti-equal', type: 'boolean', description: 'True if two numeric operands are equal, using a tolerance mode (<code>exact</code>, <code>absolute</code>, or <code>relative</code>) set by its <code>tolerance</code> attributes.' },
-    { name: 'qti-equal-rounded', type: 'boolean', description: 'True if two numeric operands are equal after rounding to a given number of <code>significant-figures</code> or <code>decimal-places</code>.' },
-    { name: 'qti-gt', type: 'boolean', description: 'True if the first numeric operand is strictly greater than the second.' },
-    { name: 'qti-gte', type: 'boolean', description: 'True if the first numeric operand is greater than or equal to the second.' },
-    { name: 'qti-lt', type: 'boolean', description: 'True if the first numeric operand is strictly less than the second.' },
-    { name: 'qti-lte', type: 'boolean', description: 'True if the first numeric operand is less than or equal to the second.' }
-  ]}
-  caption="Comparison operators"
-/>
+| Operator | Result | Description |
+| -------- | ------ | ----------- |
+| `qti-match` | boolean | True if the two operands are equal. Works for most base types and any cardinality (not `float` or `duration` — use `qti-equal` for numeric comparison), comparing containers as a whole (order matters for `ordered`). |
+| `qti-equal` | boolean | True if two numeric operands are equal. `tolerance-mode` (`exact`, `absolute`, or `relative`) selects the comparison, `tolerance` supplies the tolerance bound(s), and `include-lower-bound` / `include-upper-bound` control whether the bounds themselves count as equal. |
+| `qti-equal-rounded` | boolean | True if two numeric operands are equal after rounding to a given number of `significant-figures` or `decimal-places`. |
+| `qti-gt` | boolean | True if the first numeric operand is strictly greater than the second. |
+| `qti-gte` | boolean | True if the first numeric operand is greater than or equal to the second. |
+| `qti-lt` | boolean | True if the first numeric operand is strictly less than the second. |
+| `qti-lte` | boolean | True if the first numeric operand is less than or equal to the second. |
+| `qti-inside` | boolean | True if the point operand falls inside the area defined by the operator's `shape` and `coords` attributes. Useful with the point responses of the graphic interactions. |
 
 ### Arithmetic operators
 
-<AttributesTable
-  attributes={[
-    { name: 'qti-sum', type: 'numeric', description: 'Adds all numeric operands and returns the total.' },
-    { name: 'qti-subtract', type: 'numeric', description: 'Subtracts the second operand from the first.' },
-    { name: 'qti-product', type: 'numeric', description: 'Multiplies all numeric operands together.' },
-    { name: 'qti-divide', type: 'numeric', description: 'Divides the first operand by the second.' },
-    { name: 'qti-round', type: 'integer', description: 'Rounds a single numeric operand to the nearest integer.' }
-  ]}
-  caption="Arithmetic operators"
-/>
+| Operator | Result | Description |
+| -------- | ------ | ----------- |
+| `qti-sum` | numeric | Adds all numeric operands and returns the total. |
+| `qti-subtract` | numeric | Subtracts the second operand from the first. |
+| `qti-product` | numeric | Multiplies all numeric operands together. |
+| `qti-divide` | numeric | Divides the first operand by the second. |
+| `qti-round` | integer | Rounds a single numeric operand to the nearest integer. |
 
 ### Container and string operators
 
-<AttributesTable
-  attributes={[
-    { name: 'qti-member', type: 'boolean', description: 'True if the first operand (a single value) is one of the values in the second operand (a container).' },
-    { name: 'qti-contains', type: 'boolean', description: 'True if the first container contains the second container as a sub-sequence.' },
-    { name: 'qti-is-null', type: 'boolean', description: 'True if its single operand is NULL (an unanswered response or empty container).' },
-    { name: 'qti-index', type: 'any', description: 'Returns the value at the 1-based position <code>n</code> within an <code>ordered</code> container.' },
-    { name: 'qti-string-match', type: 'boolean', description: 'True if two strings match; a <code>case-sensitive</code> attribute controls whether case is significant.' },
-    { name: 'qti-substring', type: 'boolean', description: 'True if the second string operand contains the first as a substring, honouring <code>case-sensitive</code>.' },
-    { name: 'qti-pattern-match', type: 'boolean', description: 'True if the string operand matches the regular expression given by the <code>pattern</code> attribute.' }
-  ]}
-  caption="Container and string operators"
-/>
+| Operator | Result | Description |
+| -------- | ------ | ----------- |
+| `qti-member` | boolean | True if the first operand (a single value) is one of the values in the second operand (a container). |
+| `qti-contains` | boolean | True if the first container contains the second container as a sub-sequence. |
+| `qti-is-null` | boolean | True if its single operand is NULL (an unanswered response or empty container). |
+| `qti-index` | any | Returns the value at the 1-based position `n` within an `ordered` container. |
+| `qti-string-match` | boolean | True if two strings match; a `case-sensitive` attribute controls whether case is significant. |
+| `qti-substring` | boolean | True if the second string operand contains the first as a substring, honouring `case-sensitive`. |
+| `qti-pattern-match` | boolean | True if the string operand matches the regular expression given by the `pattern` attribute. |
 
 ## Example
 

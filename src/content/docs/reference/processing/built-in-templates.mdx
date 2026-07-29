@@ -24,7 +24,7 @@ Use a built-in template when your scoring follows one of these standard shapes:
 
 - **match_correct** — all-or-nothing scoring. The candidate earns full marks only if the submitted response exactly matches the declared correct response; otherwise the score is zero. Best for single-answer questions and any item where partial credit is not wanted.
 - **map_response** — partial credit driven by a `qti-mapping` on the response declaration. Each possible response value carries a `mapped-value`; the outcome is the sum of the mapped values for the selected/entered values. Best for multiple-response choice items and text entry where individual answers carry different weights.
-- **map_response_point** — partial credit for point-based responses, driven by a `qti-area-mapping` on the response declaration. Points that fall inside defined areas contribute their mapped values. Best for graphic and point interactions such as `qti-select-point-interaction` and `qti-hotspot-interaction`.
+- **map_response_point** — partial credit for point-based responses, driven by a `qti-area-mapping` on the response declaration. Points that fall inside defined areas contribute their mapped values. Best for `qti-select-point-interaction` and other point-typed graphic responses.
 
 When your scoring goes beyond these patterns, write custom rules inside `qti-response-processing` instead of referencing a template.
 
@@ -32,13 +32,13 @@ When your scoring goes beyond these patterns, write custom rules inside `qti-res
 
 These templates are not elements; they are URIs supplied to the `template` attribute of `qti-response-processing`, which lives inside `qti-assessment-item`. The full template URIs are:
 
-- `https://www.imsglobal.org/question/qti_v3p0/rptemplates/match_correct`
-- `https://www.imsglobal.org/question/qti_v3p0/rptemplates/map_response`
-- `https://www.imsglobal.org/question/qti_v3p0/rptemplates/map_response_point`
+- `https://purl.imsglobal.org/spec/qti/v3p0/rptemplates/match_correct.xml`
+- `https://purl.imsglobal.org/spec/qti/v3p0/rptemplates/map_response.xml`
+- `https://purl.imsglobal.org/spec/qti/v3p0/rptemplates/map_response_point.xml`
 
 Each template operates on the item's declared variables by convention:
 
-- **match_correct** reads the response variable named <code>RESPONSE</code> and its `qti-correct-response`, then sets the outcome variable named <code>SCORE</code> (and, in the standard template, <code>MAXSCORE</code>).
+- **match_correct** reads the response variable named <code>RESPONSE</code> and its `qti-correct-response`, then sets the outcome variable named <code>SCORE</code> (1.0 on a match, 0.0 otherwise).
 - **map_response** reads <code>RESPONSE</code> and its `qti-mapping`, then sets <code>SCORE</code>.
 - **map_response_point** reads <code>RESPONSE</code> and its `qti-area-mapping`, then sets <code>SCORE</code>.
 
@@ -54,7 +54,7 @@ The `template` attribute is the single attribute you set to invoke a built-in te
       name: 'template',
       type: 'URI',
       required: false,
-      description: 'The URI of a response processing template. When present, the engine applies the logic that URI stands for. Use one of the three standard values: <code>.../rptemplates/match_correct</code>, <code>.../rptemplates/map_response</code>, or <code>.../rptemplates/map_response_point</code>.'
+      description: 'The URI of a response processing template. When present, the engine applies the logic that URI stands for. Use one of the three standard values: <code>.../rptemplates/match_correct.xml</code>, <code>.../rptemplates/map_response.xml</code>, or <code>.../rptemplates/map_response_point.xml</code>.'
     },
     {
       name: 'template-location',
@@ -87,7 +87,7 @@ matching `template` URI:
 </qti-outcome-declaration>
 
 <qti-response-processing
-  template="https://www.imsglobal.org/question/qti_v3p0/rptemplates/match_correct"/>
+  template="https://purl.imsglobal.org/spec/qti/v3p0/rptemplates/match_correct.xml"/>
 ```
 _All-or-nothing: full marks only when `RESPONSE` equals the correct response._
   </TabItem>
@@ -112,7 +112,7 @@ _All-or-nothing: full marks only when `RESPONSE` equals the correct response._
 </qti-outcome-declaration>
 
 <qti-response-processing
-  template="https://www.imsglobal.org/question/qti_v3p0/rptemplates/map_response"/>
+  template="https://purl.imsglobal.org/spec/qti/v3p0/rptemplates/map_response.xml"/>
 ```
 _Partial credit: sums the `mapped-value` of each selected value (clamped to the bounds)._
   </TabItem>
@@ -131,7 +131,7 @@ _Partial credit: sums the `mapped-value` of each selected value (clamped to the 
 </qti-outcome-declaration>
 
 <qti-response-processing
-  template="https://www.imsglobal.org/question/qti_v3p0/rptemplates/map_response_point"/>
+  template="https://purl.imsglobal.org/spec/qti/v3p0/rptemplates/map_response_point.xml"/>
 ```
 _Partial credit for point responses: points inside a mapped area score its value._
   </TabItem>

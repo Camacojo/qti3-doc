@@ -14,14 +14,16 @@ import SpecLink from '@components/SpecLink.astro';
 <SupportBadge qtiComponents="yes" />
 
 `qti-assessment-test` is the root of a test: an ordered structure of
-[items](/concepts/assessment-item/), delivered as one sitting, with rules for how
+[items](/concepts/assessment-item/), typically delivered as one sitting, with rules for how
 their scores aggregate. For the conceptual overview see
 [Assessment test & sections](/concepts/assessment-test-and-sections/).
 
 ## Place in the hierarchy
 
 - **Children (in order):** test-level [`qti-outcome-declaration`](/reference/processing/outcome-declaration/),
-  one or more [`qti-test-part`](/reference/test/test-part/), an optional
+  optionally context declarations, [`qti-time-limits`](/reference/test/time-limits/),
+  stylesheets and [rubric blocks](/reference/content/rubric-block/) (before the
+  test parts), one or more [`qti-test-part`](/reference/test/test-part/), an optional
   [`qti-outcome-processing`](/reference/processing/outcome-processing/), and
   optional test feedback.
 - Items are never inlined; test parts contain
@@ -33,6 +35,9 @@ their scores aggregate. For the conceptual overview see
   { name: 'identifier', type: 'identifier', required: true, description: 'A unique identifier for the test.' },
   { name: 'title', type: 'string', required: true, description: 'A human-readable title.' },
 ]} caption="qti-assessment-test attributes" />
+
+Optional `tool-name` and `tool-version` attributes may record which authoring
+tool produced the test.
 
 ## Example
 

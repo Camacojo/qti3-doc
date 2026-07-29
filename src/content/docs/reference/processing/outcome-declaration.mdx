@@ -23,17 +23,27 @@ Use `qti-outcome-declaration` to declare each result value your item or test pro
 - **Feedback control.** An outcome named `FEEDBACK` (a single or multiple identifier) is conventionally used to drive `qti-feedback-block` / `qti-feedback-inline` visibility.
 - **Any custom result.** You can declare additional outcomes for partial scores, categories, or other computed values.
 
-Response processing rules read and write these variables; the platform starts each with its default value (or the base-type's null value) before processing.
+Response processing rules read and write these variables; before processing, the platform starts each outcome at its declared default value. An outcome without a default starts as NULL — except a single-cardinality numeric outcome (`integer` or `float`), which starts at 0.
 
 ## Place in the hierarchy
 
 `qti-outcome-declaration` is a direct child of `qti-assessment-item` (for item-level outcomes) or `qti-assessment-test` (for test-level outcomes). It sits alongside other variable declarations such as `qti-response-declaration`.
 
-An outcome declaration may contain a single optional child:
+An outcome declaration may contain optional children:
 
 - `qti-default-value` — wrapping one or more `qti-value` elements that define the outcome's initial value.
+- A lookup table — either `qti-match-table` or `qti-interpolation-table` — that the `qti-lookup-outcome-value` rule uses to derive this outcome's value.
 
 Unlike a response declaration, an outcome has no candidate-supplied value: it is populated only by processing rules such as those in `qti-response-processing`.
+
+### Lookup tables
+
+An outcome can carry a table that translates another value into this outcome's value:
+
+- `qti-match-table` — discrete lookups: each `qti-match-table-entry` pairs a `source-value` with a `target-value`, so an exact source value maps to a fixed result.
+- `qti-interpolation-table` — range-based lookups: each `qti-interpolation-table-entry` gives a `source-value` boundary and a `target-value`, and a numeric source is matched against the boundaries to pick a result (for example mapping a raw score onto a grade band).
+
+Declaring a table has no effect by itself; it is read by the [`qti-lookup-outcome-value` rule](/reference/processing/rules/), which evaluates an expression and looks the result up in the table declared on the outcome it targets.
 
 ## Attributes
 
@@ -41,8 +51,9 @@ Unlike a response declaration, an outcome has no candidate-supplied value: it is
   attributes={[
     { name: 'identifier', type: 'identifier', required: true, description: 'The name of the outcome variable, unique within the item or test. Conventional names include <code>SCORE</code>, <code>MAXSCORE</code>, and <code>FEEDBACK</code>.' },
     { name: 'cardinality', type: 'enumerated', required: true, description: 'The variable\'s cardinality: <code>single</code>, <code>multiple</code>, <code>ordered</code>, or <code>record</code>.' },
-    { name: 'base-type', type: 'enumerated', required: true, description: 'The value\'s base type, e.g. <code>float</code>, <code>integer</code>, <code>string</code>, <code>identifier</code>, <code>boolean</code>. Required unless <code>cardinality</code> is <code>record</code>.' },
+    { name: 'base-type', type: 'enumerated', required: false, description: 'The value\'s base type, e.g. <code>float</code>, <code>integer</code>, <code>string</code>, <code>identifier</code>, <code>boolean</code>. Required for every cardinality except <code>record</code>, where each field carries its own base type.' },
     { name: 'view', type: 'enumerated (list)', description: 'Restricts which roles may see the value, e.g. <code>author</code>, <code>candidate</code>, <code>scorer</code>. When omitted, the outcome is available to all views.' },
+    { name: 'external-scored', type: 'enumerated', description: 'Marks an outcome whose value is set outside the delivery engine: <code>human</code> (scored by a human rater) or <code>externalMachine</code> (scored by an external system). When omitted, the outcome is set by the item or test\'s own processing.' },
     { name: 'interpretation', type: 'string', description: 'A human-readable description of how the value should be interpreted.' },
     { name: 'normal-maximum', type: 'float', description: 'The maximum value the outcome is expected to take when interpreted as a normalized score. Applies to single floats/integers.' },
     { name: 'normal-minimum', type: 'float', description: 'The minimum value the outcome is expected to take when interpreted as a normalized score.' },
@@ -56,14 +67,14 @@ Unlike a response declaration, an outcome has no candidate-supplied value: it is
 <Example title="Declaring SCORE, MAXSCORE, and FEEDBACK">
 
 ```xml
-<qti-outcome-declaration identifier="SCORE" cardinality="single" base-type="float">
+<qti-outcome-declaration identifier="SCORE" cardinality="single" base-type="float"
+                         normal-maximum="1">
   <qti-default-value>
     <qti-value>0</qti-value>
   </qti-default-value>
 </qti-outcome-declaration>
 
-<qti-outcome-declaration identifier="MAXSCORE" cardinality="single" base-type="float"
-                         normal-maximum="1">
+<qti-outcome-declaration identifier="MAXSCORE" cardinality="single" base-type="float">
   <qti-default-value>
     <qti-value>1</qti-value>
   </qti-default-value>

@@ -39,13 +39,22 @@ or a feedback block.
   { name: 'base', type: 'integer', description: 'Numeric base for integer values (default 10).' },
 ]} caption="qti-printed-variable attributes" />
 
+:::note
+For container-valued variables, additional optional characteristics exist:
+`index` (pick one entry from an ordered container), `field` (pick a field from a
+record), `delimiter` and `mapping-indicator` (how multiple/record entries are
+separated when printed), and `power-form` (scientific notation for floats).
+:::
+
 ## Example
 
 <Example title="Echo the score back in feedback">
 ```xml
 <qti-feedback-block outcome-identifier="FEEDBACK" identifier="DONE" show-hide="show">
-  <p>You scored <qti-printed-variable identifier="SCORE"/> out of
-     <qti-printed-variable identifier="MAXSCORE"/>.</p>
+  <qti-content-body>
+    <p>You scored <qti-printed-variable identifier="SCORE"/> out of
+       <qti-printed-variable identifier="MAXSCORE"/>.</p>
+  </qti-content-body>
 </qti-feedback-block>
 ```
 </Example>

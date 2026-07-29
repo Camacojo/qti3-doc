@@ -33,14 +33,16 @@ instructions and private scoring notes.
 - **Parent:** the [item body](/concepts/item-body/), or an
   [assessment section](/concepts/assessment-test-and-sections/) (section-level
   rubric shown across the items it contains).
-- **Children:** flow content — standard HTML plus QTI elements such as
-  [`qti-printed-variable`](/reference/content/printed-variable/).
+- **Children:** optional `qti-stylesheet` elements, a required `qti-content-body`,
+  and an optional `qti-catalog-info`. The actual flow content — standard HTML plus
+  QTI elements such as [`qti-printed-variable`](/reference/content/printed-variable/) —
+  lives inside the `qti-content-body`.
 
 ## Attributes
 
 <AttributesTable attributes={[
   { name: 'view', type: 'token list', required: true, description: 'One or more audiences the block is meant for: <code>candidate</code>, <code>scorer</code>, <code>author</code>, <code>proctor</code>, <code>testConstructor</code>, <code>tutor</code>. Space-separated.' },
-  { name: 'use', type: 'string', description: 'An optional purpose label for the block, e.g. describing the kind of rubric.' },
+  { name: 'use', type: 'string', required: true, description: 'The purpose of the block. On item-level rubric blocks this is required, with the vocabulary <code>instructions</code>, <code>scoring</code> or <code>navigation</code> (extensible with custom values); on test- and section-level rubric blocks it is optional.' },
 ]} caption="qti-rubric-block attributes" />
 
 ## Example
@@ -48,12 +50,16 @@ instructions and private scoring notes.
 <Example title="Candidate instructions and a private scoring note">
 ```xml
 <qti-item-body>
-  <qti-rubric-block view="candidate">
-    <p>Read the passage below, then answer the question.</p>
+  <qti-rubric-block view="candidate" use="instructions">
+    <qti-content-body>
+      <p>Read the passage below, then answer the question.</p>
+    </qti-content-body>
   </qti-rubric-block>
 
-  <qti-rubric-block view="scorer">
-    <p>Award the mark only if the response names both causes.</p>
+  <qti-rubric-block view="scorer" use="scoring">
+    <qti-content-body>
+      <p>Award the mark only if the response names both causes.</p>
+    </qti-content-body>
   </qti-rubric-block>
 
   <!-- interaction follows -->

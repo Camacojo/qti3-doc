@@ -17,6 +17,7 @@ test (they have no effect when navigation is `nonlinear`). Both evaluate an
 ## qti-pre-condition — skip if false
 
 A precondition guards an element. If its expression evaluates to `false`, the
+[test part](/reference/test/test-part/),
 [section](/reference/test/assessment-section/) or
 [item](/reference/test/assessment-item-ref/) it belongs to is skipped.
 
@@ -25,6 +26,9 @@ A precondition guards an element. If its expression evaluates to `false`, the
 A branch rule names a `target`. If its expression is `true`, delivery jumps to
 that target instead of continuing in sequence. Targets can be a section, an item
 reference, or the special values `EXIT_SECTION`, `EXIT_TESTPART`, `EXIT_TEST`.
+The target must occur **later** in the flow — branching backwards is not
+allowed. A branch rule on a [test part](/reference/test/test-part/) may target
+another (later) test part.
 
 ## Example
 
@@ -33,13 +37,17 @@ reference, or the special values `EXIT_SECTION`, `EXIT_TESTPART`, `EXIT_TEST`.
 <qti-assessment-item-ref identifier="diagnostic" href="items/diagnostic.xml">
   <qti-branch-rule target="remedial">
     <qti-lt>
-      <qti-variable identifier="SCORE"/>
+      <qti-variable identifier="diagnostic.SCORE"/>
       <qti-base-value base-type="float">0.5</qti-base-value>
     </qti-lt>
   </qti-branch-rule>
 </qti-assessment-item-ref>
 ```
 </Example>
+
+Note the dotted identifier `diagnostic.SCORE`: in a test-level expression, an
+item's variable is addressed as `itemRefIdentifier.VARIABLE`. A bare `SCORE`
+would resolve to a test-level outcome variable instead.
 
 ## Cross-references
 

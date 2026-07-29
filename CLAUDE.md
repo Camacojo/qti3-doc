@@ -97,10 +97,12 @@ client `<script>` imports the library to register them.
 - **gap-match**: set `max-associations="0"` when there is more than one gap
   (default is 1, which blocks the second gap).
 - **php-qti3 support matrix** (for `SupportBadge phpQti3=...`): supported =
-  choice, text-entry, extended-text, gap-match, hotspot, hottext, inline-choice,
-  match, order, select-point. Everything else is unsupported. Source: the
-  `kennisnet/php-qti3` README "Supported interactions". php-qti3 also drops
-  rubric blocks, template processing and outcome processing on regeneration.
+  choice, text-entry, extended-text, gap-match, hotspot, hottext,
+  match, order, select-point (9 types — inline-choice is NOT supported; it
+  throws a `ParseError`). Everything else is unsupported. Source: the
+  `kennisnet/php-qti3` README "Supported interactions" and `InteractionParser`.
+  php-qti3 also drops rubric blocks, template declarations/processing and
+  outcome processing on regeneration.
 - **CSS**: `@citolab/qti-components` ships CSS that lightningcss refuses to
   minify, so `astro.config.mjs` sets `vite.build.cssMinify: 'esbuild'`.
 

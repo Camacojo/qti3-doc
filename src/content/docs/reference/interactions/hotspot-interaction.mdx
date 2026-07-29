@@ -29,15 +29,16 @@ Each selectable region is declared as a `qti-hotspot-choice` with a `shape` and 
 ## Place in the hierarchy
 
 - **Parent:** appears in the item body ([qti-item-body](/concepts/item-body/)), like other interactions.
-- **Children:** a background image expressed as an `img` element or a `qti-object`, followed by one or more `qti-hotspot-choice` elements. Each `qti-hotspot-choice` carries an `identifier`, a `shape`, and `coords`.
+- **Children:** a background image expressed as an HTML `object`, `img`, or `picture` element, followed by one or more `qti-hotspot-choice` elements. Each `qti-hotspot-choice` carries an `identifier`, a `shape`, and `coords`.
 - **Binds to:** the response variable named by its `response-identifier`. The bound [qti-response-declaration](/reference/processing/response-declaration/) has base-type `identifier`. Use cardinality `single` when at most one hotspot may be selected, and cardinality `multiple` when several may be selected. The response value(s) are the `identifier`(s) of the chosen `qti-hotspot-choice` element(s).
 
 The `shape` attribute of each `qti-hotspot-choice` accepts the following values, each with its own `coords` format (a comma-separated list of pixel values):
 
 - `circle` — `centerX, centerY, radius`
-- `rect` — `left-x, top-y, right-x, bottom-y`
-- `ellipse` — `centerX, centerY, hRadius, vRadius`
+- `default` — the entire image area (no coordinates needed)
+- `ellipse` — `centerX, centerY, hRadius, vRadius` (deprecated)
 - `poly` — a sequence of `x, y` point pairs describing the polygon vertices
+- `rect` — `left-x, top-y, right-x, bottom-y`
 
 ## Attributes
 
@@ -72,7 +73,7 @@ Each `qti-hotspot-choice` child carries its own attributes: `identifier` (the va
 ## Example
 
 Note the different `shape` values (`circle`, `rect`, `poly`, `ellipse`) and their
-`coords`, and that either an `img` or a `qti-object` can supply the background image.
+`coords`, and that either an `img` or an `object` element can supply the background image.
 
 <Tabs>
   <TabItem label="Single region">
@@ -106,7 +107,7 @@ Note the different `shape` values (`circle`, `rect`, `poly`, `ellipse`) and thei
 <qti-item-body>
   <p>Select all the regions shaded in the diagram.</p>
   <qti-hotspot-interaction response-identifier="RESPONSE" max-choices="0" min-choices="1">
-    <qti-object type="image/png" data="images/diagram.png" width="500" height="400"/>
+    <object type="image/png" data="images/diagram.png" width="500" height="400">Diagram</object>
     <qti-hotspot-choice identifier="HS_A" shape="poly" coords="10,10,90,10,50,90"/>
     <qti-hotspot-choice identifier="HS_B" shape="ellipse" coords="200,150,60,40"/>
     <qti-hotspot-choice identifier="HS_C" shape="rect" coords="320,60,420,160"/>

@@ -44,7 +44,7 @@ multiple-choice and multiple-response questions, true/false, and yes/no items.
   { name: 'max-choices', type: 'integer', default: '1', description: 'Maximum choices the candidate may select. <code>0</code> means no limit.' },
   { name: 'min-choices', type: 'integer', default: '0', description: 'Minimum choices required for a valid response.' },
   { name: 'shuffle', type: 'boolean', default: 'false', description: 'Randomise the order of choices at delivery. Use <code>fixed</code> on a choice to pin it in place.' },
-  { name: 'orientation', type: 'vertical | horizontal', description: 'Layout hint for how choices are arranged.' },
+  { name: 'orientation', type: 'vertical | horizontal', default: 'vertical', description: 'Layout hint for how choices are arranged.' },
 ]} caption="qti-choice-interaction attributes" />
 
 Each `qti-simple-choice` takes an `identifier` (required) and an optional

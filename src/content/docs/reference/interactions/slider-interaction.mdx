@@ -41,10 +41,10 @@ Use `base-type="integer"` together with an integer `step` when only whole-number
     { name: 'response-identifier', type: 'identifier', required: true, description: 'Identifier of the response variable this interaction binds to. Must match a <code>qti-response-declaration</code> with single cardinality and base-type <code>float</code> or <code>integer</code>.' },
     { name: 'lower-bound', type: 'float', required: true, description: 'The lowest value the candidate can select (the start of the range).' },
     { name: 'upper-bound', type: 'float', required: true, description: 'The highest value the candidate can select (the end of the range).' },
-    { name: 'step', type: 'integer', required: false, description: 'The size of the increment between selectable values. When omitted, a continuous (or platform-default) step is used.' },
+    { name: 'step', type: 'float (non-negative)', required: false, default: '1.0', description: 'The size of the increment between selectable values.' },
     { name: 'step-label', type: 'boolean', required: false, default: 'false', description: 'When <code>true</code>, the delivery engine displays labels at each step position.' },
-    { name: 'orientation', type: 'orientation', required: false, default: 'horizontal', description: 'Whether the slider is laid out <code>horizontal</code> or <code>vertical</code>.' },
-    { name: 'reverse', type: 'boolean', required: false, default: 'false', description: 'When <code>true</code>, reverses the direction of the slider so the upper bound appears at the start.' },
+    { name: 'orientation', type: 'orientation', required: false, description: 'Whether the slider is laid out <code>horizontal</code> or <code>vertical</code>. The schema defines no default; sliders are typically rendered horizontal.' },
+    { name: 'reverse', type: 'boolean', required: false, description: 'When <code>true</code>, reverses the direction of the slider so the upper bound appears at the start. The schema defines no default.' },
   ]}
   caption="Attributes of qti-slider-interaction"
 />

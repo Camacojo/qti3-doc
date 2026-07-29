@@ -29,7 +29,7 @@ It is the graphic counterpart of the [qti-associate-interaction](/reference/inte
 
 - **Parent:** appears in the item body, wherever block-level interaction content is allowed.
 - **Children:**
-  - A single background image, provided by a `qti-object` element.
+  - A single background image, provided by an HTML `object`, `img`, or `picture` element.
   - One or more `qti-associable-hotspot` elements that define the connectable regions.
 - **Bound variable:** the interaction binds to the response variable named by its `response-identifier`. That response declaration must have cardinality `multiple` and base type `pair`, because each association is an unordered pair of hotspot identifiers.
 
@@ -86,7 +86,7 @@ Each `qti-associable-hotspot` carries:
     max-associations="2"
     min-associations="1">
     <qti-prompt>Draw a line connecting each city to its country.</qti-prompt>
-    <qti-object type="image/png" data="images/map.png" width="600" height="400"/>
+    <img src="images/map.png" alt="Map showing two cities and two countries" width="600" height="400"/>
     <qti-associable-hotspot identifier="A" shape="circle" coords="120,90,10" match-max="1"/>
     <qti-associable-hotspot identifier="B" shape="circle" coords="340,210,10" match-max="1"/>
     <qti-associable-hotspot identifier="P" shape="circle" coords="500,110,10" match-max="1"/>

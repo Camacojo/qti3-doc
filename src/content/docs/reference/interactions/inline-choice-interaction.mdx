@@ -12,7 +12,7 @@ import Related from '@components/Related.astro';
 import SpecLink from '@components/SpecLink.astro';
 import QtiDemo from '@components/QtiDemo.astro';
 
-<SupportBadge phpQti3="yes" qtiComponents="yes" />
+<SupportBadge phpQti3="no" qtiComponents="yes" note="php-qti3 does not parse this interaction type (its parser throws a ParseError)." />
 
 The `qti-inline-choice-interaction` presents a set of choices as a dropdown (combo box) embedded directly within a sentence or other running text. The candidate selects exactly one option from the list.
 
@@ -55,6 +55,19 @@ Because it renders inline, it is well suited to text-heavy items. For selecting 
       required: false,
       default: 'false',
       description: 'When <code>true</code>, the candidate must select an option before the response is considered valid for submission.'
+    },
+    {
+      name: 'min-choices',
+      type: 'integer',
+      required: false,
+      default: '0',
+      description: 'The minimum number of choices the candidate must select for a valid response: <code>1</code> makes a selection mandatory, <code>0</code> leaves it optional.'
+    },
+    {
+      name: 'data-prompt',
+      type: 'string',
+      required: false,
+      description: 'Prompt (placeholder) text shown in the dropdown before the candidate makes a selection.'
     }
   ]}
   caption="Attributes of qti-inline-choice-interaction"

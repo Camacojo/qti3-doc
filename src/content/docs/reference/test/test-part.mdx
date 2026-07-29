@@ -29,13 +29,17 @@ submitted, for all the [sections](/reference/test/assessment-section/) it contai
 - **Parent:** [`qti-assessment-test`](/reference/test/assessment-test/).
 - **Children:** optional [preconditions & branch rules](/reference/test/branch-rule-and-preconditions/),
   an optional [`qti-item-session-control`](/reference/test/item-session-control/)
-  and [`qti-time-limits`](/reference/test/time-limits/), then one or more
-  [sections](/reference/test/assessment-section/).
+  and [`qti-time-limits`](/reference/test/time-limits/), optional
+  [rubric blocks](/reference/content/rubric-block/), then one or more
+  [sections](/reference/test/assessment-section/) — inline, or referenced via
+  `qti-assessment-section-ref` — and finally optional test feedback
+  (`qti-test-feedback`).
 
 ## Attributes
 
 <AttributesTable attributes={[
   { name: 'identifier', type: 'identifier', required: true, description: 'A unique identifier for the test part.' },
+  { name: 'title', type: 'string', description: 'An optional human-readable title.' },
   { name: 'navigation-mode', type: 'linear | nonlinear', required: true, description: 'Whether items must be taken in order or can be navigated freely.' },
   { name: 'submission-mode', type: 'individual | simultaneous', required: true, description: 'Whether responses are submitted per item or all together at the end.' },
 ]} caption="qti-test-part attributes" />

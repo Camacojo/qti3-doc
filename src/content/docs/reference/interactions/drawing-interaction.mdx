@@ -30,7 +30,7 @@ Because the response is a produced image file, the outcome is almost always **hu
 `qti-drawing-interaction` is a block-level interaction that appears inside the `qti-assessment-item` body.
 
 - **Parent:** the item body (or a block container within it).
-- **Children:** a single `qti-object` element that supplies the background image to draw on. This object provides the canvas dimensions (via its `width` and `height`) and its `type` (MIME type) and `data` (image reference).
+- **Children:** a single HTML `object`, `img`, or `picture` element that supplies the background image to draw on (the spec deprecates `object` here in favour of `img`/`picture`). This element provides the image reference (the `src` of an `img`) and the canvas dimensions via its `width` and `height`.
 - **Bound variable:** the interaction binds to the response variable named by its `response-identifier`. That response variable must be declared with **cardinality `single`** and **base-type `file`**, since the candidate's drawing is delivered as an image file.
 
 ## Attributes
@@ -77,12 +77,10 @@ The interaction also supports the shared attributes common to all interactions, 
     <p>Using the drawing tools, shade the area of the map that lies within the flood zone.</p>
 
     <qti-drawing-interaction response-identifier="RESPONSE">
-      <qti-object type="image/png"
-                  data="images/river-map.png"
-                  width="600"
-                  height="400">
-        Map of the river valley
-      </qti-object>
+      <img src="images/river-map.png"
+           alt="Map of the river valley"
+           width="600"
+           height="400"/>
     </qti-drawing-interaction>
   </qti-item-body>
 
@@ -94,7 +92,7 @@ The interaction also supports the shared attributes common to all interactions, 
 
 :::note
 A live demo is omitted here: the drawing surface needs a raster background image
-(supplied via `qti-object`) that this documentation does not bundle. See a
+(supplied via an `img` element) that this documentation does not bundle. See a
 working example in the [qti-components Storybook](https://qti-components.citolab.nl).
 :::
 

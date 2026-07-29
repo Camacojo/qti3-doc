@@ -35,7 +35,9 @@ items appear and in what order.
   { name: 'identifier', type: 'identifier', required: true, description: 'A unique identifier for the section.' },
   { name: 'title', type: 'string', required: true, description: 'A human-readable title.' },
   { name: 'visible', type: 'boolean', required: true, description: 'Whether the section is a visible structure to the candidate. Invisible sections are flattened into their parent.' },
-  { name: 'keep-together', type: 'boolean', default: 'true', description: 'Whether the children are kept together when a parent section shuffles.' },
+  { name: 'fixed', type: 'boolean', default: 'false', description: 'When true, the section keeps its position if the parent section is shuffled.' },
+  { name: 'required', type: 'boolean', default: 'false', description: 'When true, the section must be included when the parent section makes a selection.' },
+  { name: 'keep-together', type: 'boolean', default: 'true', description: 'For invisible sections: whether their children are kept together during selection and ordering, or may be mixed in with the parent’s other children.' },
 ]} caption="qti-assessment-section attributes" />
 
 ## Example

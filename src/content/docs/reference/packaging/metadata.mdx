@@ -35,7 +35,7 @@ Metadata is not a QTI body element; it lives alongside packaging rather than ins
 - **Resource metadata in the manifest** — inside a `<metadata>` element of a `<resource>` in `imsmanifest.xml`. This is the most common location and is what tools read when scanning a package.
 - **Accompanying metadata files** — separate XML files referenced from the manifest, used when the metadata record is large or maintained independently.
 
-Because QTI-specific and LOM elements come from their own namespaces, a manifest that carries metadata declares those namespaces at the top of the file.
+Because QTI-specific and LOM elements come from their own namespaces, a manifest that carries metadata declares those namespaces at the top of the file. Note that the metadata binding keeps the QTI 2.x **camelCase** element names (`qtiMetadata`, `interactionType`, …) — the kebab-case renaming in QTI 3.0 applies only to the ASI content (items, tests, sections), not to metadata.
 
 ## Attributes
 
@@ -51,10 +51,10 @@ Metadata is expressed through nested elements rather than attributes on a single
     { name: 'educational.difficulty', type: 'Vocabulary', description: 'Estimated difficulty, e.g. <code>very easy</code> … <code>very difficult</code>.' },
     { name: 'educational.typicalAgeRange', type: 'LangString', description: 'Intended learner age range.' },
     { name: 'technical.format', type: 'string', description: 'MIME type(s) of the resource content.' },
-    { name: 'qti.interaction-type', type: 'string', description: 'Interaction elements used, e.g. <code>choice-interaction</code>, <code>text-entry-interaction</code>.' },
-    { name: 'qti.time-dependent', type: 'boolean', description: 'Whether scoring or behaviour depends on time taken.' },
-    { name: 'qti.tool-vendor', type: 'string', description: 'Identifier of the authoring tool vendor that produced the resource.' },
-    { name: 'qti.item-template', type: 'boolean', description: 'Whether the item is generated from a template (cloned items).' },
+    { name: 'interactionType', type: 'string', description: 'Interaction types used, in the camelCase metadata vocabulary, e.g. <code>choiceInteraction</code>, <code>textEntryInteraction</code>.' },
+    { name: 'timeDependent', type: 'boolean', description: 'Whether scoring or behaviour depends on time taken.' },
+    { name: 'toolVendor', type: 'string', description: 'Identifier of the authoring tool vendor that produced the resource.' },
+    { name: 'itemTemplate', type: 'boolean', description: 'Whether the item is generated from a template (cloned items).' },
   ]}
   caption="Common LOM and QTI-specific metadata groups used for discovery and reuse."
 />
@@ -70,15 +70,9 @@ A resource entry in the manifest carrying both QTI-specific and LOM metadata. Th
           type="imsqti_item_xmlv3p0"
           href="items/item-0001.xml">
   <metadata>
-    <!-- QTI-specific metadata -->
-    <qti:qti-metadata xmlns:qti="http://www.imsglobal.org/xsd/imsqtiasi_metadata_v3p0">
-      <qti:interaction-type>choice-interaction</qti:interaction-type>
-      <qti:time-dependent>false</qti:time-dependent>
-      <qti:tool-vendor>example.com</qti:tool-vendor>
-    </qti:qti-metadata>
-
-    <!-- IEEE LOM metadata -->
-    <lom:lom xmlns:lom="http://ltsc.ieee.org/xsd/LOM">
+    <lom:lom xmlns:lom="http://ltsc.ieee.org/xsd/LOM"
+             xmlns:qti="http://www.imsglobal.org/xsd/imsqti_metadata_v3p0">
+      <!-- IEEE LOM categories -->
       <lom:general>
         <lom:title>
           <lom:string language="en">Capital of France</lom:string>
@@ -92,6 +86,14 @@ A resource entry in the manifest carrying both QTI-specific and LOM metadata. Th
           <lom:value>easy</lom:value>
         </lom:difficulty>
       </lom:educational>
+
+      <!-- QTI-specific metadata: an extra category inside the LOM instance.
+           Note the camelCase names — metadata is not kebab-cased. -->
+      <qti:qtiMetadata>
+        <qti:interactionType>choiceInteraction</qti:interactionType>
+        <qti:timeDependent>false</qti:timeDependent>
+        <qti:toolVendor>example.com</qti:toolVendor>
+      </qti:qtiMetadata>
     </lom:lom>
   </metadata>
 
