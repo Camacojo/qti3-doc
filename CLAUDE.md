@@ -130,5 +130,6 @@ client `<script>` imports the library to register them.
 
 - QTI 3.0 spec: https://www.imsglobal.org/spec/qti/v3p0/impl
 - `@citolab/qti-components` (browser rendering): https://github.com/citolab/qti-components · Storybook https://qti-components.citolab.nl
+- amp-up.io QTI 3 Player SDK (Vue, MIT, 1EdTech-certified; alternative renderer): https://www.amp-up.io/ · repos https://github.com/amp-up-io
 - `kennisnet/php-qti3` (server parse/score, Composer `wikiwijs/php-qti3`): https://github.com/kennisnet/php-qti3
 - Astro Starlight: https://starlight.astro.build

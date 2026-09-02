@@ -1,6 +1,6 @@
 ---
 title: Open-source packages
-description: Get started fast with two open-source QTI 3.0 packages — render items in the browser with @citolab/qti-components and parse, validate and score them server-side with kennisnet/php-qti3.
+description: "Get started fast with open-source QTI 3.0 packages: render items in the browser with @citolab/qti-components or the amp-up.io QTI 3 Player, and parse, validate and score them server-side with kennisnet/php-qti3."
 sidebar:
   order: 4
 ---
@@ -9,14 +9,19 @@ import { Card, CardGrid } from '@astrojs/starlight/components';
 import Example from '@components/Example.astro';
 import Related from '@components/Related.astro';
 
-You do not have to implement QTI from scratch. Two actively maintained
+You do not have to implement QTI from scratch. Several actively maintained
 open-source packages cover the two halves of the job — [rendering and
-processing](/onboarding/ecosystem-and-tools/#rendering-vs-processing).
+processing](/onboarding/ecosystem-and-tools/#rendering-vs-processing). Two of them
+render items in the browser; one handles the server side.
 
 <CardGrid>
 	<Card title="@citolab/qti-components" icon="seti:html">
 		**Browser rendering.** Framework-agnostic Web Components that render QTI 3.0
 		items and tests as interactive UI. Works with any framework or plain HTML.
+	</Card>
+	<Card title="amp-up.io QTI 3 Player" icon="seti:vue">
+		**Browser rendering.** Vue components that each take a whole QTI document and
+		render it. 1EdTech-certified for QTI 3 Basic and Advanced Delivery.
 	</Card>
 	<Card title="kennisnet/php-qti3" icon="seti:php">
 		**Server-side processing.** A PHP library to read, write, validate, and score
@@ -38,10 +43,62 @@ npm install @citolab/qti-components
 
 - **Repository:** [github.com/citolab/qti-components](https://github.com/citolab/qti-components)
 - **Live examples (Storybook):** [qti-components.citolab.nl](https://qti-components.citolab.nl)
-- **License:** GPLv3
+- **License:** GPLv3 (alternative licensing on request)
+
+There is roughly one custom element per QTI element, so you write QTI markup
+almost verbatim into your page and compose the player yourself from the item,
+test and processing modules.
 
 We use these components for the live examples on interaction reference pages. See
 the [rendering guide](/guides/rendering-with-qti-components/).
+
+## amp-up.io QTI 3 Player (rendering)
+
+[Amp-up.io](https://www.amp-up.io/) publishes an MIT-licensed **QTI 3 Player
+SDK**: JavaScript/Vue components that each take a complete QTI 3 XML document and
+render it, handling response and template processing internally. Where
+`qti-components` gives you elements to compose, the amp-up.io player gives you one
+component to mount and drive through props, events and methods (`endAttempt`,
+`suspendAttempt`, `scoreAttempt`).
+
+<Example title="Install (Vue 3 item player)">
+```bash
+npm install qti3-item-player-vue3
+```
+</Example>
+
+The SDK is split per QTI construct:
+
+| Package | Repository | Role |
+| --- | --- | --- |
+| `qti3-item-player-vue3` | [qti3-item-player-vue3](https://github.com/amp-up-io/qti3-item-player-vue3) | Item rendering & processing (Vue 3 — the current version) |
+| `qti3-item-player` | [qti3-item-player](https://github.com/amp-up-io/qti3-item-player) | The original item player (Vue 2.6) |
+| `qti3-test-vue3` | [qti3-test-vue3](https://github.com/amp-up-io/qti3-test-vue3) | [Assessment test](/reference/test/assessment-test/) model, navigation & [outcome processing](/reference/processing/outcome-processing/) |
+| `qti3-stimulus-player` | [qti3-stimulus-player](https://github.com/amp-up-io/qti3-stimulus-player) | [Shared stimulus](/reference/content/assessment-stimulus/) rendering |
+| `qti3-item-player-controller` | [qti3-item-player-controller](https://github.com/amp-up-io/qti3-item-player-controller) | Sample test controller that exercises the item-player API |
+
+- **Website:** [amp-up.io](https://www.amp-up.io/)
+- **GitHub organisation:** [github.com/amp-up-io](https://github.com/amp-up-io)
+- **License:** MIT
+
+Notable capabilities:
+
+- **1EdTech certification** for QTI 3 Basic and Advanced Delivery conformance,
+  plus the elective Portable Custom Interaction (PCI) conformance.
+- **Full item vocabulary**, including [response processing](/concepts/response-processing/),
+  [template processing](/reference/processing/template-processing/), adaptive
+  items, [rubric blocks](/reference/content/rubric-block/) and
+  [stylesheets](/reference/content/stylesheet/).
+- **Accessibility and personalisation:** 14 built-in colour themes, plus
+  [catalog](/reference/content/catalog-info/)-driven glossaries and keyword
+  translations for personal needs & preferences (PNP).
+- **Item session control:** response validation, attempt limits and item lifecycle
+  status (`initial` / `interacting` / `closed` / `review` / `solution`).
+
+The test component's roadmap still lists item
+[pre-conditions and branch rules](/reference/test/branch-rule-and-preconditions/),
+variable mapping / template defaults and test feedback as work in progress, so
+check it against your test-structure needs.
 
 ## kennisnet/php-qti3 (processing)
 
@@ -64,11 +121,38 @@ composer require wikiwijs/php-qti3
 
 See the [parsing & scoring guide](/guides/parsing-with-php-qti3/).
 
+## Choosing a renderer
+
+Both browser packages render QTI 3.0 items and run response processing
+client-side. They differ mostly in shape, licence and conformance claims.
+
+| | `@citolab/qti-components` | amp-up.io QTI 3 Player |
+| --- | --- | --- |
+| Maintainer | Citolab (Cito, NL) | Amp-up.io (US) |
+| Technology | Native Web Components (Lit) | Vue components (Vue 3; Vue 2.6 for the original player) |
+| Host framework | Any — React, Vue, Angular, plain HTML | A Vue app, or a Vue instance mounted inside another stack |
+| API shape | Many elements you compose; QTI markup lives in your own DOM | One component per construct; you hand it the QTI XML |
+| Licence | GPLv3 (copyleft; commercial licence on request) | MIT (permissive) |
+| 1EdTech certification | Not claimed | Basic + Advanced Delivery, and the PCI elective |
+| Tests & stimulus | In the same package | Separate packages (`qti3-test-vue3`, `qti3-stimulus-player`) |
+
+Rules of thumb:
+
+- Pick **`qti-components`** when you want framework-neutral custom elements, fine
+  control over each QTI element, or you are already rendering QTI markup in your
+  own DOM — and GPLv3 fits your distribution model.
+- Pick the **amp-up.io player** when you want a certified, batteries-included
+  player behind one API, a permissive MIT licence, or you need PCI and
+  catalog/PNP support out of the box — and Vue in the bundle is acceptable.
+
+Either way the QTI XML stays the same, so the choice is reversible.
+
 ## How they fit together
 
-A typical stack uses **both**: `php-qti3` on the server to import, validate, and
-score packages, and `qti-components` in the browser to render items to the
-candidate. QTI XML is the contract between them.
+A typical stack uses **both** halves: `php-qti3` on the server to import,
+validate and score packages, and one of the browser packages to render items to
+the candidate. QTI XML is the contract between them — which is exactly why you can
+swap renderers, or use a different one per delivery channel.
 
 <Related links={[
   { href: '/onboarding/ecosystem-and-tools/', label: 'The QTI ecosystem', description: 'Where rendering and processing fit' },

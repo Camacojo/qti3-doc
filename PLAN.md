@@ -69,4 +69,5 @@ npm run preview  # preview the production build
 
 - 1EdTech QTI 3.0 spec: https://www.imsglobal.org/spec/qti/v3p0/impl
 - `@citolab/qti-components` (web components): https://github.com/citolab/qti-components — storybook: https://qti-components.citolab.nl
+- amp-up.io QTI 3 Player SDK (Vue, MIT, 1EdTech-certified): https://www.amp-up.io/ — repos: https://github.com/amp-up-io
 - `wikiwijs/php-qti3` (PHP parse/score, repo `kennisnet/php-qti3`): https://github.com/kennisnet/php-qti3
