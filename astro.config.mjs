@@ -6,7 +6,11 @@ import starlight from '@astrojs/starlight';
 // (https://qti3-doc-ac52af.pages.bks.kennisnet.nl/), so no base path is needed.
 // If it were served under a subpath instead, set this to e.g. '/qti3-doc' and
 // add the same prefix to the hero links in src/content/docs/index.mdx.
-const BASE = '';
+// The GitHub Pages workflow serves from a subpath and overrides these via env.
+const BASE = process.env.BASE_PATH ?? '';
+const SITE = process.env.SITE_URL ?? 'https://qti3-doc-ac52af.pages.bks.kennisnet.nl';
+const EDIT_BASE_URL =
+	process.env.EDIT_BASE_URL ?? 'https://gitlab.bks.kennisnet.nl/visser01/qti3-doc/-/edit/main/';
 
 /**
  * Prefix root-relative links/sources in Markdown & MDX prose with the base path.
@@ -39,7 +43,7 @@ function rehypeBasePaths() {
 // https://astro.build/config
 export default defineConfig({
 	// Used for sitemap/canonical URLs.
-	site: 'https://qti3-doc-ac52af.pages.bks.kennisnet.nl',
+	site: SITE,
 	base: BASE + '/',
 	markdown: {
 		rehypePlugins: [rehypeBasePaths],
@@ -64,7 +68,7 @@ export default defineConfig({
 			],
 			customCss: ['./src/styles/custom.css'],
 			editLink: {
-				baseUrl: 'https://gitlab.bks.kennisnet.nl/visser01/qti3-doc/-/edit/main/',
+				baseUrl: EDIT_BASE_URL,
 			},
 			lastUpdated: true,
 			sidebar: [
