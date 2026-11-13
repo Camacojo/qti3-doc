@@ -1,0 +1,188 @@
+---
+title: Validate QTI content
+description: Check QTI 3.0 items, tests and packages against the 1EdTech schemas and rules — with the official 1EdTech validator, the open-source feyst/qti3-validator, or php-qti3's built-in XSD check.
+sidebar:
+  order: 4
+---
+
+import Example from '@components/Example.astro';
+import Related from '@components/Related.astro';
+
+Validation tells you whether QTI content is something another system can read
+and run. Validate on import (content from elsewhere), on export (content you
+produce) and in CI (content you author by hand or generate).
+
+## What a validator checks
+
+Validation happens in layers; each layer catches mistakes the previous one
+cannot:
+
+1. **Well-formed XML.** The document parses at all.
+2. **XML Schema (XSD).** Elements and attributes are where the QTI 3 schemas allow
+   them, including imported vocabularies such as MathML, SSML and LOM
+   [metadata](/reference/packaging/metadata/).
+3. **Schematron rules.** 1EdTech embeds thousands of rules in its schemas for
+   what an XSD cannot express, such as `max-choices` against `min-choices` or
+   allowed ARIA roles.
+4. **Consistency.** The parts fit together: every interaction is bound to a
+   declared [response variable](/concepts/variables-and-declarations/), the
+   [response processing](/concepts/response-processing/) template has the
+   variables it needs, and every file the [manifest](/reference/packaging/imsmanifest/)
+   lists is in the [package](/concepts/content-packaging/).
+
+A document can pass the XSD and still be impossible to score, so the deeper
+layers matter for content that has to run.
+
+## Your options
+
+| | 1EdTech validator | `feyst/qti3-validator` | php-qti3 `QtiSchemaValidator` |
+| --- | --- | --- | --- |
+| Maintainer | 1EdTech | Open source (GitHub) | Kennisnet |
+| Form | Docker image with an HTTP API | Docker image with an HTTP API (Go) | PHP class, in-process |
+| Access | 1EdTech membership or licence | Free, MIT licence | Free, part of `wikiwijs/php-qti3` |
+| XSD | Yes | Yes (3.0 and 3.0.1) | Yes |
+| Schematron rules | Yes | Yes (the 1EdTech rules) | No |
+| Consistency checks | — | Yes, [documented per check](https://github.com/feyst/qti3-validator/blob/main/docs/additional-checks.md) | Manifest and resource structure |
+| Status | The reference for conformance | Independent; not a 1EdTech product | Lightweight default |
+
+Rules of thumb:
+
+- Use the **1EdTech validator** when you need the official verdict, for
+  example before a conformance claim, and you have access to it.
+- Use **`feyst/qti3-validator`** when you want the same depth without a licence:
+  in CI, on a laptop, or as a service next to your own platform. It also flags
+  items that are valid XML but cannot run as written.
+- Use php-qti3's **`QtiSchemaValidator`** for a quick check without a separate
+  service.
+
+## feyst/qti3-validator
+
+An MIT-licensed HTTP service that validates QTI 3.0 and 3.0.1 items, tests and
+complete packages against the official 1EdTech XSDs and Schematron rules, plus
+its own [additional checks](https://github.com/feyst/qti3-validator/blob/main/docs/additional-checks.md).
+The schemas are built into the image: it never contacts the internet and does
+not store the documents you send.
+
+- **Repository:** [github.com/feyst/qti3-validator](https://github.com/feyst/qti3-validator)
+- **Image:** `ghcr.io/feyst/qti3-validator` (also on Docker Hub as `feyst/qti3-validator`)
+- **License:** MIT
+
+<Example title="Start the service">
+```bash
+docker run --rm -p 8080:8080 ghcr.io/feyst/qti3-validator
+```
+</Example>
+
+<Example title="Validate a package or a single item">
+```bash
+# A content package (ZIP)
+curl -X POST http://localhost:8080/api/validate \
+  -H 'Content-Type: application/zip' \
+  --data-binary @package.zip
+
+# One item, test or other QTI document
+curl -X POST http://localhost:8080/api/validate \
+  -H 'Content-Type: application/xml' \
+  --data-binary @item.xml
+```
+</Example>
+
+Add `?version=3.0.0` or `?version=3.0.1` to choose the QTI version. Without it,
+a package uses the `<schemaversion>` in its manifest and a single document is
+checked against 3.0.1.
+
+### Reading the report
+
+Every request that could be validated returns HTTP 200 with a report, valid or
+not. The verdict is `summary.outcome`; each finding has a line, column and
+element path:
+
+<Example title="A finding in the report">
+```json
+{
+  "title": "Schematron validation",
+  "message": "qti-choice-interaction is bound to 'RESPONSE', which is not a declared response variable.",
+  "location": {
+    "resource": "/items/item-1.xml",
+    "line": 18,
+    "column": 5,
+    "path": "/qti-assessment-item[1]/qti-item-body[1]/qti-choice-interaction[1]"
+  },
+  "generator": "schematron|qti3-additional-checks.sch#response-declaration-exists",
+  "code": "schematron"
+}
+```
+</Example>
+
+| `summary.outcome` | Meaning | Valid? |
+| --- | --- | --- |
+| `VALID` | Every check passed | Yes |
+| `WARNING` | Worth a look, but the item still works (for example an unused outcome) | Yes |
+| `ERROR` | The XSD or a rule is broken | No |
+| `FATAL` | Not readable: malformed XML, not UTF-8, not QTI 3, not a ZIP | No |
+| `EXCEPTION` | Validation did not finish (too complex, timeout, service error) | No |
+
+The report follows the report model of 1EdTech's own validators. The full
+description of fields, codes, limits and production settings is in the
+[repository's documentation](https://github.com/feyst/qti3-validator#documentation).
+
+### Limitations
+
+It checks that response processing *can* run, not that it awards the scores
+you intend. Documents must be UTF-8 and may not contain a `DOCTYPE`. QTI 2.x is
+rejected.
+
+## The 1EdTech validator
+
+1EdTech, the body behind QTI, provides its own validator to members and
+licensees. It runs as a Docker container with a licence file and exposes
+`POST /api/validate?validatorId=Qti30Inspector`, taking the package as the
+`file` field of a multipart upload. Its verdict is the reference when you want
+to make a conformance claim. See [1edtech.org](https://www.1edtech.org/) for
+access.
+
+## Validating from php-qti3
+
+[`kennisnet/php-qti3`](/guides/parsing-with-php-qti3/) validates through an
+`IQtiSyntaxValidator`. By default that is `QtiSchemaValidator` (XSD, no extra
+dependencies). `ImsGlobalQtiSyntaxValidator` sends the package to an HTTP
+validator instead. `feyst/qti3-validator` accepts the same request (endpoint,
+`validatorId`, multipart field) and returns the same report model, so you can
+point that class at either service by its endpoint URL:
+
+<Example title="Use an HTTP validator from php-qti3">
+```php
+use Qti3\QtiClient;
+use Qti3\Package\Filesystem\FileSystemUtils;
+use Qti3\Package\Filesystem\Zip\QtiPackageVersionUpdater;
+use Qti3\Package\Filesystem\Zip\ZipArchiveFactory;
+use Qti3\Package\Filesystem\Zip\ZipPackageFactory;
+use Qti3\Package\Validator\ImsGlobalQtiSyntaxValidator;
+
+$qtiClient = new QtiClient(
+    $filesystemPackageFactory,
+    $resourceValidator,
+    $resourceDownloader,
+    new ImsGlobalQtiSyntaxValidator(
+        $httpClient,
+        $requestFactory,
+        $streamFactory,
+        new ZipPackageFactory(new ZipArchiveFactory(), new FileSystemUtils()),
+        'http://localhost:8080/api/validate', // 1EdTech validator or feyst/qti3-validator
+        new QtiPackageVersionUpdater(new FileSystemUtils()),
+    ),
+);
+
+$errors = $qtiClient->getQtiPackageValidator()->validate($package);
+```
+</Example>
+
+The class only reports `errors` from the response; read the service's report
+directly when you also want warnings.
+
+<Related links={[
+  { href: '/concepts/content-packaging/', label: 'Content packaging', description: 'What a package-level validator checks against' },
+  { href: '/guides/parsing-with-php-qti3/', label: 'Parse & score with php-qti3', description: 'Set up the QtiClient' },
+  { href: '/onboarding/open-source-packages/', label: 'Open-source packages', description: 'All tooling at a glance' },
+  { href: '/concepts/response-processing/', label: 'Response processing', description: 'What the consistency checks protect' },
+]} />

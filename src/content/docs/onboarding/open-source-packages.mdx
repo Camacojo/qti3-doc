@@ -1,6 +1,6 @@
 ---
 title: Open-source packages
-description: "Get started fast with open-source QTI 3.0 packages: render items in the browser with @citolab/qti-components or the amp-up.io QTI 3 Player, and parse, validate and score them server-side with kennisnet/php-qti3."
+description: "Get started fast with open-source QTI 3.0 packages: render items in the browser with @citolab/qti-components or the amp-up.io QTI 3 Player, parse, validate and score them server-side with kennisnet/php-qti3, and check them with feyst/qti3-validator."
 sidebar:
   order: 4
 ---
@@ -12,7 +12,8 @@ import Related from '@components/Related.astro';
 You do not have to implement QTI from scratch. Several actively maintained
 open-source packages cover the two halves of the job — [rendering and
 processing](/onboarding/ecosystem-and-tools/#rendering-vs-processing). Two of them
-render items in the browser; one handles the server side.
+render items in the browser; one handles the server side; and a standalone
+validator checks content against the 1EdTech schemas and rules.
 
 <CardGrid>
 	<Card title="@citolab/qti-components" icon="seti:html">
@@ -26,6 +27,10 @@ render items in the browser; one handles the server side.
 	<Card title="kennisnet/php-qti3" icon="seti:php">
 		**Server-side processing.** A PHP library to read, write, validate, and score
 		QTI 3.0 packages, tests, and items.
+	</Card>
+	<Card title="feyst/qti3-validator" icon="approve-check">
+		**Validation.** An HTTP service that checks items, tests and packages against
+		the 1EdTech XSDs and Schematron rules, plus consistency checks.
 	</Card>
 </CardGrid>
 
@@ -121,6 +126,30 @@ composer require wikiwijs/php-qti3
 
 See the [parsing & scoring guide](/guides/parsing-with-php-qti3/).
 
+## feyst/qti3-validator (validation)
+
+An open-source alternative to 1EdTech's own validator: a small Go service in a
+Docker image that validates QTI 3.0 and 3.0.1 items, tests and complete
+packages. It runs the official 1EdTech XSDs and Schematron rules, and adds
+[checks on how the parts fit together](https://github.com/feyst/qti3-validator/blob/main/docs/additional-checks.md),
+such as interactions bound to undeclared response variables or files missing
+from a package. Each finding comes with a line, column and element path.
+
+<Example title="Run and validate">
+```bash
+docker run --rm -p 8080:8080 ghcr.io/feyst/qti3-validator
+curl -X POST http://localhost:8080/api/validate \
+  -H 'Content-Type: application/zip' --data-binary @package.zip
+```
+</Example>
+
+- **Repository:** [github.com/feyst/qti3-validator](https://github.com/feyst/qti3-validator)
+- **Image:** `ghcr.io/feyst/qti3-validator`
+- **License:** MIT
+
+Its API and report follow 1EdTech's validator, so `php-qti3` can call it in its
+place. See the [validation guide](/guides/validating-qti/).
+
 ## Choosing a renderer
 
 Both browser packages render QTI 3.0 items and run response processing
@@ -151,11 +180,13 @@ Either way the QTI XML stays the same, so the choice is reversible.
 
 A typical stack uses **both** halves: `php-qti3` on the server to import,
 validate and score packages, and one of the browser packages to render items to
-the candidate. QTI XML is the contract between them — which is exactly why you can
+the candidate. A validator service such as `qti3-validator` can sit beside
+`php-qti3` for the thorough checks. QTI XML is the contract between them — which is exactly why you can
 swap renderers, or use a different one per delivery channel.
 
 <Related links={[
   { href: '/onboarding/ecosystem-and-tools/', label: 'The QTI ecosystem', description: 'Where rendering and processing fit' },
   { href: '/guides/rendering-with-qti-components/', label: 'Render with qti-components', description: 'Hands-on browser rendering' },
   { href: '/guides/parsing-with-php-qti3/', label: 'Parse & score with php-qti3', description: 'Hands-on server-side processing' },
+  { href: '/guides/validating-qti/', label: 'Validate QTI content', description: 'The validators compared' },
 ]} />

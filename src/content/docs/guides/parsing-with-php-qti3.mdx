@@ -72,7 +72,9 @@ $package = $reader->fromFilesystem('/tmp/folder');
 </Example>
 
 You can also validate a package (`getQtiPackageValidator()`), edit its items in
-place (`getPackageEditor()`), and write it back out to a ZIP or folder.
+place (`getPackageEditor()`), and write it back out to a ZIP or folder. To
+validate against an external validator service instead of the built-in XSD
+check, see [Validate QTI content](/guides/validating-qti/#validating-from-php-qti3).
 
 ## Score a response
 
