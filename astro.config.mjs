@@ -11,6 +11,7 @@ const BASE = process.env.BASE_PATH ?? '';
 const SITE = process.env.SITE_URL ?? 'https://qti3-doc-ac52af.pages.bks.kennisnet.nl';
 const EDIT_BASE_URL =
 	process.env.EDIT_BASE_URL ?? 'https://gitlab.bks.kennisnet.nl/visser01/qti3-doc/-/edit/main/';
+const GOOGLE_SITE_VERIFICATION = process.env.GOOGLE_SITE_VERIFICATION;
 
 /**
  * Prefix root-relative links/sources in Markdown & MDX prose with the base path.
@@ -66,6 +67,14 @@ export default defineConfig({
 					href: 'https://github.com/kennisnet/php-qti3',
 				},
 			],
+			head: GOOGLE_SITE_VERIFICATION
+				? [
+						{
+							tag: 'meta',
+							attrs: { name: 'google-site-verification', content: GOOGLE_SITE_VERIFICATION },
+						},
+					]
+				: [],
 			customCss: ['./src/styles/custom.css'],
 			editLink: {
 				baseUrl: EDIT_BASE_URL,

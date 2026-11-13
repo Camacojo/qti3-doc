@@ -21,6 +21,7 @@ jobs:
       SITE_URL: https://camacojo.github.io
       BASE_PATH: /qti3-doc
       EDIT_BASE_URL: https://github.com/Camacojo/qti3-doc/edit/main/
+      GOOGLE_SITE_VERIFICATION: tLGNhQPQBngcx4phUTA94AiEkySjloZsh_rPkaBuXjU
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
